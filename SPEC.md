@@ -20,7 +20,7 @@ The **3D Low Earth Orbit (LEO) Satellite Design & Simulation Game** is an intera
 ```mermaid
 graph TD
     subgraph Client ["Client-Side (Browser)"]
-        UI["React.js UI & Mission Control HUD"]
+        UI["Vanilla JS UI & Mission Control HUD"]
         LocalStorage[("localStorage (Save Game & Designs)")]
         ThreeHangar["Three.js: 3D Assembly Hangar"]
         ThreeOrbit["Three.js: 3D Orbital World & Earth Globe"]
@@ -47,7 +47,7 @@ graph TD
 ### 2.1 Technology Matrix
 | Layer | Technology | Role & Purpose |
 | :--- | :--- | :--- |
-| **Frontend Framework** | **React.js (JavaScript)** | State management, modular UI components, mission control dashboard, HUD overlays, and contract management. |
+| **Frontend Core** | **HTML5 & Vanilla JavaScript (ES Modules)** | State management, modular DOM UI components, mission control dashboard, HUD overlays, and contract management without framework overhead. |
 | **3D Graphics Engine** | **Three.js** | WebGL rendering for both the 3D Satellite Assembly Hangar (procedural parts, socket snapping, lighting) and the 3D Earth Orbital Environment (textured Earth, atmospheric shader, orbital trajectories, ground stations). |
 | **Styling & Theme** | **Vanilla CSS3** | High-performance dark aerospace HUD aesthetics, glassmorphic panels, telemetry dials, neon status indicators, and responsive grid layouts. |
 | **Backend Server** | **Express.js (Node.js)** | REST endpoints serving static components catalog, procedural mission generator, delta-v burn calculation, and orbital propagation algorithms. |
@@ -348,33 +348,27 @@ space-mission-design-game/
 │       ├── maneuvers.js              # Hohmann transfer & delta-v calculators
 │       └── thermal.js                # Solar flux, eclipse & heat dissipation
 ├── client/
-│   ├── public/
-│   │   ├── index.html
-│   │   └── assets/                   # Earth textures, icons, decals
-│   ├── src/
-│   │   ├── index.js                  # React root
-│   │   ├── App.jsx                   # Main layout, view switching & state provider
-│   │   ├── index.css                 # Global design system & aerospace themes
-│   │   ├── components/
-│   │   │   ├── TopNav.jsx            # Funds, agency info, game clock
-│   │   │   ├── TimeWarpControl.jsx   # 1x, 10x, 100x warp buttons
-│   │   │   ├── Hangar/
-│   │   │   │   ├── HangarCanvas.jsx  # Three.js 3D satellite assembly
-│   │   │   │   ├── ComponentTray.jsx # Modular parts selector
-│   │   │   │   └── StatsCard.jsx     # Mass, Power, Thermal, Delta-V meters
-│   │   │   ├── Orbit/
-│   │   │   │   ├── OrbitCanvas.jsx   # Three.js Earth, orbit trail, sun, stations
-│   │   │   │   ├── TelemetryHUD.jsx  # Live altitude, speed, eclipse timer
-│   │   │   │   └── ManeuverNode.jsx  # Burn planner & execution widget
-│   │   │   └── Contracts/
-│   │   │       ├── ContractList.jsx  # Available and active space contracts
-│   │   │       └── MissionReport.jsx # Success/failure mission payout modal
-│   │   ├── hooks/
-│   │   │   ├── useLocalStorage.js    # Sync state with browser localStorage
-│   │   │   └── useSimulationLoop.js  # Ticking game clock & orbital propagation
-│   │   └── utils/
-│   │       ├── math.js               # Matrix conversions, coordinate projections
-│   │       └── constants.js          # Orbital constants (R_EARTH, MU, etc.)
+│   ├── index.html                    # Main entry point & HUD view layouts
+│   ├── assets/                       # Earth textures, normal maps, decals, icons
+│   ├── css/                          # Aerospace HUD styling & glassmorphism
+│   │   ├── main.css                  # Layout, typography, global palette
+│   │   ├── hangar.css                # 3D turntable overlay & parts tray
+│   │   └── orbit.css                 # Telemetry HUD, burn planner, warp dock
+│   └── js/                           # Vanilla JavaScript (ES Modules)
+│       ├── main.js                   # Application bootstrap, navigation & routing
+│       ├── state.js                  # Centralized state & localStorage sync
+│       ├── api.js                    # Fetch client for Express REST API
+│       ├── simulation.js             # Real-time tick engine & time-warp runner
+│       ├── views/                    # DOM UI View Controllers
+│       │   ├── hangarView.js         # Assembly hangar UI & socket-snapping
+│       │   ├── orbitView.js          # Orbital operations HUD & telemetry dials
+│       │   └── contractsView.js      # Contracts management & reward dialogs
+│       ├── three/                    # Three.js 3D Viewports
+│       │   ├── hangarScene.js        # Assembly cleanroom & turntable controls
+│       │   └── orbitScene.js         # Earth globe, trajectory line, atmosphere shader
+│       └── utils/                    # Shared utilities
+│           ├── math.js               # Coordinate conversions & vector arithmetic
+│           └── constants.js          # Astrodynamic constants (R_EARTH, MU, etc.)
 ```
 
 ---
@@ -384,7 +378,7 @@ space-mission-design-game/
 ### Phase 1: Core Foundation & Systems (M1)
 - [x] Global Specification Document (`SPEC.md`).
 - [ ] Express backend with `/api/catalog` and `/api/physics/propagate`.
-- [ ] React application scaffold with aerospace UI design system.
+- [ ] Vanilla JS application scaffold with aerospace UI design system.
 - [ ] `localStorage` save system schema implementation.
 
 ### Phase 2: 3D Assembly Hangar (M2)

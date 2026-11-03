@@ -38,7 +38,7 @@
 ```mermaid
 graph TD
     subgraph Client ["Client-Side (Browser)"]
-        UI["React.js UI & Mission Control HUD"]
+        UI["Vanilla JS UI & Mission Control HUD"]
         LocalStorage[("localStorage (Save Game & Blueprints)")]
         ThreeHangar["Three.js: 3D Assembly Hangar"]
         ThreeOrbit["Three.js: 3D Orbital World & Earth Globe"]
@@ -64,7 +64,7 @@ graph TD
 
 | Component | Technology | Description |
 | :--- | :--- | :--- |
-| **Frontend Framework** | **React.js** | Mission control HUD, responsive telemetry dashboards, and state management |
+| **Frontend Core** | **HTML5 & Vanilla JavaScript (ES Modules)** | Native DOM-based mission control HUD, reactive telemetry dashboards, and client state management |
 | **3D Engine** | **Three.js / WebGL** | Real-time 3D rendering for both the Assembly Hangar and Earth Orbital view |
 | **Aesthetic / Styling** | **CSS3 (Custom HUD)** | Dark aerospace theme, glassmorphic panels, neon status telemetry indicators |
 | **Backend API** | **Express.js (Node.js)** | REST endpoints for parts catalog, mission contracts, and orbital physics propagation |
@@ -115,16 +115,26 @@ space-mission-design-game/
 │   │   └── physics.js         # Propagation & orbital maneuver endpoints
 │   ├── data/                  # Static component specs & ground station lists
 │   └── physics/               # Keplerian solvers, delta-V & thermal formulas
-└── client/                    # React frontend & Three.js visualization
-    ├── public/                # HTML template and static 3D textures
-    └── src/
-        ├── App.jsx            # Main view coordinator & state provider
-        ├── components/
-        │   ├── Hangar/        # 3D satellite assembly canvas & parts tray
-        │   ├── Orbit/         # 3D Earth, orbit tracks, and maneuver nodes
-        │   ├── Contracts/     # Contract listings and reward modals
-        │   └── UI/            # Telemetry HUDs, top navigation & warp dock
-        └── utils/             # Coordinate math, constants, and localStorage hooks
+└── client/                    # Frontend (HTML5, CSS3, Vanilla JS & Three.js)
+    ├── index.html             # Main entry point & HUD view layouts
+    ├── assets/                # Earth textures, normal maps, icons
+    ├── css/                   # Aerospace HUD styles & themes
+    │   ├── main.css           # Global layout, glassmorphic panels & colors
+    │   ├── hangar.css         # Hangar turntable & parts tray overlays
+    │   └── orbit.css          # Orbit HUD, telemetry dials & burn planner
+    └── js/                    # Vanilla JavaScript modules (ES Modules)
+        ├── main.js            # App bootstrap, view switching, event hub
+        ├── state.js           # State management & localStorage sync
+        ├── api.js             # Client for Express REST endpoints
+        ├── simulation.js      # Time-warp loop & physics tick runner
+        ├── views/             # DOM View controllers
+        │   ├── hangarView.js  # Hangar UI controller & socket-snapping
+        │   ├── orbitView.js   # Orbit HUD & real-time telemetry gauges
+        │   └── contractsView.js # Contracts modal & mission rewards
+        ├── three/             # Three.js 3D rendering modules
+        │   ├── hangarScene.js # 3D assembly cleanroom & turntable controls
+        │   └── orbitScene.js  # 3D Earth, orbit tracks, atmosphere shader
+        └── utils/             # Math helpers, orbital constants, vectors
 ```
 
 ---
