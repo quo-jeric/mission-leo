@@ -16,15 +16,18 @@
   - Directional solar lighting with dynamic day/night terminator and eclipse shadow calculation.
   - Real-time Keplerian orbit trajectories, sub-satellite ground tracks, and sensor visibility cones.
 
-- **🚀 First-Principles Orbital Mechanics**
+- **🚀 First-Principles Orbital Mechanics & LEO Regimes**
   - Accurate Keplerian orbital element propagation ($a$, $e$, $i$, $\Omega$, $\omega$, $\nu$).
-  - Execute real orbital maneuvers: Hohmann transfers, inclination adjustments, and terminal atmospheric de-orbit burns.
+  - Target four distinct LEO orbital regimes: **Sun-Synchronous (SSO)**, **Polar**, **Equatorial**, and **Mid-Inclination** (e.g., ISS $51.6^\circ$).
+  - Execute real orbital maneuvers: Hohmann transfers, plane changes ($\Delta i$), and atmospheric de-orbiting burns.
   - Line-of-sight communications passes over real-world ground station networks (e.g., Svalbard, Goldstone, Madrid, Canberra).
 
 - **⏱️ Time-Warp Simulation Engine**
   - Variable time acceleration: `PAUSE (0x)`, `1x`, `10x`, `60x`, and high-speed `300x` warp with numerical stability.
 
-- **💼 Space Agency Progression & Contracts**
+- **💼 Space Agency Progression & Mission Constraints**
+  - Manage all 8 critical mission aspects: Instruments/Payload, Target Orbit, Financial Budget, Mass Budget, Electrical Power (EPS), Data Generation & Storage, Communications Link, and Mission Lifetime.
+  - Choose launch providers and spaceports (Rideshare, Dedicated Micro-launcher, Medium-lift) matching latitude and payload requirements.
   - Advance through mission tiers: from amateur CubeSat technology demonstrators to multi-satellite Earth observation and communications constellations.
   - Complete contracts to earn agency credits, build reputation, and unlock cutting-edge aerospace technologies in the Tech Tree.
 

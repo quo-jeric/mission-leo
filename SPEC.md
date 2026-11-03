@@ -79,15 +79,26 @@ sequenceDiagram
     Player->>Storage: Update credits, XP, and reputation
 ```
 
-### 3.2 Progression System & Tech Tree
+### 3.2 Mission Aspects & Core Engineering Constraints
+
+Missions in Orbiterra are governed by eight interrelated engineering constraints and mission parameters that determine mission viability and contract success:
+
+| Aspect / Constraint | Engineering Parameter | Impact & Design Boundary |
+| :--- | :--- | :--- |
+| **1. Instruments (Payload)** | Sensor type, resolution, duty cycle, field-of-view | Direct driver of mission requirements. Determines data generation rate, operational power draw, and minimum pointing accuracy. |
+| **2. Target Orbit** | Altitude ($h$), Inclination ($i$), Eccentricity ($e$), RAAN ($\Omega$) | Dictates thermal profile, eclipse duration, ground station contact windows, coverage swath, and required launch/maneuver $\Delta v$. |
+| **3. Financial Budget ($)** | Capital balance, contract advance, milestone payouts | Total satellite hardware cost + launch vehicle procurement must stay within agency funds and contract limits. |
+| **4. Mass Budget ($kg$)** | Dry mass, payload mass, propellant mass, wet mass | Limits launch vehicle selection, dictates launch costs, and reduces achievable $\Delta v$ under the Tsiolkovsky equation. |
+| **5. Power Budget ($W$, $Wh$)** | Solar generation ($P_{sun}$), battery capacity ($E_{bat}$), eclipse drain | Satellite must maintain positive energy balance over complete orbital day/night cycles to prevent mission-ending blackouts. |
+| **6. Data Budget ($MB$, $Gbps$)** | Generation rate, onboard solid-state storage (SSR), downlink quota | Satellites store instrument data in memory until a ground station pass allows downlink. Buffer overflows cause permanent data loss. |
+| **7. Communications** | Frequency band (UHF, S, X, Laser), antenna gain, elevation angle ($\epsilon \ge 10^\circ$) | Link budget and ground station visibility cone determine real-time contact duration and maximum achievable downlink volume. |
+| **8. Mission Lifetime** | Orbital drag decay, propellant budget, battery cycle life ($DoD$), component MTBF | Defines the operational operational lifespan: ranging from short-duration technology demonstrators (30–90 days) to multi-year constellation satellites (1–5 years). |
+
+### 3.3 Progression System & Tech Tree
 - **Mission Tiers**:
-  1. **Tier 1 (CubeSat Pioneer)**: 1U/3U CubeSats, simple beacon transmitters, fixed solar panels, basic Earth photography.
+  1. **Tier 1 (CubeSat Pioneer)**: 1U/3U CubeSats, simple beacon transmitters, fixed silicon solar panels, basic Earth photography.
   2. **Tier 2 (Commercial Constellations)**: SmallSats (100–300 kg), deployable solar arrays, reaction wheels, magnetorquers, IoT relays, multi-spectral imaging.
-  3. **Tier 3 (Advanced LEO Infrastructure)**: Radar (SAR), optical communications, ion electric propulsion, active deorbiting tethers, space weather monitoring.
-- **Resource Constraints**:
-  - **Financial Budget ($)**: Launch cost + component manufacturing costs must not exceed contract advance and player balance.
-  - **Mass (kg)**: Direct impact on launch vehicle pricing and delta-v burn capacity.
-  - **Volume / Form Factor**: Slots restricted by chassis size (1U, 3U, 6U, SmallSat Bus, ESPA-class).
+  3. **Tier 3 (Advanced LEO Infrastructure)**: Radar (SAR), optical laser communications, Hall-effect ion electric propulsion, active deorbiting tethers, space weather monitoring.
 
 ---
 
@@ -129,6 +140,26 @@ Every satellite consists of a **Bus (Core Chassis)** with attachment sockets for
    $$\Delta v = I_{sp} \cdot g_0 \cdot \ln\left(\frac{m_{wet}}{m_{dry}}\right)$$
 3. **Thermal Equilibrium**:
    $$Q_{in} (\text{Sun} + \text{Albedo} + \text{Internal}) - Q_{out} (\text{Radiation}) = m \cdot c_p \cdot \frac{dT}{dt}$$
+4. **Orbital Lifetime & Drag Decay**:
+   $$\frac{da}{dt} \approx - \frac{\rho \cdot v \cdot A \cdot C_d}{m_{wet}} \cdot a$$
+   *Below $300\text{ km}$, ballistic decay accelerates rapidly without periodic reboost burns.*
+
+### 4.3 Launch Vehicle Systems & Orbital Insertion
+
+Satellite designs must be paired with an appropriate launch service to reach target LEO deployment orbits:
+
+| Launch Class | Example Providers | Max Payload to LEO | Cost ($) | Orbit Flexibility | Suitable Satellite Form Factors |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Rideshare / Piggyback** | Transporter rideshares | Up to 50 kg allocation | \$15,000 / kg | Fixed orbit & epoch (usually SSO ~500 km). Fixed schedule. | 1U, 3U, 6U CubeSats |
+| **Dedicated Micro-Launcher** | Electron, Firefly Alpha class | Up to 300 kg | \$5,000,000 flat | High flexibility: custom altitude, inclination, and launch window. | 6U CubeSats, SmallSat Buses |
+| **Medium-Lift Launcher** | Falcon 9, Ariane 6 class | Up to 15,000 kg | \$25,000,000 flat | Constellation multi-deployment or heavy specialized radar/optical satellites. | Heavy LEO Buses, Multi-Satellite Dispersers |
+
+#### Launch Site Latitude & Inclination Constraints
+- **Physics Rule**: Direct launch from a spaceport at latitude $\phi_{site}$ cannot directly inject into an orbital inclination $i < |\phi_{site}|$ without an orbital plane-change maneuver.
+- **Supported Spaceports**:
+  - **Guiana Space Centre (Kourou)** ($\phi = 5.2^\circ\text{ N}$): Ideal for low-inclination and Equatorial missions with maximum Earth rotation assist ($\sim 460\text{ m/s}$).
+  - **Cape Canaveral (USA)** ($\phi = 28.5^\circ\text{ N}$): Standard for mid-inclination missions ($28.5^\circ$ to $51.6^\circ$).
+  - **Vandenberg Space Force Base (USA)** ($\phi = 34.7^\circ\text{ N}$) & **Mahia (New Zealand)** ($\phi = 39.2^\circ\text{ S}$): Clear southern trajectories for Polar and Sun-Synchronous (SSO) insertion.
 
 ---
 
@@ -166,6 +197,17 @@ Each orbit is defined by the standard 6 orbital parameters:
 - **Hohmann Transfer**: Two-impulse burn to raise or lower orbital altitude.
 - **Plane Change ($\Delta i$)**: High delta-v inclination correction burn.
 - **Atmospheric Drag & De-orbiting**: Perigee lowering below 120 km triggers terminal reentry burn-up.
+
+### 5.4 LEO Orbital Regimes & Mission Profiles
+
+The game supports four fundamental Low Earth Orbit regimes, each offering distinct geometric coverage, eclipse behavior, and delta-v requirements:
+
+| Orbit Regime | Typical Inclination ($i$) | Altitude Range ($h$) | Key Characteristics | Optimal Mission Profiles |
+| :--- | :--- | :--- | :--- | :--- |
+| **1. Sun-Synchronous Orbit (SSO)** | $96^\circ \le i \le 99^\circ$ (Retrograde) | $500\text{ km} - 800\text{ km}$ | Nodal precession equals Earth's orbital period around the Sun ($\approx 0.9856^\circ/\text{day}$). Passes over any given point on Earth at the same local solar mean time. | Optical Earth observation, multispectral imaging, agricultural monitoring, and SAR. |
+| **2. Polar Orbit** | $85^\circ \le i \le 95^\circ$ | $400\text{ km} - 1,000\text{ km}$ | Crosses near both poles on every revolution. With Earth rotating beneath, the satellite sweeps across 100% of global surface over time. | Global weather forecasting, climate science, polar ice tracking, and reconnaissance. |
+| **3. Equatorial Orbit** | $0^\circ \le i \le 15^\circ$ | $300\text{ km} - 1,200\text{ km}$ | Maximizes Earth rotation launch assist (~460 m/s at Kourou). Extremely frequent revisit rates over tropical and equatorial regions. | Tropical storm monitoring, equatorial broadband communication, and regional IoT/AIS tracking. |
+| **4. Mid-Inclination Orbit** | $28^\circ \le i \le 55^\circ$ | $350\text{ km} - 600\text{ km}$ | Covers the most densely populated global latitudes (e.g. ISS orbit at $51.6^\circ$, Cape Canaveral direct injection at $28.5^\circ$). Moderate launch energy. | Commercial communications constellations, Earth resources, scientific research, and crewed station support. |
 
 ---
 
