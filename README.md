@@ -1,6 +1,6 @@
-# 🛰️ Orbiterra
+# 🛰️ Mission: LEO
 
-**Orbiterra** is an interactive, browser-based 3D Low Earth Orbit (LEO) satellite design and space mission simulation game. Step into the role of an aerospace systems engineer and mission director: design modular satellites within real-world engineering constraints, deploy them into precise orbits around Earth, execute orbital maneuvers, and operate mission constellations to fulfill commercial, scientific, and governmental space contracts.
+**Mission: LEO** is an interactive, browser-based 3D Low Earth Orbit (LEO) satellite design and space mission simulation game. Step into the role of an aerospace systems engineer and mission director: design modular satellites within real-world engineering constraints, deploy them into precise orbits around Earth, execute orbital maneuvers, and operate mission constellations to fulfill commercial, scientific, and governmental space contracts.
 
 ---
 

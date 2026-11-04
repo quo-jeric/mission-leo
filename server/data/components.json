@@ -1,0 +1,4711 @@
+{
+    "schemaVersion": "1.0.0",
+    "meta": {
+        "source": "COMPONENTS_SPEC.md",
+        "conventions": {
+            "slotRequirement.sizeUnits": "internal: CubeSat U (fractions of 0.25 allowed). external: mounting-face units (1 = one full face, 0.25 = a quarter face).",
+            "secondarySlot": "Optional second mount a part also needs (e.g. radio unit behind an antenna, camera aperture window, thruster nozzle).",
+            "massKg": "Dry hardware mass. Propellant (fuelMassKg) is added on top for wet mass.",
+            "chassisCompatibility": "Ids: 1u, 3u, 6u, 12u, smallsat, heavy.",
+            "solarFormula": "P = powerSunW * cos(theta_sun) while in sunlight",
+            "deltaV": "dv = isp * 9.80665 * ln(m_wet / m_dry)"
+        }
+    },
+    "components": [
+        {
+            "id": "bus_1u",
+            "name": "1U CubeSat Chassis",
+            "category": "bus",
+            "tier": 1,
+            "costUSD": 20000,
+            "massKg": 0.15,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 0,
+                "mountZone": "internal_bay"
+            },
+            "chassisCompatibility": [
+                "1u"
+            ],
+            "standbyPowerW": 0,
+            "operationalPowerW": 0,
+            "heatDissipationW": 0,
+            "techRequired": "tech_bus_cubesat",
+            "description": "Entry-level 1U structure. Tiny power and mass budget; suited to technology demos and simple relays.",
+            "formFactor": "10x10x10 cm",
+            "dimensionsM": [
+                0.1,
+                0.1,
+                0.1
+            ],
+            "internalSlotsU": 1,
+            "externalFaces": 6,
+            "maxDryMassKg": 2.0,
+            "baseHullDragAreaM2": 0.01,
+            "hullCoolingCapacityW": 4,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.1
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#9AA3B2",
+                    "metalness": 0.8,
+                    "roughness": 0.45,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "bus_3u",
+            "name": "3U CubeSat Chassis",
+            "category": "bus",
+            "tier": 1,
+            "costUSD": 45000,
+            "massKg": 0.45,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 0,
+                "mountZone": "internal_bay"
+            },
+            "chassisCompatibility": [
+                "3u"
+            ],
+            "standbyPowerW": 0,
+            "operationalPowerW": 0,
+            "heatDissipationW": 0,
+            "techRequired": "tech_bus_cubesat",
+            "description": "Workhorse 3U structure with extended lateral faces for body-mounted or deployable arrays.",
+            "formFactor": "10x10x30 cm",
+            "dimensionsM": [
+                0.1,
+                0.1,
+                0.3
+            ],
+            "internalSlotsU": 3,
+            "externalFaces": 6,
+            "maxDryMassKg": 6.0,
+            "baseHullDragAreaM2": 0.03,
+            "hullCoolingCapacityW": 8,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.3
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#9AA3B2",
+                    "metalness": 0.8,
+                    "roughness": 0.45,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "bus_6u",
+            "name": "6U CubeSat Chassis",
+            "category": "bus",
+            "tier": 1,
+            "costUSD": 90000,
+            "massKg": 1.0,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 0,
+                "mountZone": "internal_bay"
+            },
+            "chassisCompatibility": [
+                "6u"
+            ],
+            "standbyPowerW": 0,
+            "operationalPowerW": 0,
+            "heatDissipationW": 0,
+            "techRequired": "tech_bus_cubesat",
+            "description": "Double-width CubeSat bus. Smallest chassis able to host a real Earth-observation camera plus ADCS and a high-rate radio.",
+            "formFactor": "10x20x30 cm",
+            "dimensionsM": [
+                0.1,
+                0.2,
+                0.3
+            ],
+            "internalSlotsU": 6,
+            "externalFaces": 6,
+            "maxDryMassKg": 14.0,
+            "baseHullDragAreaM2": 0.06,
+            "hullCoolingCapacityW": 13,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.2,
+                        0.3
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#9AA3B2",
+                    "metalness": 0.8,
+                    "roughness": 0.45,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "bus_12u",
+            "name": "12U CubeSat Chassis",
+            "category": "bus",
+            "tier": 2,
+            "costUSD": 170000,
+            "massKg": 2.0,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 0,
+                "mountZone": "internal_bay"
+            },
+            "chassisCompatibility": [
+                "12u"
+            ],
+            "standbyPowerW": 0,
+            "operationalPowerW": 0,
+            "heatDissipationW": 0,
+            "techRequired": "tech_bus_12u",
+            "description": "Large CubeSat class bus. Room for a high-resolution imager, electric propulsion and large deployable arrays.",
+            "formFactor": "20x20x30 cm",
+            "dimensionsM": [
+                0.2,
+                0.2,
+                0.3
+            ],
+            "internalSlotsU": 12,
+            "externalFaces": 6,
+            "maxDryMassKg": 24.0,
+            "baseHullDragAreaM2": 0.06,
+            "hullCoolingCapacityW": 19,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.2,
+                        0.2,
+                        0.3
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#9AA3B2",
+                    "metalness": 0.8,
+                    "roughness": 0.45,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "bus_smallsat",
+            "name": "SmallSat Bus",
+            "category": "bus",
+            "tier": 2,
+            "costUSD": 600000,
+            "massKg": 25.0,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 0,
+                "mountZone": "internal_bay"
+            },
+            "chassisCompatibility": [
+                "smallsat"
+            ],
+            "standbyPowerW": 0,
+            "operationalPowerW": 0,
+            "heatDissipationW": 0,
+            "techRequired": "tech_bus_smallsat",
+            "description": "Proper microsatellite platform with eight equipment bays, articulated arrays and mid-power payloads such as SAR.",
+            "formFactor": "60x60x80 cm",
+            "dimensionsM": [
+                0.6,
+                0.8,
+                0.6
+            ],
+            "internalSlotsU": 16,
+            "externalFaces": 8,
+            "maxDryMassKg": 180.0,
+            "baseHullDragAreaM2": 0.48,
+            "hullCoolingCapacityW": 160,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.6,
+                        0.8,
+                        0.6
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#9AA3B2",
+                    "metalness": 0.8,
+                    "roughness": 0.45,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "bus_heavy",
+            "name": "Heavy LEO Bus",
+            "category": "bus",
+            "tier": 3,
+            "costUSD": 3500000,
+            "massKg": 110.0,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 0,
+                "mountZone": "internal_bay"
+            },
+            "chassisCompatibility": [
+                "heavy"
+            ],
+            "standbyPowerW": 0,
+            "operationalPowerW": 0,
+            "heatDissipationW": 0,
+            "techRequired": "tech_bus_heavy",
+            "description": "Flagship LEO platform with twelve modular bays. Carries kilowatt-class power, large SAR and heavy propulsion.",
+            "formFactor": "120x120x150 cm",
+            "dimensionsM": [
+                1.2,
+                1.5,
+                1.2
+            ],
+            "internalSlotsU": 48,
+            "externalFaces": 12,
+            "maxDryMassKg": 800.0,
+            "baseHullDragAreaM2": 1.8,
+            "hullCoolingCapacityW": 600,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        1.2,
+                        1.5,
+                        1.2
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#9AA3B2",
+                    "metalness": 0.8,
+                    "roughness": 0.45,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "eps_solar_si_body_1u",
+            "name": "Body-Mounted Si Cells (1U face)",
+            "category": "eps_solar",
+            "tier": 1,
+            "costUSD": 3000,
+            "massKg": 0.08,
+            "slotRequirement": {
+                "type": "external",
+                "sizeUnits": 1,
+                "mountZone": "face_side"
+            },
+            "chassisCompatibility": [
+                "1u",
+                "3u",
+                "6u",
+                "12u"
+            ],
+            "standbyPowerW": 0,
+            "operationalPowerW": 0,
+            "heatDissipationW": 0,
+            "techRequired": "tech_solar_t1",
+            "description": "Silicon cells bonded to one 10x10 cm face. Zero moving parts and zero added drag.",
+            "powerSunW": 3,
+            "sunTracking": false,
+            "deployedDragAreaM2": 0,
+            "areaM2": 0.011,
+            "cellType": "silicon",
+            "mountingStyle": "body",
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "plane",
+                    "dimensions": [
+                        0.128,
+                        0.086,
+                        0.004
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#1A2238",
+                    "metalness": 0.6,
+                    "roughness": 0.25,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "eps_solar_si_body_3u",
+            "name": "Body-Mounted Si Cells (3U face)",
+            "category": "eps_solar",
+            "tier": 1,
+            "costUSD": 7000,
+            "massKg": 0.2,
+            "slotRequirement": {
+                "type": "external",
+                "sizeUnits": 1,
+                "mountZone": "face_side"
+            },
+            "chassisCompatibility": [
+                "3u",
+                "6u",
+                "12u"
+            ],
+            "standbyPowerW": 0,
+            "operationalPowerW": 0,
+            "heatDissipationW": 0,
+            "techRequired": "tech_solar_t1",
+            "description": "Silicon cells covering one 10x30 cm lateral face.",
+            "powerSunW": 8,
+            "sunTracking": false,
+            "deployedDragAreaM2": 0,
+            "areaM2": 0.03,
+            "cellType": "silicon",
+            "mountingStyle": "body",
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "plane",
+                    "dimensions": [
+                        0.212,
+                        0.142,
+                        0.004
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#1A2238",
+                    "metalness": 0.6,
+                    "roughness": 0.25,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "eps_solar_gaas_body_3u",
+            "name": "Body-Mounted GaAs Cells (3U face)",
+            "category": "eps_solar",
+            "tier": 2,
+            "costUSD": 16000,
+            "massKg": 0.22,
+            "slotRequirement": {
+                "type": "external",
+                "sizeUnits": 1,
+                "mountZone": "face_side"
+            },
+            "chassisCompatibility": [
+                "3u",
+                "6u",
+                "12u"
+            ],
+            "standbyPowerW": 0,
+            "operationalPowerW": 0,
+            "heatDissipationW": 0,
+            "techRequired": "tech_solar_t2",
+            "description": "Triple-junction GaAs on a lateral face. Highest power available without deploying anything.",
+            "powerSunW": 12,
+            "sunTracking": false,
+            "deployedDragAreaM2": 0,
+            "areaM2": 0.03,
+            "cellType": "gaas",
+            "mountingStyle": "body",
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "plane",
+                    "dimensions": [
+                        0.212,
+                        0.142,
+                        0.004
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#1A2238",
+                    "metalness": 0.6,
+                    "roughness": 0.25,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "eps_solar_gaas_body_6u",
+            "name": "Body-Mounted GaAs Cells (6U face)",
+            "category": "eps_solar",
+            "tier": 2,
+            "costUSD": 30000,
+            "massKg": 0.4,
+            "slotRequirement": {
+                "type": "external",
+                "sizeUnits": 1,
+                "mountZone": "face_side"
+            },
+            "chassisCompatibility": [
+                "6u",
+                "12u"
+            ],
+            "standbyPowerW": 0,
+            "operationalPowerW": 0,
+            "heatDissipationW": 0,
+            "techRequired": "tech_solar_t2",
+            "description": "Triple-junction GaAs covering a 20x30 cm face.",
+            "powerSunW": 24,
+            "sunTracking": false,
+            "deployedDragAreaM2": 0,
+            "areaM2": 0.06,
+            "cellType": "gaas",
+            "mountingStyle": "body",
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "plane",
+                    "dimensions": [
+                        0.3,
+                        0.2,
+                        0.004
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#1A2238",
+                    "metalness": 0.6,
+                    "roughness": 0.25,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "eps_solar_si_body_smallsat",
+            "name": "Body-Mounted Si Panel (SmallSat)",
+            "category": "eps_solar",
+            "tier": 2,
+            "costUSD": 65000,
+            "massKg": 2.2,
+            "slotRequirement": {
+                "type": "external",
+                "sizeUnits": 1,
+                "mountZone": "face_side"
+            },
+            "chassisCompatibility": [
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 0,
+            "operationalPowerW": 0,
+            "heatDissipationW": 0,
+            "techRequired": "tech_solar_t2",
+            "description": "Large silicon panel on a SmallSat face. Reliable baseline power with no drag penalty.",
+            "powerSunW": 80,
+            "sunTracking": false,
+            "deployedDragAreaM2": 0,
+            "areaM2": 0.4,
+            "cellType": "silicon",
+            "mountingStyle": "body",
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "plane",
+                    "dimensions": [
+                        0.775,
+                        0.516,
+                        0.004
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#1A2238",
+                    "metalness": 0.6,
+                    "roughness": 0.25,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "eps_solar_si_deploy_20w",
+            "name": "Deployable Si Wing 20W",
+            "category": "eps_solar",
+            "tier": 1,
+            "costUSD": 14000,
+            "massKg": 0.5,
+            "slotRequirement": {
+                "type": "external",
+                "sizeUnits": 1,
+                "mountZone": "face_side"
+            },
+            "chassisCompatibility": [
+                "3u",
+                "6u",
+                "12u"
+            ],
+            "standbyPowerW": 0,
+            "operationalPowerW": 0,
+            "heatDissipationW": 0,
+            "techRequired": "tech_solar_t1",
+            "description": "Two-panel deployable silicon wing. Cheap mid-power option; adds drag once deployed.",
+            "powerSunW": 20,
+            "sunTracking": false,
+            "deployedDragAreaM2": 0.075,
+            "areaM2": 0.075,
+            "cellType": "silicon",
+            "mountingStyle": "deployable",
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "plane",
+                    "dimensions": [
+                        0.335,
+                        0.224,
+                        0.004
+                    ],
+                    "offset": [
+                        0.218,
+                        0,
+                        0
+                    ],
+                    "color": "#1A2238",
+                    "metalness": 0.6,
+                    "roughness": 0.25,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "eps_solar_si_deploy_30w",
+            "name": "Deployable Si Wing 30W",
+            "category": "eps_solar",
+            "tier": 1,
+            "costUSD": 20000,
+            "massKg": 0.75,
+            "slotRequirement": {
+                "type": "external",
+                "sizeUnits": 1,
+                "mountZone": "face_side"
+            },
+            "chassisCompatibility": [
+                "6u",
+                "12u",
+                "smallsat"
+            ],
+            "standbyPowerW": 0,
+            "operationalPowerW": 0,
+            "heatDissipationW": 0,
+            "techRequired": "tech_solar_t1",
+            "description": "Three-panel deployable silicon wing, a typical port or starboard array.",
+            "powerSunW": 30,
+            "sunTracking": false,
+            "deployedDragAreaM2": 0.11,
+            "areaM2": 0.11,
+            "cellType": "silicon",
+            "mountingStyle": "deployable",
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "plane",
+                    "dimensions": [
+                        0.406,
+                        0.271,
+                        0.004
+                    ],
+                    "offset": [
+                        0.253,
+                        0,
+                        0
+                    ],
+                    "color": "#1A2238",
+                    "metalness": 0.6,
+                    "roughness": 0.25,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "eps_solar_gaas_deploy_30w",
+            "name": "Deployable GaAs Wing 30W",
+            "category": "eps_solar",
+            "tier": 2,
+            "costUSD": 38000,
+            "massKg": 0.45,
+            "slotRequirement": {
+                "type": "external",
+                "sizeUnits": 1,
+                "mountZone": "face_side"
+            },
+            "chassisCompatibility": [
+                "3u",
+                "6u",
+                "12u"
+            ],
+            "standbyPowerW": 0,
+            "operationalPowerW": 0,
+            "heatDissipationW": 0,
+            "techRequired": "tech_solar_t2",
+            "description": "Light deployable GaAs wing: same power as silicon in about two thirds of the area.",
+            "powerSunW": 30,
+            "sunTracking": false,
+            "deployedDragAreaM2": 0.075,
+            "areaM2": 0.075,
+            "cellType": "gaas",
+            "mountingStyle": "deployable",
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "plane",
+                    "dimensions": [
+                        0.335,
+                        0.224,
+                        0.004
+                    ],
+                    "offset": [
+                        0.218,
+                        0,
+                        0
+                    ],
+                    "color": "#1A2238",
+                    "metalness": 0.6,
+                    "roughness": 0.25,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "eps_solar_gaas_deploy_45w",
+            "name": "Deployable GaAs Wing 45W",
+            "category": "eps_solar",
+            "tier": 2,
+            "costUSD": 55000,
+            "massKg": 0.65,
+            "slotRequirement": {
+                "type": "external",
+                "sizeUnits": 1,
+                "mountZone": "face_side"
+            },
+            "chassisCompatibility": [
+                "6u",
+                "12u",
+                "smallsat"
+            ],
+            "standbyPowerW": 0,
+            "operationalPowerW": 0,
+            "heatDissipationW": 0,
+            "techRequired": "tech_solar_t2",
+            "description": "Three-panel GaAs wing. Strong power-to-mass ratio for imaging CubeSats.",
+            "powerSunW": 45,
+            "sunTracking": false,
+            "deployedDragAreaM2": 0.11,
+            "areaM2": 0.11,
+            "cellType": "gaas",
+            "mountingStyle": "deployable",
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "plane",
+                    "dimensions": [
+                        0.406,
+                        0.271,
+                        0.004
+                    ],
+                    "offset": [
+                        0.253,
+                        0,
+                        0
+                    ],
+                    "color": "#1A2238",
+                    "metalness": 0.6,
+                    "roughness": 0.25,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "eps_solar_gaas_deploy_80w",
+            "name": "Deployable GaAs Wing 80W",
+            "category": "eps_solar",
+            "tier": 2,
+            "costUSD": 95000,
+            "massKg": 1.2,
+            "slotRequirement": {
+                "type": "external",
+                "sizeUnits": 1,
+                "mountZone": "face_side"
+            },
+            "chassisCompatibility": [
+                "12u",
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 0,
+            "operationalPowerW": 0,
+            "heatDissipationW": 0,
+            "techRequired": "tech_solar_t2",
+            "description": "Large fixed deployable GaAs wing for 12U and SmallSat classes.",
+            "powerSunW": 80,
+            "sunTracking": false,
+            "deployedDragAreaM2": 0.196,
+            "areaM2": 0.196,
+            "cellType": "gaas",
+            "mountingStyle": "deployable",
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "plane",
+                    "dimensions": [
+                        0.542,
+                        0.362,
+                        0.004
+                    ],
+                    "offset": [
+                        0.321,
+                        0,
+                        0
+                    ],
+                    "color": "#1A2238",
+                    "metalness": 0.6,
+                    "roughness": 0.25,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "eps_solar_gaas_gimbal_60w",
+            "name": "Gimbaled GaAs Wing 60W",
+            "category": "eps_solar",
+            "tier": 2,
+            "costUSD": 140000,
+            "massKg": 2.2,
+            "slotRequirement": {
+                "type": "external",
+                "sizeUnits": 1,
+                "mountZone": "face_side"
+            },
+            "chassisCompatibility": [
+                "12u",
+                "smallsat"
+            ],
+            "standbyPowerW": 0.2,
+            "operationalPowerW": 1.5,
+            "heatDissipationW": 0,
+            "techRequired": "tech_solar_gimbal",
+            "description": "Single-axis Sun-tracking wing sized for 12U buses. Tracking raises orbit-average power.",
+            "powerSunW": 60,
+            "sunTracking": true,
+            "deployedDragAreaM2": 0.147,
+            "areaM2": 0.147,
+            "cellType": "gaas",
+            "mountingStyle": "articulated",
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "plane",
+                    "dimensions": [
+                        0.47,
+                        0.313,
+                        0.004
+                    ],
+                    "offset": [
+                        0.285,
+                        0,
+                        0
+                    ],
+                    "color": "#1A2238",
+                    "metalness": 0.6,
+                    "roughness": 0.25,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "eps_solar_gaas_artic_120w",
+            "name": "Articulated Dual-Wing GaAs 120W",
+            "category": "eps_solar",
+            "tier": 2,
+            "costUSD": 280000,
+            "massKg": 3.5,
+            "slotRequirement": {
+                "type": "external",
+                "sizeUnits": 2,
+                "mountZone": "face_side"
+            },
+            "chassisCompatibility": [
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 0.5,
+            "operationalPowerW": 3,
+            "heatDissipationW": 0,
+            "techRequired": "tech_solar_articulated",
+            "description": "Dual-wing Sun-tracking GaAs array. Uses two opposing faces.",
+            "powerSunW": 120,
+            "sunTracking": true,
+            "deployedDragAreaM2": 0.294,
+            "areaM2": 0.294,
+            "cellType": "gaas",
+            "mountingStyle": "articulated",
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "plane",
+                    "dimensions": [
+                        0.664,
+                        0.443,
+                        0.004
+                    ],
+                    "offset": [
+                        0.382,
+                        0,
+                        0
+                    ],
+                    "color": "#1A2238",
+                    "metalness": 0.6,
+                    "roughness": 0.25,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "eps_solar_gaas_artic_300w",
+            "name": "Articulated Dual-Wing GaAs 300W",
+            "category": "eps_solar",
+            "tier": 3,
+            "costUSD": 650000,
+            "massKg": 8.0,
+            "slotRequirement": {
+                "type": "external",
+                "sizeUnits": 2,
+                "mountZone": "face_side"
+            },
+            "chassisCompatibility": [
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 0.8,
+            "operationalPowerW": 5,
+            "heatDissipationW": 0,
+            "techRequired": "tech_solar_articulated",
+            "description": "High-power tracking array for SAR or electric propulsion on SmallSat and Heavy buses.",
+            "powerSunW": 300,
+            "sunTracking": true,
+            "deployedDragAreaM2": 0.735,
+            "areaM2": 0.735,
+            "cellType": "gaas",
+            "mountingStyle": "articulated",
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "plane",
+                    "dimensions": [
+                        1.05,
+                        0.7,
+                        0.004
+                    ],
+                    "offset": [
+                        0.575,
+                        0,
+                        0
+                    ],
+                    "color": "#1A2238",
+                    "metalness": 0.6,
+                    "roughness": 0.25,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "eps_solar_gaas_artic_600w",
+            "name": "Articulated Dual-Wing GaAs 600W",
+            "category": "eps_solar",
+            "tier": 3,
+            "costUSD": 1200000,
+            "massKg": 15.0,
+            "slotRequirement": {
+                "type": "external",
+                "sizeUnits": 2,
+                "mountZone": "face_side"
+            },
+            "chassisCompatibility": [
+                "heavy"
+            ],
+            "standbyPowerW": 1.2,
+            "operationalPowerW": 8,
+            "heatDissipationW": 0,
+            "techRequired": "tech_solar_articulated_hp",
+            "description": "Large Heavy-bus array for sustained high-duty payloads.",
+            "powerSunW": 600,
+            "sunTracking": true,
+            "deployedDragAreaM2": 1.47,
+            "areaM2": 1.47,
+            "cellType": "gaas",
+            "mountingStyle": "articulated",
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "plane",
+                    "dimensions": [
+                        1.485,
+                        0.99,
+                        0.004
+                    ],
+                    "offset": [
+                        0.793,
+                        0,
+                        0
+                    ],
+                    "color": "#1A2238",
+                    "metalness": 0.6,
+                    "roughness": 0.25,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "eps_solar_gaas_artic_1200w",
+            "name": "Articulated Dual-Wing GaAs 1200W",
+            "category": "eps_solar",
+            "tier": 3,
+            "costUSD": 2200000,
+            "massKg": 28.0,
+            "slotRequirement": {
+                "type": "external",
+                "sizeUnits": 2,
+                "mountZone": "face_side"
+            },
+            "chassisCompatibility": [
+                "heavy"
+            ],
+            "standbyPowerW": 2,
+            "operationalPowerW": 12,
+            "heatDissipationW": 0,
+            "techRequired": "tech_solar_articulated_hp",
+            "description": "Kilowatt-class array. Large drag area and a significant mass penalty.",
+            "powerSunW": 1200,
+            "sunTracking": true,
+            "deployedDragAreaM2": 2.94,
+            "areaM2": 2.94,
+            "cellType": "gaas",
+            "mountingStyle": "articulated",
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "plane",
+                    "dimensions": [
+                        2.1,
+                        1.4,
+                        0.004
+                    ],
+                    "offset": [
+                        1.1,
+                        0,
+                        0
+                    ],
+                    "color": "#1A2238",
+                    "metalness": 0.6,
+                    "roughness": 0.25,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "eps_battery_li_20wh",
+            "name": "Li-Ion CubeSat Pack 20Wh",
+            "category": "eps_battery",
+            "tier": 1,
+            "costUSD": 3500,
+            "massKg": 0.22,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 0.5,
+                "mountZone": "internal_bay"
+            },
+            "chassisCompatibility": [
+                "1u",
+                "3u",
+                "6u",
+                "12u",
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 0.08,
+            "operationalPowerW": 0.24,
+            "heatDissipationW": 0.24,
+            "techRequired": "tech_battery_t1",
+            "description": "Smallest pack. Barely survives an eclipse for a low-power CubeSat.",
+            "capacityWh": 20,
+            "maxDoD": 0.8,
+            "maxDischargeRateW": 40,
+            "chemistry": "li_ion",
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.05
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#2E86AB",
+                    "metalness": 0.5,
+                    "roughness": 0.5,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "eps_battery_li_50wh",
+            "name": "Li-Ion CubeSat Pack 50Wh",
+            "category": "eps_battery",
+            "tier": 1,
+            "costUSD": 8000,
+            "massKg": 0.5,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 1,
+                "mountZone": "internal_bay"
+            },
+            "chassisCompatibility": [
+                "1u",
+                "3u",
+                "6u",
+                "12u",
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 0.1,
+            "operationalPowerW": 0.3,
+            "heatDissipationW": 0.3,
+            "techRequired": "tech_battery_t1",
+            "description": "Standard 1U pack and the Level 1 default.",
+            "capacityWh": 50,
+            "maxDoD": 0.8,
+            "maxDischargeRateW": 80,
+            "chemistry": "li_ion",
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.1
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#2E86AB",
+                    "metalness": 0.5,
+                    "roughness": 0.5,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "eps_battery_li_80wh",
+            "name": "Li-Ion CubeSat Pack 80Wh",
+            "category": "eps_battery",
+            "tier": 2,
+            "costUSD": 14000,
+            "massKg": 0.85,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 1,
+                "mountZone": "internal_bay"
+            },
+            "chassisCompatibility": [
+                "1u",
+                "3u",
+                "6u",
+                "12u",
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 0.12,
+            "operationalPowerW": 0.36,
+            "heatDissipationW": 0.36,
+            "techRequired": "tech_battery_t2",
+            "description": "High-density 1U pack for burst-heavy payloads.",
+            "capacityWh": 80,
+            "maxDoD": 0.8,
+            "maxDischargeRateW": 120,
+            "chemistry": "li_ion",
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.1
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#2E86AB",
+                    "metalness": 0.5,
+                    "roughness": 0.5,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "eps_battery_li_160wh",
+            "name": "Li-Ion Pack 160Wh",
+            "category": "eps_battery",
+            "tier": 1,
+            "costUSD": 26000,
+            "massKg": 1.6,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 2,
+                "mountZone": "internal_bay"
+            },
+            "chassisCompatibility": [
+                "6u",
+                "12u",
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 0.17,
+            "operationalPowerW": 0.52,
+            "heatDissipationW": 0.52,
+            "techRequired": "tech_battery_t1",
+            "description": "Double-volume pack. Good fit for imaging plus X-band burst downlinks.",
+            "capacityWh": 160,
+            "maxDoD": 0.8,
+            "maxDischargeRateW": 200,
+            "chemistry": "li_ion",
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.2
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#2E86AB",
+                    "metalness": 0.5,
+                    "roughness": 0.5,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "eps_battery_li_320wh",
+            "name": "Li-Ion Pack 320Wh",
+            "category": "eps_battery",
+            "tier": 2,
+            "costUSD": 48000,
+            "massKg": 3.2,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 4,
+                "mountZone": "internal_bay"
+            },
+            "chassisCompatibility": [
+                "12u",
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 0.28,
+            "operationalPowerW": 0.84,
+            "heatDissipationW": 0.84,
+            "techRequired": "tech_battery_t2",
+            "description": "Large Li-ion pack for SmallSat operations through long eclipses.",
+            "capacityWh": 320,
+            "maxDoD": 0.8,
+            "maxDischargeRateW": 400,
+            "chemistry": "li_ion",
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.2,
+                        0.2,
+                        0.1
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#2E86AB",
+                    "metalness": 0.5,
+                    "roughness": 0.5,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "eps_battery_ss_250wh",
+            "name": "Solid-State Pack 250Wh",
+            "category": "eps_battery",
+            "tier": 2,
+            "costUSD": 120000,
+            "massKg": 1.9,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 2,
+                "mountZone": "internal_bay"
+            },
+            "chassisCompatibility": [
+                "12u",
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 0.23,
+            "operationalPowerW": 0.7,
+            "heatDissipationW": 0.7,
+            "techRequired": "tech_battery_solid_state",
+            "description": "Solid-state cells: deeper usable discharge and better thermal tolerance.",
+            "capacityWh": 250,
+            "maxDoD": 0.9,
+            "maxDischargeRateW": 400,
+            "chemistry": "solid_state",
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.2
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#2E86AB",
+                    "metalness": 0.5,
+                    "roughness": 0.5,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "eps_battery_ss_500wh",
+            "name": "Solid-State Pack 500Wh",
+            "category": "eps_battery",
+            "tier": 2,
+            "costUSD": 220000,
+            "massKg": 3.7,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 4,
+                "mountZone": "internal_bay"
+            },
+            "chassisCompatibility": [
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 0.4,
+            "operationalPowerW": 1.2,
+            "heatDissipationW": 1.2,
+            "techRequired": "tech_battery_solid_state",
+            "description": "Mid-size aerospace pack for sustained radar or electric propulsion burns.",
+            "capacityWh": 500,
+            "maxDoD": 0.9,
+            "maxDischargeRateW": 700,
+            "chemistry": "solid_state",
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.2,
+                        0.2,
+                        0.1
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#2E86AB",
+                    "metalness": 0.5,
+                    "roughness": 0.5,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "eps_battery_ss_1000wh",
+            "name": "Solid-State Pack 1000Wh",
+            "category": "eps_battery",
+            "tier": 3,
+            "costUSD": 400000,
+            "massKg": 7.2,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 8,
+                "mountZone": "internal_bay"
+            },
+            "chassisCompatibility": [
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 0.73,
+            "operationalPowerW": 2.2,
+            "heatDissipationW": 2.2,
+            "techRequired": "tech_battery_solid_state_hp",
+            "description": "High-capacity pack for high-duty payloads.",
+            "capacityWh": 1000,
+            "maxDoD": 0.9,
+            "maxDischargeRateW": 1500,
+            "chemistry": "solid_state",
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.2,
+                        0.2,
+                        0.2
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#2E86AB",
+                    "metalness": 0.5,
+                    "roughness": 0.5,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "eps_battery_ss_2000wh",
+            "name": "Solid-State Pack 2000Wh",
+            "category": "eps_battery",
+            "tier": 3,
+            "costUSD": 720000,
+            "massKg": 14.0,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 16,
+                "mountZone": "internal_bay"
+            },
+            "chassisCompatibility": [
+                "heavy"
+            ],
+            "standbyPowerW": 1.4,
+            "operationalPowerW": 4.2,
+            "heatDissipationW": 4.2,
+            "techRequired": "tech_battery_solid_state_hp",
+            "description": "Heavy-bus pack that sustains SAR and Hall thrusters through full eclipses.",
+            "capacityWh": 2000,
+            "maxDoD": 0.9,
+            "maxDischargeRateW": 3000,
+            "chemistry": "solid_state",
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.2,
+                        0.2,
+                        0.4
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#2E86AB",
+                    "metalness": 0.5,
+                    "roughness": 0.5,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "payload_rgb_micro_1u",
+            "name": "RGB Micro-Imager (1U)",
+            "category": "payload",
+            "tier": 1,
+            "costUSD": 40000,
+            "massKg": 0.5,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 1,
+                "mountZone": "internal_bay"
+            },
+            "secondarySlot": {
+                "type": "external",
+                "sizeUnits": 0.25,
+                "mountZone": "face_bottom"
+            },
+            "chassisCompatibility": [
+                "1u",
+                "3u",
+                "6u",
+                "12u",
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 0.3,
+            "operationalPowerW": 4,
+            "heatDissipationW": 3.4,
+            "techRequired": "tech_payload_optical_t1",
+            "description": "Small Earth camera with coarse ground resolution. Loose pointing needs and a low data rate.",
+            "payloadType": "optical",
+            "dataGenerationMBPerOrbit": 150,
+            "dutyCycleLimit": 0.4,
+            "pointingAccuracyReqDeg": 2.0,
+            "preferredRegime": "mid_inclination",
+            "pixelPitchUm": 5.5,
+            "detectorPixelsAcross": 3000,
+            "spectralBands": [
+                "red",
+                "green",
+                "blue"
+            ],
+            "focalLengthOptions": [
+                {
+                    "focalLengthM": 0.05,
+                    "massDeltaKg": 0,
+                    "powerDeltaW": 0
+                },
+                {
+                    "focalLengthM": 0.1,
+                    "massDeltaKg": 0.1,
+                    "powerDeltaW": 0.5
+                }
+            ],
+            "defaultFocalLengthM": 0.1,
+            "nominalAltitudeKm": 500,
+            "gsdAtNominalM": 27.5,
+            "swathKmAtNominal": 82.5,
+            "maxOffNadirDeg": 45,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.1
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#C44536",
+                    "metalness": 0.4,
+                    "roughness": 0.4,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "payload_urban_imager_3u",
+            "name": "Urban Optical Imager (3U)",
+            "category": "payload",
+            "tier": 1,
+            "costUSD": 220000,
+            "massKg": 3.2,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 3,
+                "mountZone": "internal_bay"
+            },
+            "secondarySlot": {
+                "type": "external",
+                "sizeUnits": 0.25,
+                "mountZone": "face_bottom"
+            },
+            "chassisCompatibility": [
+                "6u",
+                "12u",
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 1.5,
+            "operationalPowerW": 14,
+            "heatDissipationW": 11.9,
+            "techRequired": "tech_payload_optical_t1",
+            "description": "Level 1 stock camera with three focal-length settings. Longer focal length sharpens GSD but costs mass and power. At 500 km, 5 um pixels and f=1.0 m give 2.5 m GSD and a 15 km swath.",
+            "payloadType": "optical",
+            "dataGenerationMBPerOrbit": 600,
+            "dutyCycleLimit": 0.2,
+            "pointingAccuracyReqDeg": 0.5,
+            "preferredRegime": "mid_inclination",
+            "pixelPitchUm": 5.0,
+            "detectorPixelsAcross": 6000,
+            "spectralBands": [
+                "red",
+                "green",
+                "blue"
+            ],
+            "focalLengthOptions": [
+                {
+                    "focalLengthM": 0.5,
+                    "massDeltaKg": 0,
+                    "powerDeltaW": 0
+                },
+                {
+                    "focalLengthM": 0.75,
+                    "massDeltaKg": 0.9,
+                    "powerDeltaW": 1
+                },
+                {
+                    "focalLengthM": 1.0,
+                    "massDeltaKg": 1.8,
+                    "powerDeltaW": 2
+                }
+            ],
+            "defaultFocalLengthM": 1.0,
+            "nominalAltitudeKm": 500,
+            "gsdAtNominalM": 2.5,
+            "swathKmAtNominal": 15.0,
+            "maxOffNadirDeg": 45,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.3
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#C44536",
+                    "metalness": 0.4,
+                    "roughness": 0.4,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "payload_wide_swath_rgb_2u",
+            "name": "Wide-Swath RGB Imager (2U)",
+            "category": "payload",
+            "tier": 1,
+            "costUSD": 95000,
+            "massKg": 2.2,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 2,
+                "mountZone": "internal_bay"
+            },
+            "secondarySlot": {
+                "type": "external",
+                "sizeUnits": 0.25,
+                "mountZone": "face_bottom"
+            },
+            "chassisCompatibility": [
+                "3u",
+                "6u",
+                "12u",
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 1.0,
+            "operationalPowerW": 9,
+            "heatDissipationW": 7.65,
+            "techRequired": "tech_payload_optical_t1",
+            "description": "Line-scan camera trading resolution for a very wide swath and short revisit.",
+            "payloadType": "optical",
+            "dataGenerationMBPerOrbit": 500,
+            "dutyCycleLimit": 0.4,
+            "pointingAccuracyReqDeg": 1.0,
+            "preferredRegime": "sso",
+            "pixelPitchUm": 6.5,
+            "detectorPixelsAcross": 12000,
+            "spectralBands": [
+                "red",
+                "green",
+                "blue"
+            ],
+            "focalLengthOptions": [
+                {
+                    "focalLengthM": 0.1,
+                    "massDeltaKg": 0,
+                    "powerDeltaW": 0
+                },
+                {
+                    "focalLengthM": 0.15,
+                    "massDeltaKg": 0.2,
+                    "powerDeltaW": 0.5
+                },
+                {
+                    "focalLengthM": 0.2,
+                    "massDeltaKg": 0.4,
+                    "powerDeltaW": 1
+                }
+            ],
+            "defaultFocalLengthM": 0.2,
+            "nominalAltitudeKm": 500,
+            "gsdAtNominalM": 16.25,
+            "swathKmAtNominal": 195.0,
+            "maxOffNadirDeg": 45,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.2
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#C44536",
+                    "metalness": 0.4,
+                    "roughness": 0.4,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "payload_hires_rgb_4u",
+            "name": "High-Resolution RGB Imager (4U)",
+            "category": "payload",
+            "tier": 2,
+            "costUSD": 520000,
+            "massKg": 6.5,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 4,
+                "mountZone": "internal_bay"
+            },
+            "secondarySlot": {
+                "type": "external",
+                "sizeUnits": 0.25,
+                "mountZone": "face_bottom"
+            },
+            "chassisCompatibility": [
+                "12u",
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 2.0,
+            "operationalPowerW": 22,
+            "heatDissipationW": 18.7,
+            "techRequired": "tech_payload_optical_t2",
+            "description": "Long focal-length telescope for sub-3 m imagery over a narrow swath. Needs a precise ADCS.",
+            "payloadType": "optical",
+            "dataGenerationMBPerOrbit": 900,
+            "dutyCycleLimit": 0.2,
+            "pointingAccuracyReqDeg": 0.2,
+            "preferredRegime": "sso",
+            "pixelPitchUm": 4.5,
+            "detectorPixelsAcross": 8000,
+            "spectralBands": [
+                "red",
+                "green",
+                "blue"
+            ],
+            "focalLengthOptions": [
+                {
+                    "focalLengthM": 1.0,
+                    "massDeltaKg": 0,
+                    "powerDeltaW": 0
+                },
+                {
+                    "focalLengthM": 1.25,
+                    "massDeltaKg": 1.0,
+                    "powerDeltaW": 1.5
+                },
+                {
+                    "focalLengthM": 1.5,
+                    "massDeltaKg": 2.0,
+                    "powerDeltaW": 3
+                }
+            ],
+            "defaultFocalLengthM": 1.5,
+            "nominalAltitudeKm": 500,
+            "gsdAtNominalM": 1.5,
+            "swathKmAtNominal": 12.0,
+            "maxOffNadirDeg": 45,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.2,
+                        0.2,
+                        0.1
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#C44536",
+                    "metalness": 0.4,
+                    "roughness": 0.4,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "payload_ndvi_dual_2u",
+            "name": "Dual-Band Crop Imager (2U)",
+            "category": "payload",
+            "tier": 2,
+            "costUSD": 190000,
+            "massKg": 2.4,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 2,
+                "mountZone": "internal_bay"
+            },
+            "secondarySlot": {
+                "type": "external",
+                "sizeUnits": 0.25,
+                "mountZone": "face_bottom"
+            },
+            "chassisCompatibility": [
+                "6u",
+                "12u",
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 1.0,
+            "operationalPowerW": 9,
+            "heatDissipationW": 7.65,
+            "techRequired": "tech_payload_multispectral_t1",
+            "description": "Cheap red + near-infrared imager built for NDVI vegetation indices.",
+            "payloadType": "optical",
+            "dataGenerationMBPerOrbit": 500,
+            "dutyCycleLimit": 0.3,
+            "pointingAccuracyReqDeg": 0.5,
+            "preferredRegime": "sso",
+            "pixelPitchUm": 6.5,
+            "detectorPixelsAcross": 2500,
+            "spectralBands": [
+                "red",
+                "nir"
+            ],
+            "focalLengthOptions": [
+                {
+                    "focalLengthM": 0.2,
+                    "massDeltaKg": 0,
+                    "powerDeltaW": 0
+                },
+                {
+                    "focalLengthM": 0.3,
+                    "massDeltaKg": 0.5,
+                    "powerDeltaW": 1
+                }
+            ],
+            "defaultFocalLengthM": 0.3,
+            "nominalAltitudeKm": 500,
+            "gsdAtNominalM": 10.83,
+            "swathKmAtNominal": 27.1,
+            "maxOffNadirDeg": 45,
+            "supportsNDVI": true,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.2
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#C44536",
+                    "metalness": 0.4,
+                    "roughness": 0.4,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "payload_multispectral_3u",
+            "name": "Multispectral Imager (3U)",
+            "category": "payload",
+            "tier": 2,
+            "costUSD": 420000,
+            "massKg": 4.8,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 3,
+                "mountZone": "internal_bay"
+            },
+            "secondarySlot": {
+                "type": "external",
+                "sizeUnits": 0.25,
+                "mountZone": "face_bottom"
+            },
+            "chassisCompatibility": [
+                "6u",
+                "12u",
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 1.5,
+            "operationalPowerW": 15,
+            "heatDissipationW": 12.75,
+            "techRequired": "tech_payload_multispectral_t2",
+            "description": "Four-band imager (blue, green, red, NIR). Needs tight pointing and produces large data volumes.",
+            "payloadType": "optical",
+            "dataGenerationMBPerOrbit": 1200,
+            "dutyCycleLimit": 0.3,
+            "pointingAccuracyReqDeg": 0.2,
+            "preferredRegime": "sso",
+            "pixelPitchUm": 5.5,
+            "detectorPixelsAcross": 4000,
+            "spectralBands": [
+                "blue",
+                "green",
+                "red",
+                "nir"
+            ],
+            "focalLengthOptions": [
+                {
+                    "focalLengthM": 0.3,
+                    "massDeltaKg": 0,
+                    "powerDeltaW": 0
+                },
+                {
+                    "focalLengthM": 0.4,
+                    "massDeltaKg": 0.7,
+                    "powerDeltaW": 1
+                },
+                {
+                    "focalLengthM": 0.5,
+                    "massDeltaKg": 1.4,
+                    "powerDeltaW": 2
+                }
+            ],
+            "defaultFocalLengthM": 0.5,
+            "nominalAltitudeKm": 500,
+            "gsdAtNominalM": 5.5,
+            "swathKmAtNominal": 22.0,
+            "maxOffNadirDeg": 45,
+            "supportsNDVI": true,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.3
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#C44536",
+                    "metalness": 0.4,
+                    "roughness": 0.4,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "payload_hyperspectral_6u",
+            "name": "Hyperspectral Imaging Spectrometer (6U)",
+            "category": "payload",
+            "tier": 3,
+            "costUSD": 1900000,
+            "massKg": 11.0,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 6,
+                "mountZone": "internal_bay"
+            },
+            "secondarySlot": {
+                "type": "external",
+                "sizeUnits": 0.25,
+                "mountZone": "face_bottom"
+            },
+            "chassisCompatibility": [
+                "12u",
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 3.0,
+            "operationalPowerW": 38,
+            "heatDissipationW": 32.3,
+            "techRequired": "tech_payload_hyperspectral",
+            "description": "Over 100 narrow bands for crop stress and mineral mapping. Heavy, power-hungry and data-hungry.",
+            "payloadType": "spectrometer",
+            "dataGenerationMBPerOrbit": 2400,
+            "dutyCycleLimit": 0.15,
+            "pointingAccuracyReqDeg": 0.1,
+            "preferredRegime": "sso",
+            "pixelPitchUm": 15.0,
+            "detectorPixelsAcross": 1500,
+            "spectralBands": [
+                "hyperspectral_100plus"
+            ],
+            "defaultFocalLengthM": 0.6,
+            "nominalAltitudeKm": 500,
+            "gsdAtNominalM": 12.5,
+            "swathKmAtNominal": 18.7,
+            "maxOffNadirDeg": 45,
+            "supportsNDVI": true,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.2,
+                        0.2,
+                        0.15
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#C44536",
+                    "metalness": 0.4,
+                    "roughness": 0.4,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "payload_lowlight_2u",
+            "name": "Low-Light Night Imager (2U)",
+            "category": "payload",
+            "tier": 2,
+            "costUSD": 150000,
+            "massKg": 2.0,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 2,
+                "mountZone": "internal_bay"
+            },
+            "secondarySlot": {
+                "type": "external",
+                "sizeUnits": 0.25,
+                "mountZone": "face_bottom"
+            },
+            "chassisCompatibility": [
+                "6u",
+                "12u",
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 0.8,
+            "operationalPowerW": 8,
+            "heatDissipationW": 6.8,
+            "techRequired": "tech_payload_optical_t2",
+            "description": "Sensitive night-time sensor for city lights and power-outage mapping after disasters.",
+            "payloadType": "optical",
+            "dataGenerationMBPerOrbit": 300,
+            "dutyCycleLimit": 0.25,
+            "pointingAccuracyReqDeg": 1.0,
+            "preferredRegime": "mid_inclination",
+            "pixelPitchUm": 8.0,
+            "detectorPixelsAcross": 5000,
+            "spectralBands": [
+                "panchromatic_lowlight"
+            ],
+            "defaultFocalLengthM": 0.3,
+            "nominalAltitudeKm": 500,
+            "gsdAtNominalM": 13.33,
+            "swathKmAtNominal": 66.7,
+            "maxOffNadirDeg": 45,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.2
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#C44536",
+                    "metalness": 0.4,
+                    "roughness": 0.4,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "payload_thermal_ir_3u",
+            "name": "Thermal IR Imager (3U)",
+            "category": "payload",
+            "tier": 2,
+            "costUSD": 360000,
+            "massKg": 3.2,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 3,
+                "mountZone": "internal_bay"
+            },
+            "secondarySlot": {
+                "type": "external",
+                "sizeUnits": 0.25,
+                "mountZone": "face_bottom"
+            },
+            "chassisCompatibility": [
+                "6u",
+                "12u",
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 1.5,
+            "operationalPowerW": 12,
+            "heatDissipationW": 10.2,
+            "techRequired": "tech_payload_thermal",
+            "description": "Uncooled microbolometer for wildfires and flood extent. Works day or night with coarse resolution.",
+            "payloadType": "optical",
+            "dataGenerationMBPerOrbit": 150,
+            "dutyCycleLimit": 0.3,
+            "pointingAccuracyReqDeg": 0.5,
+            "preferredRegime": "polar",
+            "pixelPitchUm": 17.0,
+            "detectorPixelsAcross": 640,
+            "spectralBands": [
+                "lwir"
+            ],
+            "defaultFocalLengthM": 0.15,
+            "nominalAltitudeKm": 500,
+            "gsdAtNominalM": 56.67,
+            "swathKmAtNominal": 36.3,
+            "maxOffNadirDeg": 45,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.3
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#C44536",
+                    "metalness": 0.4,
+                    "roughness": 0.4,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "payload_sar_c_smallsat",
+            "name": "C-Band SAR (SmallSat)",
+            "category": "payload",
+            "tier": 3,
+            "costUSD": 4500000,
+            "massKg": 45.0,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 6,
+                "mountZone": "internal_bay"
+            },
+            "secondarySlot": {
+                "type": "external",
+                "sizeUnits": 2,
+                "mountZone": "face_side"
+            },
+            "chassisCompatibility": [
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 8.0,
+            "operationalPowerW": 250,
+            "heatDissipationW": 175.0,
+            "techRequired": "tech_payload_sar",
+            "description": "All-weather day/night radar. Huge instantaneous power draw means a strict duty cycle.",
+            "payloadType": "sar",
+            "dataGenerationMBPerOrbit": 4000,
+            "dutyCycleLimit": 0.1,
+            "pointingAccuracyReqDeg": 0.5,
+            "preferredRegime": "polar",
+            "groundResolutionM": 3.0,
+            "swathKm": 50,
+            "bandName": "C",
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.2,
+                        0.2,
+                        0.15
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#C44536",
+                    "metalness": 0.4,
+                    "roughness": 0.4,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "payload_sar_x_heavy",
+            "name": "X-Band SAR (Heavy)",
+            "category": "payload",
+            "tier": 3,
+            "costUSD": 14000000,
+            "massKg": 120.0,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 12,
+                "mountZone": "internal_bay"
+            },
+            "secondarySlot": {
+                "type": "external",
+                "sizeUnits": 3,
+                "mountZone": "face_side"
+            },
+            "chassisCompatibility": [
+                "heavy"
+            ],
+            "standbyPowerW": 20.0,
+            "operationalPowerW": 800,
+            "heatDissipationW": 560.0,
+            "techRequired": "tech_payload_sar_hp",
+            "description": "High-resolution X-band radar. Needs kilowatt-class power, a Heavy bus and large storage.",
+            "payloadType": "sar",
+            "dataGenerationMBPerOrbit": 4000,
+            "dutyCycleLimit": 0.15,
+            "pointingAccuracyReqDeg": 0.3,
+            "preferredRegime": "polar",
+            "groundResolutionM": 1.0,
+            "swathKm": 20,
+            "bandName": "X",
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.2,
+                        0.2,
+                        0.3
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#C44536",
+                    "metalness": 0.4,
+                    "roughness": 0.4,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "payload_ais_relay_1u",
+            "name": "AIS / IoT Marine Tracking Relay (1U)",
+            "category": "payload",
+            "tier": 1,
+            "costUSD": 35000,
+            "massKg": 0.3,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 1,
+                "mountZone": "internal_bay"
+            },
+            "secondarySlot": {
+                "type": "external",
+                "sizeUnits": 0.25,
+                "mountZone": "face_top"
+            },
+            "chassisCompatibility": [
+                "1u",
+                "3u",
+                "6u",
+                "12u",
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 0.8,
+            "operationalPowerW": 2,
+            "heatDissipationW": 1.7,
+            "techRequired": "tech_payload_relay",
+            "description": "Omnidirectional receiver for ship and sensor beacons. Low power, continuous duty.",
+            "payloadType": "iot_relay",
+            "dataGenerationMBPerOrbit": 20,
+            "dutyCycleLimit": 1.0,
+            "pointingAccuracyReqDeg": 5.0,
+            "preferredRegime": "mid_inclination",
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.1
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#C44536",
+                    "metalness": 0.4,
+                    "roughness": 0.4,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "payload_adsb_relay_1u",
+            "name": "ADS-B Aircraft Tracker (1U)",
+            "category": "payload",
+            "tier": 2,
+            "costUSD": 60000,
+            "massKg": 0.4,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 1,
+                "mountZone": "internal_bay"
+            },
+            "secondarySlot": {
+                "type": "external",
+                "sizeUnits": 0.25,
+                "mountZone": "face_top"
+            },
+            "chassisCompatibility": [
+                "1u",
+                "3u",
+                "6u",
+                "12u",
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 1.0,
+            "operationalPowerW": 3,
+            "heatDissipationW": 2.55,
+            "techRequired": "tech_payload_relay",
+            "description": "Space-based ADS-B receiver for global flight tracking.",
+            "payloadType": "iot_relay",
+            "dataGenerationMBPerOrbit": 60,
+            "dutyCycleLimit": 1.0,
+            "pointingAccuracyReqDeg": 5.0,
+            "preferredRegime": "mid_inclination",
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.1
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#C44536",
+                    "metalness": 0.4,
+                    "roughness": 0.4,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "payload_atm_spectrometer_3u",
+            "name": "Atmospheric Trace-Gas Spectrometer (3U)",
+            "category": "payload",
+            "tier": 3,
+            "costUSD": 650000,
+            "massKg": 5.0,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 3,
+                "mountZone": "internal_bay"
+            },
+            "secondarySlot": {
+                "type": "external",
+                "sizeUnits": 0.25,
+                "mountZone": "face_bottom"
+            },
+            "chassisCompatibility": [
+                "6u",
+                "12u",
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 1.5,
+            "operationalPowerW": 14,
+            "heatDissipationW": 11.9,
+            "techRequired": "tech_payload_spectrometer",
+            "description": "Measures CO2, methane and aerosols along the limb and nadir. Best from polar orbits.",
+            "payloadType": "spectrometer",
+            "dataGenerationMBPerOrbit": 300,
+            "dutyCycleLimit": 0.25,
+            "pointingAccuracyReqDeg": 0.5,
+            "preferredRegime": "polar",
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.3
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#C44536",
+                    "metalness": 0.4,
+                    "roughness": 0.4,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "adcs_mtq_detumble_0_25u",
+            "name": "Magnetorquer Detumble Set",
+            "category": "propulsion",
+            "tier": 1,
+            "costUSD": 6000,
+            "massKg": 0.15,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 0.25,
+                "mountZone": "internal_bay"
+            },
+            "chassisCompatibility": [
+                "1u",
+                "3u",
+                "6u",
+                "12u",
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 0.1,
+            "operationalPowerW": 0.8,
+            "heatDissipationW": 0.72,
+            "techRequired": "tech_adcs_t1",
+            "description": "Coil rods that damp tumbling and give very coarse pointing.",
+            "propulsionType": "adcs_reaction_wheels",
+            "thrustN": 0,
+            "ispSeconds": 0,
+            "fuelMassKg": 0,
+            "propellantType": "none",
+            "pointingAccuracyDeg": 5.0,
+            "slewRateDegPerSec": 0.02,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.025
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#E09F3E",
+                    "metalness": 0.7,
+                    "roughness": 0.4,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "adcs_rw_mtq_cube_0_5u",
+            "name": "Reaction Wheel + Magnetorquer Pack",
+            "category": "propulsion",
+            "tier": 1,
+            "costUSD": 55000,
+            "massKg": 0.9,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 0.5,
+                "mountZone": "internal_bay"
+            },
+            "chassisCompatibility": [
+                "3u",
+                "6u",
+                "12u",
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 1.2,
+            "operationalPowerW": 5,
+            "heatDissipationW": 4.5,
+            "techRequired": "tech_adcs_t1",
+            "description": "Three-axis wheels plus torque rods. Standard CubeSat 0.1 degree pointing.",
+            "propulsionType": "adcs_reaction_wheels",
+            "thrustN": 0,
+            "ispSeconds": 0,
+            "fuelMassKg": 0,
+            "propellantType": "none",
+            "pointingAccuracyDeg": 0.1,
+            "slewRateDegPerSec": 1.0,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.05
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#E09F3E",
+                    "metalness": 0.7,
+                    "roughness": 0.4,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "adcs_rw_agile_cube_1u",
+            "name": "Agile Reaction Wheel Pack",
+            "category": "propulsion",
+            "tier": 2,
+            "costUSD": 160000,
+            "massKg": 1.6,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 1,
+                "mountZone": "internal_bay"
+            },
+            "chassisCompatibility": [
+                "6u",
+                "12u",
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 2.0,
+            "operationalPowerW": 9,
+            "heatDissipationW": 8.1,
+            "techRequired": "tech_adcs_t2",
+            "description": "Fast-slewing wheel set for quick retargeting and off-nadir imaging.",
+            "propulsionType": "adcs_reaction_wheels",
+            "thrustN": 0,
+            "ispSeconds": 0,
+            "fuelMassKg": 0,
+            "propellantType": "none",
+            "pointingAccuracyDeg": 0.05,
+            "slewRateDegPerSec": 3.0,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.1
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#E09F3E",
+                    "metalness": 0.7,
+                    "roughness": 0.4,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "adcs_rw_pyramid_2u",
+            "name": "Four-Wheel Pyramid Array",
+            "category": "propulsion",
+            "tier": 2,
+            "costUSD": 380000,
+            "massKg": 9.0,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 2,
+                "mountZone": "internal_bay"
+            },
+            "chassisCompatibility": [
+                "12u",
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 3.0,
+            "operationalPowerW": 18,
+            "heatDissipationW": 16.2,
+            "techRequired": "tech_adcs_t2",
+            "description": "High-torque redundant array for SmallSat class pointing precision.",
+            "propulsionType": "adcs_reaction_wheels",
+            "thrustN": 0,
+            "ispSeconds": 0,
+            "fuelMassKg": 0,
+            "propellantType": "none",
+            "pointingAccuracyDeg": 0.02,
+            "slewRateDegPerSec": 2.5,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.2
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#E09F3E",
+                    "metalness": 0.7,
+                    "roughness": 0.4,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "adcs_cmg_heavy_4u",
+            "name": "Control Moment Gyro Cluster",
+            "category": "propulsion",
+            "tier": 3,
+            "costUSD": 1600000,
+            "massKg": 38.0,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 4,
+                "mountZone": "internal_bay"
+            },
+            "chassisCompatibility": [
+                "heavy"
+            ],
+            "standbyPowerW": 10.0,
+            "operationalPowerW": 90,
+            "heatDissipationW": 81.0,
+            "techRequired": "tech_adcs_t3",
+            "description": "Heavy CMG cluster. Extremely precise and fast, with a heavy power cost.",
+            "propulsionType": "adcs_reaction_wheels",
+            "thrustN": 0,
+            "ispSeconds": 0,
+            "fuelMassKg": 0,
+            "propellantType": "none",
+            "pointingAccuracyDeg": 0.005,
+            "slewRateDegPerSec": 6.0,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.2,
+                        0.2,
+                        0.1
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#E09F3E",
+                    "metalness": 0.7,
+                    "roughness": 0.4,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "prop_coldgas_1u",
+            "name": "Cold Gas Micro-Thruster 1U (N2)",
+            "category": "propulsion",
+            "tier": 1,
+            "costUSD": 15000,
+            "massKg": 0.6,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 1,
+                "mountZone": "internal_bay"
+            },
+            "secondarySlot": {
+                "type": "external",
+                "sizeUnits": 0.25,
+                "mountZone": "face_bottom"
+            },
+            "chassisCompatibility": [
+                "1u",
+                "3u",
+                "6u",
+                "12u",
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 0.2,
+            "operationalPowerW": 3,
+            "heatDissipationW": 2.7,
+            "techRequired": "tech_prop_coldgas",
+            "description": "Safe, cheap nitrogen thruster. Roughly 25 m/s of delta-v on a 6 kg 3U.",
+            "propulsionType": "cold_gas",
+            "thrustN": 0.05,
+            "ispSeconds": 65,
+            "fuelMassKg": 0.25,
+            "propellantType": "nitrogen",
+            "pointingAccuracyDeg": null,
+            "slewRateDegPerSec": null,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.1
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#E09F3E",
+                    "metalness": 0.7,
+                    "roughness": 0.4,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "prop_coldgas_2u",
+            "name": "Cold Gas Micro-Thruster 2U (N2)",
+            "category": "propulsion",
+            "tier": 1,
+            "costUSD": 28000,
+            "massKg": 1.1,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 2,
+                "mountZone": "internal_bay"
+            },
+            "secondarySlot": {
+                "type": "external",
+                "sizeUnits": 0.25,
+                "mountZone": "face_bottom"
+            },
+            "chassisCompatibility": [
+                "3u",
+                "6u",
+                "12u",
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 0.3,
+            "operationalPowerW": 4,
+            "heatDissipationW": 3.6,
+            "techRequired": "tech_prop_coldgas",
+            "description": "Double-size tank for longer station-keeping or a controlled de-orbit.",
+            "propulsionType": "cold_gas",
+            "thrustN": 0.1,
+            "ispSeconds": 68,
+            "fuelMassKg": 0.55,
+            "propellantType": "nitrogen",
+            "pointingAccuracyDeg": null,
+            "slewRateDegPerSec": null,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.2
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#E09F3E",
+                    "metalness": 0.7,
+                    "roughness": 0.4,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "prop_ppt_1u",
+            "name": "Pulsed Plasma Thruster",
+            "category": "propulsion",
+            "tier": 2,
+            "costUSD": 90000,
+            "massKg": 0.8,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 1,
+                "mountZone": "internal_bay"
+            },
+            "secondarySlot": {
+                "type": "external",
+                "sizeUnits": 0.25,
+                "mountZone": "face_bottom"
+            },
+            "chassisCompatibility": [
+                "3u",
+                "6u",
+                "12u"
+            ],
+            "standbyPowerW": 0.3,
+            "operationalPowerW": 15,
+            "heatDissipationW": 13.5,
+            "techRequired": "tech_prop_electric_t1",
+            "description": "Solid PTFE electric thruster. Tiny thrust, good Isp, ideal for drag make-up on CubeSats.",
+            "propulsionType": "electric_ion",
+            "thrustN": 0.0005,
+            "ispSeconds": 800,
+            "fuelMassKg": 0.2,
+            "propellantType": "ptfe",
+            "pointingAccuracyDeg": null,
+            "slewRateDegPerSec": null,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.1
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#E09F3E",
+                    "metalness": 0.7,
+                    "roughness": 0.4,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "prop_green_mono_2u",
+            "name": "Green Monopropellant Thruster 1N",
+            "category": "propulsion",
+            "tier": 2,
+            "costUSD": 140000,
+            "massKg": 1.5,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 2,
+                "mountZone": "internal_bay"
+            },
+            "secondarySlot": {
+                "type": "external",
+                "sizeUnits": 0.25,
+                "mountZone": "face_bottom"
+            },
+            "chassisCompatibility": [
+                "6u",
+                "12u",
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 1.5,
+            "operationalPowerW": 12,
+            "heatDissipationW": 10.8,
+            "techRequired": "tech_prop_chemical_t1",
+            "description": "Non-toxic monoprop for CubeSat maneuvers and plane changes.",
+            "propulsionType": "chemical",
+            "thrustN": 1.0,
+            "ispSeconds": 235,
+            "fuelMassKg": 0.8,
+            "propellantType": "green_monoprop",
+            "pointingAccuracyDeg": null,
+            "slewRateDegPerSec": null,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.2
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#E09F3E",
+                    "metalness": 0.7,
+                    "roughness": 0.4,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "prop_hydrazine_1n_3u",
+            "name": "Hydrazine Monopropellant 1N",
+            "category": "propulsion",
+            "tier": 2,
+            "costUSD": 210000,
+            "massKg": 2.6,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 3,
+                "mountZone": "internal_bay"
+            },
+            "secondarySlot": {
+                "type": "external",
+                "sizeUnits": 0.25,
+                "mountZone": "face_bottom"
+            },
+            "chassisCompatibility": [
+                "12u",
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 2.0,
+            "operationalPowerW": 8,
+            "heatDissipationW": 7.2,
+            "techRequired": "tech_prop_chemical_t2",
+            "description": "Classic monoprop thruster for orbit raising and collision avoidance on mid-size buses.",
+            "propulsionType": "chemical",
+            "thrustN": 1.0,
+            "ispSeconds": 225,
+            "fuelMassKg": 2.5,
+            "propellantType": "hydrazine",
+            "pointingAccuracyDeg": null,
+            "slewRateDegPerSec": null,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.3
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#E09F3E",
+                    "metalness": 0.7,
+                    "roughness": 0.4,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "prop_hydrazine_5n_6u",
+            "name": "Hydrazine Monopropellant 5N",
+            "category": "propulsion",
+            "tier": 2,
+            "costUSD": 380000,
+            "massKg": 9.0,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 6,
+                "mountZone": "internal_bay"
+            },
+            "secondarySlot": {
+                "type": "external",
+                "sizeUnits": 0.5,
+                "mountZone": "face_bottom"
+            },
+            "chassisCompatibility": [
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 3.0,
+            "operationalPowerW": 20,
+            "heatDissipationW": 18.0,
+            "techRequired": "tech_prop_chemical_t2",
+            "description": "Higher-thrust hydrazine system for SmallSat transfers.",
+            "propulsionType": "chemical",
+            "thrustN": 5.0,
+            "ispSeconds": 225,
+            "fuelMassKg": 12.0,
+            "propellantType": "hydrazine",
+            "pointingAccuracyDeg": null,
+            "slewRateDegPerSec": null,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.2,
+                        0.2,
+                        0.15
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#E09F3E",
+                    "metalness": 0.7,
+                    "roughness": 0.4,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "prop_hydrazine_20n_12u",
+            "name": "Hydrazine Monopropellant 20N",
+            "category": "propulsion",
+            "tier": 3,
+            "costUSD": 950000,
+            "massKg": 28.0,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 12,
+                "mountZone": "internal_bay"
+            },
+            "secondarySlot": {
+                "type": "external",
+                "sizeUnits": 1,
+                "mountZone": "face_bottom"
+            },
+            "chassisCompatibility": [
+                "heavy"
+            ],
+            "standbyPowerW": 5.0,
+            "operationalPowerW": 40,
+            "heatDissipationW": 36.0,
+            "techRequired": "tech_prop_chemical_t3",
+            "description": "Heavy-bus thruster bank for rapid maneuvers.",
+            "propulsionType": "chemical",
+            "thrustN": 20.0,
+            "ispSeconds": 225,
+            "fuelMassKg": 80.0,
+            "propellantType": "hydrazine",
+            "pointingAccuracyDeg": null,
+            "slewRateDegPerSec": null,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.2,
+                        0.2,
+                        0.3
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#E09F3E",
+                    "metalness": 0.7,
+                    "roughness": 0.4,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "prop_hall_100w_3u",
+            "name": "Hall-Effect Xenon Thruster 100W",
+            "category": "propulsion",
+            "tier": 2,
+            "costUSD": 450000,
+            "massKg": 3.2,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 3,
+                "mountZone": "internal_bay"
+            },
+            "secondarySlot": {
+                "type": "external",
+                "sizeUnits": 0.5,
+                "mountZone": "face_bottom"
+            },
+            "chassisCompatibility": [
+                "12u",
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 3.0,
+            "operationalPowerW": 100,
+            "heatDissipationW": 55.0,
+            "techRequired": "tech_prop_electric_t2",
+            "description": "Compact Hall thruster. Very efficient but needs about 100 W while firing.",
+            "propulsionType": "electric_ion",
+            "thrustN": 0.006,
+            "ispSeconds": 1300,
+            "fuelMassKg": 2.0,
+            "propellantType": "xenon",
+            "pointingAccuracyDeg": null,
+            "slewRateDegPerSec": null,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.3
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#E09F3E",
+                    "metalness": 0.7,
+                    "roughness": 0.4,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "prop_hall_400w_4u",
+            "name": "Hall-Effect Xenon Thruster 400W",
+            "category": "propulsion",
+            "tier": 3,
+            "costUSD": 900000,
+            "massKg": 7.0,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 4,
+                "mountZone": "internal_bay"
+            },
+            "secondarySlot": {
+                "type": "external",
+                "sizeUnits": 0.5,
+                "mountZone": "face_bottom"
+            },
+            "chassisCompatibility": [
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 6.0,
+            "operationalPowerW": 400,
+            "heatDissipationW": 200.0,
+            "techRequired": "tech_prop_electric_t3",
+            "description": "Mid-power Hall thruster for SmallSat orbit changes.",
+            "propulsionType": "electric_ion",
+            "thrustN": 0.025,
+            "ispSeconds": 1450,
+            "fuelMassKg": 8.0,
+            "propellantType": "xenon",
+            "pointingAccuracyDeg": null,
+            "slewRateDegPerSec": null,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.2,
+                        0.2,
+                        0.1
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#E09F3E",
+                    "metalness": 0.7,
+                    "roughness": 0.4,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "prop_hall_1300w_6u",
+            "name": "Hall-Effect Xenon Thruster 1.3kW",
+            "category": "propulsion",
+            "tier": 3,
+            "costUSD": 1800000,
+            "massKg": 22.0,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 6,
+                "mountZone": "internal_bay"
+            },
+            "secondarySlot": {
+                "type": "external",
+                "sizeUnits": 1,
+                "mountZone": "face_bottom"
+            },
+            "chassisCompatibility": [
+                "heavy"
+            ],
+            "standbyPowerW": 10.0,
+            "operationalPowerW": 1300,
+            "heatDissipationW": 585.0,
+            "techRequired": "tech_prop_electric_t3",
+            "description": "High-power Hall thruster for efficient heavy-bus transfers.",
+            "propulsionType": "electric_ion",
+            "thrustN": 0.08,
+            "ispSeconds": 1600,
+            "fuelMassKg": 40.0,
+            "propellantType": "xenon",
+            "pointingAccuracyDeg": null,
+            "slewRateDegPerSec": null,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.2,
+                        0.2,
+                        0.15
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#E09F3E",
+                    "metalness": 0.7,
+                    "roughness": 0.4,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "comms_uhf_whip",
+            "name": "UHF Deployable Whip",
+            "category": "comms",
+            "tier": 1,
+            "costUSD": 8000,
+            "massKg": 0.15,
+            "slotRequirement": {
+                "type": "external",
+                "sizeUnits": 0.25,
+                "mountZone": "face_top"
+            },
+            "secondarySlot": {
+                "type": "internal",
+                "sizeUnits": 0.25,
+                "mountZone": "internal_bay"
+            },
+            "chassisCompatibility": [
+                "1u",
+                "3u",
+                "6u",
+                "12u",
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 0.3,
+            "operationalPowerW": 2.5,
+            "heatDissipationW": 1.5,
+            "techRequired": "tech_comms_t1",
+            "description": "Omnidirectional tracking-and-command link. Needs no pointing but is very slow.",
+            "frequencyBand": "UHF",
+            "downlinkSpeedMbps": 0.1,
+            "beamConeAngleDeg": 360,
+            "minStationElevationDeg": 10,
+            "pointingReqDeg": 180,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.02
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#6A4C93",
+                    "metalness": 0.6,
+                    "roughness": 0.35,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "comms_s_patch",
+            "name": "S-Band Patch Antenna",
+            "category": "comms",
+            "tier": 1,
+            "costUSD": 22000,
+            "massKg": 0.35,
+            "slotRequirement": {
+                "type": "external",
+                "sizeUnits": 0.5,
+                "mountZone": "face_bottom"
+            },
+            "secondarySlot": {
+                "type": "internal",
+                "sizeUnits": 0.5,
+                "mountZone": "internal_bay"
+            },
+            "chassisCompatibility": [
+                "1u",
+                "3u",
+                "6u",
+                "12u",
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 0.8,
+            "operationalPowerW": 8,
+            "heatDissipationW": 4.8,
+            "techRequired": "tech_comms_t1",
+            "description": "Flush patch with a 60 degree beam. Level 1 default link at 5 Mbps.",
+            "frequencyBand": "S_Band",
+            "downlinkSpeedMbps": 5,
+            "beamConeAngleDeg": 60,
+            "minStationElevationDeg": 10,
+            "pointingReqDeg": 10,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.02
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#6A4C93",
+                    "metalness": 0.6,
+                    "roughness": 0.35,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "comms_s_patch_array",
+            "name": "S-Band Patch Array",
+            "category": "comms",
+            "tier": 2,
+            "costUSD": 65000,
+            "massKg": 0.9,
+            "slotRequirement": {
+                "type": "external",
+                "sizeUnits": 0.5,
+                "mountZone": "face_bottom"
+            },
+            "secondarySlot": {
+                "type": "internal",
+                "sizeUnits": 0.5,
+                "mountZone": "internal_bay"
+            },
+            "chassisCompatibility": [
+                "3u",
+                "6u",
+                "12u",
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 1.0,
+            "operationalPowerW": 12,
+            "heatDissipationW": 7.2,
+            "techRequired": "tech_comms_t2",
+            "description": "Four-element S-band array with more throughput and a narrower beam.",
+            "frequencyBand": "S_Band",
+            "downlinkSpeedMbps": 15,
+            "beamConeAngleDeg": 25,
+            "minStationElevationDeg": 10,
+            "pointingReqDeg": 5,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.02
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#6A4C93",
+                    "metalness": 0.6,
+                    "roughness": 0.35,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "comms_s_horn_smallsat",
+            "name": "S-Band Horn Antenna",
+            "category": "comms",
+            "tier": 2,
+            "costUSD": 110000,
+            "massKg": 2.0,
+            "slotRequirement": {
+                "type": "external",
+                "sizeUnits": 0.5,
+                "mountZone": "face_bottom"
+            },
+            "secondarySlot": {
+                "type": "internal",
+                "sizeUnits": 0.5,
+                "mountZone": "internal_bay"
+            },
+            "chassisCompatibility": [
+                "12u",
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 1.5,
+            "operationalPowerW": 18,
+            "heatDissipationW": 10.8,
+            "techRequired": "tech_comms_t2",
+            "description": "Directional S-band horn. Top of the S-band range, still far slower than X-band.",
+            "frequencyBand": "S_Band",
+            "downlinkSpeedMbps": 20,
+            "beamConeAngleDeg": 12,
+            "minStationElevationDeg": 10,
+            "pointingReqDeg": 2,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.02
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#6A4C93",
+                    "metalness": 0.6,
+                    "roughness": 0.35,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "comms_x_patch",
+            "name": "X-Band Patch Antenna",
+            "category": "comms",
+            "tier": 2,
+            "costUSD": 160000,
+            "massKg": 1.2,
+            "slotRequirement": {
+                "type": "external",
+                "sizeUnits": 0.5,
+                "mountZone": "face_bottom"
+            },
+            "secondarySlot": {
+                "type": "internal",
+                "sizeUnits": 0.75,
+                "mountZone": "internal_bay"
+            },
+            "chassisCompatibility": [
+                "6u",
+                "12u",
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 1.5,
+            "operationalPowerW": 14,
+            "heatDissipationW": 8.4,
+            "techRequired": "tech_comms_t2",
+            "description": "Low-gain X-band patch for CubeSats. 50 Mbps with a wide-ish 30 degree beam.",
+            "frequencyBand": "X_Band",
+            "downlinkSpeedMbps": 50,
+            "beamConeAngleDeg": 30,
+            "minStationElevationDeg": 10,
+            "pointingReqDeg": 5,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.02
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#6A4C93",
+                    "metalness": 0.6,
+                    "roughness": 0.35,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "comms_x_dish",
+            "name": "X-Band Steerable Dish",
+            "category": "comms",
+            "tier": 2,
+            "costUSD": 380000,
+            "massKg": 3.2,
+            "slotRequirement": {
+                "type": "external",
+                "sizeUnits": 1,
+                "mountZone": "face_side"
+            },
+            "secondarySlot": {
+                "type": "internal",
+                "sizeUnits": 1,
+                "mountZone": "internal_bay"
+            },
+            "chassisCompatibility": [
+                "6u",
+                "12u",
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 2.5,
+            "operationalPowerW": 25,
+            "heatDissipationW": 15.0,
+            "techRequired": "tech_comms_t2",
+            "description": "High-throughput steerable dish. Narrow 5 degree beam and a 0.5 degree ADCS lock requirement.",
+            "frequencyBand": "X_Band",
+            "downlinkSpeedMbps": 150,
+            "beamConeAngleDeg": 5,
+            "minStationElevationDeg": 10,
+            "pointingReqDeg": 0.5,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.02
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#6A4C93",
+                    "metalness": 0.6,
+                    "roughness": 0.35,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "comms_x_phased_array",
+            "name": "X-Band Phased Array",
+            "category": "comms",
+            "tier": 3,
+            "costUSD": 1400000,
+            "massKg": 7.5,
+            "slotRequirement": {
+                "type": "external",
+                "sizeUnits": 1,
+                "mountZone": "face_bottom"
+            },
+            "secondarySlot": {
+                "type": "internal",
+                "sizeUnits": 2,
+                "mountZone": "internal_bay"
+            },
+            "chassisCompatibility": [
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 5.0,
+            "operationalPowerW": 55,
+            "heatDissipationW": 33.0,
+            "techRequired": "tech_comms_t3",
+            "description": "Electronically steered X-band array. Fast retargeting between ground stations.",
+            "frequencyBand": "X_Band",
+            "downlinkSpeedMbps": 400,
+            "beamConeAngleDeg": 2,
+            "minStationElevationDeg": 10,
+            "pointingReqDeg": 0.3,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.02
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#6A4C93",
+                    "metalness": 0.6,
+                    "roughness": 0.35,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "comms_laser_terminal",
+            "name": "Laser Optical Downlink Terminal",
+            "category": "comms",
+            "tier": 3,
+            "costUSD": 3200000,
+            "massKg": 5.0,
+            "slotRequirement": {
+                "type": "external",
+                "sizeUnits": 1,
+                "mountZone": "face_top"
+            },
+            "secondarySlot": {
+                "type": "internal",
+                "sizeUnits": 2,
+                "mountZone": "internal_bay"
+            },
+            "chassisCompatibility": [
+                "12u",
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 6.0,
+            "operationalPowerW": 45,
+            "heatDissipationW": 27.0,
+            "techRequired": "tech_comms_laser",
+            "description": "Gigabit-class optical downlink. Needs sub-0.1 degree pointing, so reaction wheels or CMGs are mandatory.",
+            "frequencyBand": "Laser_Optical",
+            "downlinkSpeedMbps": 1000,
+            "beamConeAngleDeg": 0.05,
+            "minStationElevationDeg": 10,
+            "pointingReqDeg": 0.08,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.02
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#6A4C93",
+                    "metalness": 0.6,
+                    "roughness": 0.35,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "cdh_obc_basic_0_25u",
+            "name": "Basic OBC",
+            "category": "cdh",
+            "tier": 1,
+            "costUSD": 9000,
+            "massKg": 0.1,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 0.25,
+                "mountZone": "internal_bay"
+            },
+            "chassisCompatibility": [
+                "1u",
+                "3u",
+                "6u",
+                "12u",
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 0.6,
+            "operationalPowerW": 0.9,
+            "heatDissipationW": 0.9,
+            "techRequired": "tech_cdh_t1",
+            "description": "Minimal flight computer with 512 MB of buffer.",
+            "cdhType": "obc",
+            "storageCapacityMB": 512,
+            "compressionRatio": 1.0,
+            "radiationToleranceLevel": 1,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.025
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#2A9D8F",
+                    "metalness": 0.3,
+                    "roughness": 0.6,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "cdh_obc_std_0_5u",
+            "name": "Standard OBC",
+            "category": "cdh",
+            "tier": 1,
+            "costUSD": 28000,
+            "massKg": 0.2,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 0.5,
+                "mountZone": "internal_bay"
+            },
+            "chassisCompatibility": [
+                "1u",
+                "3u",
+                "6u",
+                "12u",
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 1.2,
+            "operationalPowerW": 1.8,
+            "heatDissipationW": 1.8,
+            "techRequired": "tech_cdh_t1",
+            "description": "Level 1 default. 4 GB of onboard flash.",
+            "cdhType": "obc",
+            "storageCapacityMB": 4096,
+            "compressionRatio": 1.0,
+            "radiationToleranceLevel": 1,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.05
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#2A9D8F",
+                    "metalness": 0.3,
+                    "roughness": 0.6,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "cdh_obc_tolerant_1u",
+            "name": "Radiation-Tolerant OBC",
+            "category": "cdh",
+            "tier": 2,
+            "costUSD": 120000,
+            "massKg": 0.6,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 1,
+                "mountZone": "internal_bay"
+            },
+            "chassisCompatibility": [
+                "6u",
+                "12u",
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 2.5,
+            "operationalPowerW": 4,
+            "heatDissipationW": 4,
+            "techRequired": "tech_cdh_t2",
+            "description": "Error-correcting computer with 16 GB buffer and better radiation resistance.",
+            "cdhType": "obc",
+            "storageCapacityMB": 16384,
+            "compressionRatio": 1.0,
+            "radiationToleranceLevel": 2,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.1
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#2A9D8F",
+                    "metalness": 0.3,
+                    "roughness": 0.6,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "cdh_obc_hardened_2u",
+            "name": "Radiation-Hardened OBC",
+            "category": "cdh",
+            "tier": 3,
+            "costUSD": 600000,
+            "massKg": 3.5,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 2,
+                "mountZone": "internal_bay"
+            },
+            "chassisCompatibility": [
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 6.0,
+            "operationalPowerW": 12,
+            "heatDissipationW": 12,
+            "techRequired": "tech_cdh_t3",
+            "description": "Fully hardened flight computer with 64 GB buffer.",
+            "cdhType": "obc",
+            "storageCapacityMB": 65536,
+            "compressionRatio": 1.0,
+            "radiationToleranceLevel": 3,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.2
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#2A9D8F",
+                    "metalness": 0.3,
+                    "roughness": 0.6,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "cdh_ssr_16gb_0_5u",
+            "name": "Solid-State Recorder 16GB",
+            "category": "cdh",
+            "tier": 1,
+            "costUSD": 22000,
+            "massKg": 0.15,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 0.5,
+                "mountZone": "internal_bay"
+            },
+            "chassisCompatibility": [
+                "3u",
+                "6u",
+                "12u",
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 0.8,
+            "operationalPowerW": 2.5,
+            "heatDissipationW": 2.5,
+            "techRequired": "tech_cdh_ssr_t1",
+            "description": "Compact data recorder for short imaging passes.",
+            "cdhType": "ssr",
+            "storageCapacityMB": 16384,
+            "compressionRatio": 1.0,
+            "radiationToleranceLevel": 1,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.05
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#2A9D8F",
+                    "metalness": 0.3,
+                    "roughness": 0.6,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "cdh_ssr_64gb_1u",
+            "name": "Solid-State Recorder 64GB",
+            "category": "cdh",
+            "tier": 2,
+            "costUSD": 65000,
+            "massKg": 0.35,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 1,
+                "mountZone": "internal_bay"
+            },
+            "chassisCompatibility": [
+                "6u",
+                "12u",
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 1.2,
+            "operationalPowerW": 4.5,
+            "heatDissipationW": 4.5,
+            "techRequired": "tech_cdh_ssr_t2",
+            "description": "Mid-size recorder. Holds several orbits of multispectral data.",
+            "cdhType": "ssr",
+            "storageCapacityMB": 65536,
+            "compressionRatio": 1.0,
+            "radiationToleranceLevel": 1,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.1
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#2A9D8F",
+                    "metalness": 0.3,
+                    "roughness": 0.6,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "cdh_ssr_hardened_32gb_1u",
+            "name": "Radiation-Hardened Recorder 32GB",
+            "category": "cdh",
+            "tier": 3,
+            "costUSD": 340000,
+            "massKg": 0.8,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 1,
+                "mountZone": "internal_bay"
+            },
+            "chassisCompatibility": [
+                "6u",
+                "12u",
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 1.5,
+            "operationalPowerW": 6,
+            "heatDissipationW": 6,
+            "techRequired": "tech_cdh_ssr_t3",
+            "description": "Hardened memory. Safer for radiation-upset events.",
+            "cdhType": "ssr",
+            "storageCapacityMB": 32768,
+            "compressionRatio": 1.0,
+            "radiationToleranceLevel": 3,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.1
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#2A9D8F",
+                    "metalness": 0.3,
+                    "roughness": 0.6,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "cdh_ssr_256gb_2u",
+            "name": "Solid-State Recorder 256GB",
+            "category": "cdh",
+            "tier": 2,
+            "costUSD": 210000,
+            "massKg": 1.1,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 2,
+                "mountZone": "internal_bay"
+            },
+            "chassisCompatibility": [
+                "12u",
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 2.5,
+            "operationalPowerW": 9,
+            "heatDissipationW": 9,
+            "techRequired": "tech_cdh_ssr_t2",
+            "description": "High-capacity recorder for SmallSat and radar.",
+            "cdhType": "ssr",
+            "storageCapacityMB": 262144,
+            "compressionRatio": 1.0,
+            "radiationToleranceLevel": 1,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.2
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#2A9D8F",
+                    "metalness": 0.3,
+                    "roughness": 0.6,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "cdh_ssr_1tb_4u",
+            "name": "Solid-State Recorder 1TB",
+            "category": "cdh",
+            "tier": 3,
+            "costUSD": 560000,
+            "massKg": 3.0,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 4,
+                "mountZone": "internal_bay"
+            },
+            "chassisCompatibility": [
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 4.0,
+            "operationalPowerW": 16,
+            "heatDissipationW": 16,
+            "techRequired": "tech_cdh_ssr_t3",
+            "description": "Terabyte-class buffer.",
+            "cdhType": "ssr",
+            "storageCapacityMB": 1048576,
+            "compressionRatio": 1.0,
+            "radiationToleranceLevel": 2,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.2,
+                        0.2,
+                        0.1
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#2A9D8F",
+                    "metalness": 0.3,
+                    "roughness": 0.6,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "cdh_ssr_4tb_8u",
+            "name": "Solid-State Recorder 4TB",
+            "category": "cdh",
+            "tier": 3,
+            "costUSD": 1500000,
+            "massKg": 9.0,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 8,
+                "mountZone": "internal_bay"
+            },
+            "chassisCompatibility": [
+                "heavy"
+            ],
+            "standbyPowerW": 8.0,
+            "operationalPowerW": 30,
+            "heatDissipationW": 30,
+            "techRequired": "tech_cdh_ssr_t3",
+            "description": "Heavy-bus mass memory for continuous SAR operations.",
+            "cdhType": "ssr",
+            "storageCapacityMB": 4194304,
+            "compressionRatio": 1.0,
+            "radiationToleranceLevel": 2,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.2,
+                        0.2,
+                        0.2
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#2A9D8F",
+                    "metalness": 0.3,
+                    "roughness": 0.6,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "cdh_compression_0_5u",
+            "name": "Onboard Compression Coprocessor",
+            "category": "cdh",
+            "tier": 2,
+            "costUSD": 85000,
+            "massKg": 0.2,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 0.5,
+                "mountZone": "internal_bay"
+            },
+            "chassisCompatibility": [
+                "6u",
+                "12u",
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 0.5,
+            "operationalPowerW": 3.5,
+            "heatDissipationW": 3.5,
+            "techRequired": "tech_cdh_t2",
+            "description": "Compresses imagery 2.5x before storage and downlink, effectively stretching both.",
+            "cdhType": "compression_unit",
+            "storageCapacityMB": 0,
+            "compressionRatio": 2.5,
+            "radiationToleranceLevel": 1,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.05
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#2A9D8F",
+                    "metalness": 0.3,
+                    "roughness": 0.6,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "tcs_mli_cube",
+            "name": "MLI Blanket Kit (CubeSat)",
+            "category": "tcs",
+            "tier": 1,
+            "costUSD": 3000,
+            "massKg": 0.05,
+            "slotRequirement": {
+                "type": "external",
+                "sizeUnits": 0.25,
+                "mountZone": "face_side"
+            },
+            "chassisCompatibility": [
+                "1u",
+                "3u",
+                "6u",
+                "12u"
+            ],
+            "standbyPowerW": 0,
+            "operationalPowerW": 0,
+            "heatDissipationW": 0,
+            "techRequired": "tech_tcs_t1",
+            "description": "Multi-layer insulation that cuts heat loss during eclipse.",
+            "coolingCapacityW": 0,
+            "heatingPowerW": 0,
+            "eclipseHeatLossReduction": 0.25,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.02
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#B0B7C3",
+                    "metalness": 0.7,
+                    "roughness": 0.3,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "tcs_mli_large",
+            "name": "MLI Blanket Kit (Large)",
+            "category": "tcs",
+            "tier": 1,
+            "costUSD": 25000,
+            "massKg": 1.2,
+            "slotRequirement": {
+                "type": "external",
+                "sizeUnits": 0.5,
+                "mountZone": "face_side"
+            },
+            "chassisCompatibility": [
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 0,
+            "operationalPowerW": 0,
+            "heatDissipationW": 0,
+            "techRequired": "tech_tcs_t1",
+            "description": "Full-bus insulation wrap for larger platforms.",
+            "coolingCapacityW": 0,
+            "heatingPowerW": 0,
+            "eclipseHeatLossReduction": 0.35,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.02
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#B0B7C3",
+                    "metalness": 0.7,
+                    "roughness": 0.3,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "tcs_radiator_3u",
+            "name": "Radiator Panel 3U",
+            "category": "tcs",
+            "tier": 1,
+            "costUSD": 5000,
+            "massKg": 0.12,
+            "slotRequirement": {
+                "type": "external",
+                "sizeUnits": 1,
+                "mountZone": "face_side"
+            },
+            "chassisCompatibility": [
+                "3u",
+                "6u",
+                "12u"
+            ],
+            "standbyPowerW": 0,
+            "operationalPowerW": 0,
+            "heatDissipationW": 0,
+            "techRequired": "tech_tcs_t1",
+            "description": "Passive radiator on a 3U lateral face.",
+            "coolingCapacityW": 8,
+            "heatingPowerW": 0,
+            "eclipseHeatLossReduction": 0.0,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.02
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#B0B7C3",
+                    "metalness": 0.7,
+                    "roughness": 0.3,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "tcs_radiator_6u",
+            "name": "Radiator Panel 6U",
+            "category": "tcs",
+            "tier": 1,
+            "costUSD": 9000,
+            "massKg": 0.25,
+            "slotRequirement": {
+                "type": "external",
+                "sizeUnits": 1,
+                "mountZone": "face_side"
+            },
+            "chassisCompatibility": [
+                "6u",
+                "12u"
+            ],
+            "standbyPowerW": 0,
+            "operationalPowerW": 0,
+            "heatDissipationW": 0,
+            "techRequired": "tech_tcs_t1",
+            "description": "Passive radiator on a 20x30 cm face.",
+            "coolingCapacityW": 15,
+            "heatingPowerW": 0,
+            "eclipseHeatLossReduction": 0.0,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.02
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#B0B7C3",
+                    "metalness": 0.7,
+                    "roughness": 0.3,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "tcs_radiator_deploy_12u",
+            "name": "Deployable Radiator 12U",
+            "category": "tcs",
+            "tier": 2,
+            "costUSD": 38000,
+            "massKg": 0.9,
+            "slotRequirement": {
+                "type": "external",
+                "sizeUnits": 1,
+                "mountZone": "face_side"
+            },
+            "chassisCompatibility": [
+                "12u",
+                "smallsat"
+            ],
+            "standbyPowerW": 0,
+            "operationalPowerW": 0,
+            "heatDissipationW": 0,
+            "techRequired": "tech_tcs_t2",
+            "description": "Folding radiator with extra effective area.",
+            "coolingCapacityW": 40,
+            "heatingPowerW": 0,
+            "eclipseHeatLossReduction": 0.0,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.02
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#B0B7C3",
+                    "metalness": 0.7,
+                    "roughness": 0.3,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "tcs_radiator_smallsat",
+            "name": "Radiator Panel SmallSat",
+            "category": "tcs",
+            "tier": 2,
+            "costUSD": 22000,
+            "massKg": 1.8,
+            "slotRequirement": {
+                "type": "external",
+                "sizeUnits": 1,
+                "mountZone": "face_side"
+            },
+            "chassisCompatibility": [
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 0,
+            "operationalPowerW": 0,
+            "heatDissipationW": 0,
+            "techRequired": "tech_tcs_t2",
+            "description": "Large passive radiator for SmallSat payload waste heat.",
+            "coolingCapacityW": 75,
+            "heatingPowerW": 0,
+            "eclipseHeatLossReduction": 0.0,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.02
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#B0B7C3",
+                    "metalness": 0.7,
+                    "roughness": 0.3,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "tcs_radiator_heavy",
+            "name": "Radiator Panel Heavy",
+            "category": "tcs",
+            "tier": 2,
+            "costUSD": 60000,
+            "massKg": 6.5,
+            "slotRequirement": {
+                "type": "external",
+                "sizeUnits": 1,
+                "mountZone": "face_side"
+            },
+            "chassisCompatibility": [
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 0,
+            "operationalPowerW": 0,
+            "heatDissipationW": 0,
+            "techRequired": "tech_tcs_t2",
+            "description": "One square meter of passive radiator for high-power payloads.",
+            "coolingCapacityW": 250,
+            "heatingPowerW": 0,
+            "eclipseHeatLossReduction": 0.0,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.02
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#B0B7C3",
+                    "metalness": 0.7,
+                    "roughness": 0.3,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "tcs_louver_radiator",
+            "name": "Variable-Emissivity Louver Radiator",
+            "category": "tcs",
+            "tier": 2,
+            "costUSD": 70000,
+            "massKg": 1.2,
+            "slotRequirement": {
+                "type": "external",
+                "sizeUnits": 1,
+                "mountZone": "face_side"
+            },
+            "chassisCompatibility": [
+                "12u",
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 0,
+            "operationalPowerW": 0,
+            "heatDissipationW": 0,
+            "techRequired": "tech_tcs_t2",
+            "description": "Louvers close in eclipse to hold heat and open in sunlight to shed it.",
+            "coolingCapacityW": 30,
+            "heatingPowerW": 0,
+            "eclipseHeatLossReduction": 0.15,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.02
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#B0B7C3",
+                    "metalness": 0.7,
+                    "roughness": 0.3,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "tcs_loop_heat_pipe",
+            "name": "Loop Heat Pipe Radiator",
+            "category": "tcs",
+            "tier": 3,
+            "costUSD": 320000,
+            "massKg": 7.0,
+            "slotRequirement": {
+                "type": "external",
+                "sizeUnits": 1,
+                "mountZone": "face_side"
+            },
+            "chassisCompatibility": [
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 1.0,
+            "operationalPowerW": 6,
+            "heatDissipationW": 0,
+            "techRequired": "tech_tcs_t3",
+            "description": "Pumped loop moves payload heat to the radiator. Handles radar-class loads.",
+            "coolingCapacityW": 150,
+            "heatingPowerW": 0,
+            "eclipseHeatLossReduction": 0.0,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.02
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#B0B7C3",
+                    "metalness": 0.7,
+                    "roughness": 0.3,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "tcs_heater_kapton_5w",
+            "name": "Kapton Heater 5W",
+            "category": "tcs",
+            "tier": 1,
+            "costUSD": 1500,
+            "massKg": 0.03,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 0.25,
+                "mountZone": "internal_bay"
+            },
+            "chassisCompatibility": [
+                "1u",
+                "3u",
+                "6u",
+                "12u",
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 0,
+            "operationalPowerW": 5,
+            "heatDissipationW": 5,
+            "techRequired": "tech_tcs_t1",
+            "description": "Thin-film heater for cold electronics in eclipse.",
+            "coolingCapacityW": 0,
+            "heatingPowerW": 5,
+            "eclipseHeatLossReduction": 0.0,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.025
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#B0B7C3",
+                    "metalness": 0.7,
+                    "roughness": 0.3,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "tcs_heater_ceramic_15w",
+            "name": "Ceramic Heater 15W",
+            "category": "tcs",
+            "tier": 1,
+            "costUSD": 4000,
+            "massKg": 0.08,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 0.25,
+                "mountZone": "internal_bay"
+            },
+            "chassisCompatibility": [
+                "3u",
+                "6u",
+                "12u",
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 0,
+            "operationalPowerW": 15,
+            "heatDissipationW": 15,
+            "techRequired": "tech_tcs_t1",
+            "description": "Mid-power heater for batteries and payload bays.",
+            "coolingCapacityW": 0,
+            "heatingPowerW": 15,
+            "eclipseHeatLossReduction": 0.0,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.025
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#B0B7C3",
+                    "metalness": 0.7,
+                    "roughness": 0.3,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "tcs_heater_ceramic_40w",
+            "name": "Ceramic Heater 40W",
+            "category": "tcs",
+            "tier": 2,
+            "costUSD": 9000,
+            "massKg": 0.2,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 0.25,
+                "mountZone": "internal_bay"
+            },
+            "chassisCompatibility": [
+                "12u",
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 0,
+            "operationalPowerW": 40,
+            "heatDissipationW": 40,
+            "techRequired": "tech_tcs_t2",
+            "description": "High-power heater for large payloads.",
+            "coolingCapacityW": 0,
+            "heatingPowerW": 40,
+            "eclipseHeatLossReduction": 0.0,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.025
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#B0B7C3",
+                    "metalness": 0.7,
+                    "roughness": 0.3,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        },
+        {
+            "id": "tcs_heater_zone_100w",
+            "name": "Zoned Heater Bank 100W",
+            "category": "tcs",
+            "tier": 2,
+            "costUSD": 22000,
+            "massKg": 0.4,
+            "slotRequirement": {
+                "type": "internal",
+                "sizeUnits": 0.5,
+                "mountZone": "internal_bay"
+            },
+            "chassisCompatibility": [
+                "smallsat",
+                "heavy"
+            ],
+            "standbyPowerW": 0,
+            "operationalPowerW": 100,
+            "heatDissipationW": 100,
+            "techRequired": "tech_tcs_t2",
+            "description": "Multi-zone heater bank for SmallSat and Heavy payload cold soaks.",
+            "coolingCapacityW": 0,
+            "heatingPowerW": 100,
+            "eclipseHeatLossReduction": 0.0,
+            "visual": {
+                "ghostPrimitive": {
+                    "type": "box",
+                    "dimensions": [
+                        0.1,
+                        0.1,
+                        0.05
+                    ],
+                    "offset": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "color": "#B0B7C3",
+                    "metalness": 0.7,
+                    "roughness": 0.3,
+                    "wireframeColor": "#00E5FF"
+                }
+            }
+        }
+    ]
+}
