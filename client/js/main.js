@@ -12,7 +12,10 @@ motion.addEventListener('change', () => {
   document.querySelector('#settings-dialog .hint').textContent = saved ? 'Your preference is saved on this device.' : 'Preference applied for this session. Device storage is unavailable.';
 });
 // Optional audio must never interrupt menu navigation or graphics startup.
-import('./audio.js').then(({ setupMenuAudio }) => setupMenuAudio()).catch(error => {
+import('./audio.js').then(({ audioManager, mountAudioUi }) => {
+  mountAudioUi();
+  if (document.querySelector('#mission-select').hidden) audioManager.playMusic('landing');
+}).catch(error => {
   console.warn('Menu audio unavailable; continuing without sound.', error);
 });
 for (const name of ['settings', 'how-to-play', 'credits', 'new-game']) {

@@ -6,6 +6,59 @@
 @import url('./settings.css');
 @import url('./dialogs.css');
 
+:root {
+  --bg-deep: #050811;
+  --glass-panel: rgba(13, 22, 45, 0.75);
+  --accent-cyan: #00F0FF;
+  --accent-amber: #FFB703;
+  --accent-green: #06D6A0;
+  --accent-red: #EF476F;
+}
+
+.audio-toggle {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  z-index: 8;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  color: var(--accent-cyan);
+  background: var(--glass-panel);
+  border: 1px solid var(--accent-cyan);
+  border-radius: 10px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  cursor: pointer;
+}
+
+.audio-toggle svg {
+  width: 22px;
+  height: 22px;
+}
+
+.audio-toggle .audio-icon-off { display: none; }
+
+.audio-toggle.is-muted .audio-icon-on,
+.audio-toggle[aria-pressed="true"] .audio-icon-on { display: none; }
+
+.audio-toggle.is-muted .audio-icon-off,
+.audio-toggle[aria-pressed="true"] .audio-icon-off { display: block; }
+
+.audio-toggle:hover {
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
+}
+
+.audio-toggle:focus-visible {
+  outline: 2px solid var(--accent-cyan);
+  outline-offset: 3px;
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
+}
+
+.mission-header { padding-right: 72px; }
+
 /* Preserve layout measurements while avoiding a flash of illustrated objects. */
 .scene-loading .earth,
 .scene-loading .sun,

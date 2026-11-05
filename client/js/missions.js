@@ -1,5 +1,6 @@
 import { scenarios } from './data/scenarios.js';
 import { read, write, SAVE_KEY, PREFERENCE_KEY } from './storage.js';
+import { audioManager } from './audio.js';
 
 const screen = document.querySelector('#mission-select');
 const cards = document.querySelector('#scenario-cards');
@@ -149,6 +150,7 @@ export function openMissionSelection() {
   const saved = scenarios.findIndex(scenario => scenario.id === readSave().selectedMission);
   select(saved >= 0 ? saved : 0);
   document.querySelector('#mission-back').focus();
+  audioManager.playMusic('missionSelect');
   if (!read(PREFERENCE_KEY)?.guideSeen) {
     document.querySelector('#guide-dialog').showModal();
   }
@@ -158,6 +160,7 @@ function closeSelection() {
   screen.hidden = true;
   document.body.classList.remove('selecting-mission');
   menu.inert = false;
+  audioManager.playMusic('landing');
   window.dispatchEvent(new CustomEvent('mission-preview', { detail: { index: -1 } }));
   document.querySelector('#play').focus();
 }
