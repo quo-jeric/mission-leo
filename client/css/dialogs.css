@@ -1,0 +1,120 @@
+/* Shared flight-panel language for every menu dialog, not only Settings. */
+dialog:not(#settings-dialog) {
+  width: min(560px, calc(100% - 28px));
+  max-height: calc(100svh - 28px);
+  overflow-y: auto;
+  padding: 32px;
+  color: #e5f1fa;
+  background: radial-gradient(ellipse at 0 0, #14344480, transparent 65%), #091321;
+  border: 1px solid #89cddd40;
+  border-radius: 20px;
+  box-shadow: 0 30px 100px #0009, inset 0 1px #d8faff0d;
+  scrollbar-width: thin;
+  scrollbar-color: #33566c #091321;
+}
+dialog::backdrop { background: #020817b8; backdrop-filter: blur(9px); }
+dialog:not(#settings-dialog) .close {
+  top: 16px;
+  right: 16px;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid #97d9ed26;
+  border-radius: 9px;
+  background: #ffffff04;
+  color: #b9d3e4;
+  font-size: 22px;
+}
+dialog .close:hover { background: #83d5e514; border-color: #83d5e580; }
+dialog:not(#settings-dialog) .eyebrow {
+  margin: 0 36px 14px 0;
+  color: #83d5e5;
+  font-size: 9px;
+  letter-spacing: .15em;
+}
+dialog:not(#settings-dialog) h2 {
+  margin: 0 24px 16px 0;
+  font-size: clamp(25px, 4vw, 32px);
+  line-height: 1.2;
+}
+dialog:not(#settings-dialog) p { color: #b1c6d7; font-size: 13px; line-height: 1.75; }
+dialog:not(#settings-dialog) .hint {
+  padding: 12px 14px;
+  margin: 20px 0 8px;
+  border: 1px solid #93dfff18;
+  border-left: 2px solid #72dce466;
+  border-radius: 0 8px 8px 0;
+  background: #83d5e505;
+  color: #8fa9be;
+  font-size: 11px;
+}
+dialog:not(#settings-dialog) .action {
+  min-height: 44px;
+  border: 1px solid #9ce6ee;
+  border-radius: 8px;
+  background: linear-gradient(110deg, #c4f0f3, #8bd3df);
+  color: #10242e;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .025em;
+  box-shadow: inset 0 1px #ffffff4d;
+}
+dialog:not(#settings-dialog) .action:hover { background: #d2f5f8; }
+dialog:not(#settings-dialog) .action.secondary {
+  border-color: #93dfff30;
+  background: #7bd8f207;
+  color: #bfe0ef;
+  box-shadow: none;
+}
+dialog:not(#settings-dialog) .action.secondary:hover { background: #7bd8f212; }
+dialog:not(#settings-dialog) .mission-steps { display: grid; gap: 10px; margin: 24px 0; padding: 0; }
+dialog:not(#settings-dialog) .mission-steps li {
+  padding: 16px 16px 16px 54px;
+  border: 1px solid #9adced20;
+  border-radius: 10px;
+  background: linear-gradient(120deg, #14283a66, #0b172766);
+}
+dialog:not(#settings-dialog) .mission-steps li::before {
+  top: 17px;
+  left: 15px;
+  color: #83d5e5;
+  font-size: 11px;
+}
+dialog:not(#settings-dialog) .mission-steps strong { color: #dceef6; font-size: 13px; }
+dialog:not(#settings-dialog) .mission-steps span { color: #91aabd; font-size: 12px; }
+dialog:not(#settings-dialog) .credits-list {
+  padding: 16px 18px;
+  margin: 22px 0;
+  border: 1px solid #9adced20;
+  border-radius: 12px;
+  background: #14283a33;
+}
+dialog:not(#settings-dialog) .credits-list dt { margin-top: 16px; color: #83d5e5; font-size: 10px; letter-spacing: .04em; }
+dialog:not(#settings-dialog) .credits-list dt:first-child { margin-top: 0; }
+dialog:not(#settings-dialog) .credits-list dd { margin: 5px 0 0; color: #c5d9e7; font-size: 12px; }
+#agency-profile-dialog #profile-name { color: #d4edf4; font-size: 16px; overflow-wrap: anywhere; }
+#agency-profile-dialog #profile-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0; background: none; border: 0; }
+#profile-stats > div { min-width: 0; padding: 16px; border: 1px solid #9adced20; border-radius: 10px; background: linear-gradient(130deg, #17334188, #0b172766); }
+#agency-profile-dialog #profile-stats dd { margin-top: 8px; color: #d5f3f5; font-size: clamp(18px, 4vw, 24px); font-weight: 650; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+#play-dialog label { margin: 24px 0 10px; color: #b4c9da; font-size: 12px; }
+#play-dialog #agency { border: 1px solid #93dfff40; border-radius: 8px; background: #06111e; color: #e5f1fa; }
+#play-dialog #agency::placeholder { color: #6e879e; }
+#new-game-dialog { border-top-color: #ffd16680; }
+#new-game-dialog .dialog-actions { gap: 8px; margin-top: 24px; }
+#new-game-dialog #confirm-new { border-color: #ffe3a6; background: linear-gradient(110deg, #ffe6af, #ffd166); color: #302611; }
+#requirements-body { display: grid; gap: 10px; margin: 22px 0; }
+#requirements-body p { margin: 0; padding: 14px 16px; border: 1px solid #9adced20; border-radius: 9px; background: #14283a33; }
+#requirements-body p:first-child { border-left: 2px solid #83d5e5; }
+dialog[open]:not(#settings-dialog) { animation: flight-panel-in .2s ease-out; }
+@keyframes flight-panel-in { from { opacity: 0; translate: 0 8px; } to { opacity: 1; translate: 0 0; } }
+@media (max-width: 580px) {
+  dialog:not(#settings-dialog) { padding: 26px 20px 20px; }
+  dialog:not(#settings-dialog) .mission-steps li { padding-right: 12px; }
+}
+@media (prefers-reduced-motion: reduce) { dialog[open]:not(#settings-dialog) { animation: none; } }
+body.still dialog[open]:not(#settings-dialog) { animation: none; }
+@media (forced-colors: active) {
+  dialog:not(#settings-dialog), dialog:not(#settings-dialog) .action { border-color: ButtonText; background: Canvas; color: CanvasText; box-shadow: none; }
+}

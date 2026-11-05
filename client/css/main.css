@@ -4,6 +4,7 @@
 @import url('./buttons.css');
 @import url('./menu-polish.css');
 @import url('./settings.css');
+@import url('./dialogs.css');
 
 /* Preserve layout measurements while avoiding a flash of illustrated objects. */
 .scene-loading .earth,

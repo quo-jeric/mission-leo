@@ -31,12 +31,14 @@ document.querySelector('#agency-profile').addEventListener('click', () => {
     ['Satellites deorbited', player?.stats?.satellitesDeorbited ?? 0],
     ['Saved blueprints', Array.isArray(save?.blueprints) ? save.blueprints.length : 0],
   ];
-  document.querySelector('#profile-stats').replaceChildren(...metrics.flatMap(([label, value]) => {
+  document.querySelector('#profile-stats').replaceChildren(...metrics.map(([label, value]) => {
+    const card = document.createElement('div');
     const term = document.createElement('dt');
     const description = document.createElement('dd');
     term.textContent = label;
     description.textContent = String(value);
-    return [term, description];
+    card.append(term, description);
+    return card;
   }));
   document.querySelector('#profile-hint').textContent = player?.agencyName
     ? 'Progress saved on this device.'
