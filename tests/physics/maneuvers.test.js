@@ -91,3 +91,4 @@ describe('Orbital Maneuvers & Tsiolkovsky Engine', () => {
     expect(planned.burnDurationSeconds).toBeGreaterThan(0);
   });
 });
+

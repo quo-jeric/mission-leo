@@ -68,3 +68,4 @@ describe('Solar Ephemeris & Shadow Eclipse Geometry', () => {
     expect(fluxEclipse.isEclipse).toBe(true);
   });
 });
+

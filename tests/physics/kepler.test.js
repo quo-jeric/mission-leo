@@ -105,3 +105,4 @@ describe('Keplerian Mechanics & Newton-Raphson Solver', () => {
     expect(pt0.sunFraction).toBeLessThanOrEqual(1.0);
   });
 });
+

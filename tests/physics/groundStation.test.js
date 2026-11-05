@@ -47,3 +47,4 @@ describe('Ground Station Pass & Downlink Engine', () => {
     expect(pass0.dataDownlinkedMB).toBeCloseTo((20.0 * pass0.durationSeconds) / 8.0, 1);
   });
 });
+

@@ -45,3 +45,4 @@ describe('Atmospheric Density & Drag Decay Models', () => {
     expect(decay.isTerminalReentry).toBe(true);
   });
 });
+

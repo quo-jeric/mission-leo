@@ -67,3 +67,4 @@ export function normalizeLongitudeDeg(lonDeg) {
 export function clampLatitudeDeg(latDeg) {
   return Math.max(-90, Math.min(90, latDeg));
 }
+

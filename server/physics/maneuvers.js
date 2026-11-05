@@ -252,3 +252,4 @@ export function planManeuver(payload) {
     burnDurationSeconds: propUsage.burnDurationSec ? Number(propUsage.burnDurationSec.toFixed(1)) : null
   };
 }
+

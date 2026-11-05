@@ -142,3 +142,4 @@ export function computeSolarFlux(rEci, epochSeconds) {
     sunVectorECI: sunVector
   };
 }
+
