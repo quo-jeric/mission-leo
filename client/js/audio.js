@@ -1,176 +1,281 @@
-import { read, write, PREFERENCE_KEY, SAVE_KEY } from './storage.js';
+// Edit paths and per-clip levels here. Master volume and mute live in localStorage.
+const AUDIO_CONFIG = {
+  music: {
+    landing: { src: '/assets/audio/landing.mp3', volume: 0.5 },
+    missionSelect: { src: '/assets/audio/mission_select.mp3', volume: 0.5 },
+  },
+  sfx: {
+    uiClick: { src: '/assets/audio/ui_click.wav', volume: 0.7 },
+  },
+};
 
-// Original procedural cues: no audio downloads or autoplay on page load.
-export function setupMenuAudio() {
-  const preferences = read(PREFERENCE_KEY) || {};
-  const volume = document.querySelector('#sfx-volume');
-  const mute = document.querySelector('#sfx-mute');
-  const output = document.querySelector('#sfx-value');
-  const preview = document.querySelector('#sfx-preview');
-  // A cached/older page may not yet contain the new audio controls.
-  if (!volume || !mute || !output || !preview) return;
-  const stored = preferences.sfxVolume ?? read(SAVE_KEY)?.settings?.sfxVolume ?? .45;
-  volume.value = String(Math.round((Number.isFinite(stored) ? Math.max(0, Math.min(1, stored)) : .45) * 100));
-  mute.checked = preferences.sfxMuted === true;
-  let context, master, unlocked = false, lastHover = 0, keyboard = false;
-  const musicEnabled = document.querySelector('#music-enabled');
-  const musicVolume = document.querySelector('#music-volume');
-  const musicOutput = document.querySelector('#music-value');
-  musicEnabled.checked = preferences.musicEnabled === true;
-  const initialMusic = preferences.musicVolume ?? .25;
-  musicVolume.value = String(Math.round((Number.isFinite(initialMusic) ? Math.max(0, Math.min(1, initialMusic)) : .25) * 100));
-  let musicBus, musicTimer, voices = [];
-  let chord = 0;
-  const chords = [[130.81, 196, 246.94], [110, 164.81, 220], [87.31, 130.81, 174.61], [98, 146.83, 196]];
-  function stopMusic() {
-    clearTimeout(musicTimer);
-    musicTimer = undefined;
-    if (!context) return;
-    for (const voice of voices) {
-      voice.gain.gain.cancelScheduledValues(context.currentTime);
-      voice.gain.gain.setTargetAtTime(0, context.currentTime, .08);
-      try { voice.oscillator.stop(context.currentTime + .5); } catch {}
-    }
-    voices = [];
+const SETTINGS_KEY = 'leo_audio_settings_v1';
+const FADE_MS = 400;
+const PRIMARY_BUTTON = 'nav button, button.action';
+
+function clamp01(value) {
+  const number = Number(value);
+  if (!Number.isFinite(number)) return 1;
+  return Math.min(1, Math.max(0, number));
+}
+
+function readSettings() {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(SETTINGS_KEY) || 'null');
+    return {
+      muted: parsed?.muted === true,
+      volume: clamp01(parsed?.volume ?? 1),
+    };
+  } catch {
+    return { muted: false, volume: 1 };
   }
-  function nextChord() {
-    if (!musicEnabled.checked || document.hidden || context?.state !== 'running') { stopMusic(); return; }
-    const start = context.currentTime;
-    for (const frequency of chords[chord++ % chords.length]) {
-      const oscillator = context.createOscillator();
-      const gain = context.createGain();
-      oscillator.type = 'sine';
-      oscillator.frequency.value = frequency;
-      gain.gain.setValueAtTime(0, start);
-      gain.gain.linearRampToValueAtTime(.045, start + 2);
-      gain.gain.linearRampToValueAtTime(.035, start + 6);
-      gain.gain.linearRampToValueAtTime(0, start + 9);
-      oscillator.connect(gain); gain.connect(musicBus);
-      const voice = { oscillator, gain };
-      voices.push(voice);
-      oscillator.onended = () => { oscillator.disconnect(); gain.disconnect(); voices = voices.filter(item => item !== voice); };
-      oscillator.start(start); oscillator.stop(start + 9.1);
-    }
-    musicTimer = setTimeout(nextChord, 7000);
+}
+
+function createManager() {
+  const initial = readSettings();
+  let muted = initial.muted;
+  let volume = initial.volume;
+  let unlocked = false;
+  let queuedTrack = null;
+  let currentId = null;
+  let active = null;
+  const watchers = new Set();
+  const music = new Map();
+  const sfx = new Map();
+
+  for (const [id, spec] of Object.entries(AUDIO_CONFIG.music)) {
+    const el = new Audio(spec.src);
+    el.preload = 'auto';
+    el.loop = true;
+    el.volume = 0;
+    music.set(id, { ...spec, el });
   }
-  function updateMusic() {
-    musicOutput.value = `${musicVolume.value}%`;
-    if (!context) return;
-    if (!musicBus) { musicBus = context.createGain(); musicBus.connect(context.destination); }
-    musicBus.gain.setTargetAtTime(Number(musicVolume.value) / 100, context.currentTime, .1);
-    if (!musicEnabled.checked || document.hidden || Number(musicVolume.value) === 0) stopMusic();
-    else if (context.state === 'running' && musicTimer === undefined) nextChord();
+
+  for (const [id, spec] of Object.entries(AUDIO_CONFIG.sfx)) {
+    const el = new Audio(spec.src);
+    el.preload = 'auto';
+    el.loop = false;
+    sfx.set(id, { ...spec, el });
   }
-  function activateAudio() {
-    try {
-      if (!context) {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        if (!AudioContext) return;
-        context = new AudioContext();
-        master = context.createGain(); master.connect(context.destination); update();
-      }
-      unlocked = true;
-      if (context.state === 'suspended') context.resume().then(updateMusic).catch(() => {});
-      else updateMusic();
-    } catch { /* Audio stays optional. */ }
+
+  function notify(saved, fromUser = false) {
+    for (const watcher of watchers) watcher({ muted, volume, saved, fromUser });
   }
-  function saveMusic() {
-    const saved = write(PREFERENCE_KEY, { ...read(PREFERENCE_KEY), musicEnabled: musicEnabled.checked, musicVolume: Number(musicVolume.value) / 100 });
-    activateAudio(); updateMusic();
-    document.querySelector('#settings-dialog .hint').textContent = saved ? 'Your preferences are saved on this device.' : 'Music preference applied for this session.';
-  }
-  musicEnabled.addEventListener('change', saveMusic);
-  musicVolume.addEventListener('input', saveMusic);
-  document.addEventListener('pointerdown', event => { if (event.isTrusted) activateAudio(); }, { once: true });
-  document.addEventListener('keydown', event => { if (event.isTrusted) activateAudio(); }, { once: true });
-  document.addEventListener('visibilitychange', () => {
-    if (document.hidden) { stopMusic(); if (context?.state === 'running') context.suspend().catch(() => {}); }
-    else if (unlocked && context) context.resume().then(updateMusic).catch(() => {});
-  });
-  window.addEventListener('pagehide', () => { stopMusic(); context?.close().catch(() => {}); }, { once: true });
-  updateMusic();
-  const cues = {
-    hover: [[880, 1050, 0, .035, .055]],
-    click: [[620, 820, 0, .075, .12]],
-    launch: [[520, 680, 0, .09, .12], [780, 1040, .085, .15, .1]],
-    back: [[540, 330, 0, .1, .1]],
-    locked: [[240, 210, 0, .08, .09], [210, 180, .11, .09, .07]],
-  };
-  function update() {
-    output.value = `${volume.value}%`;
-    if (master && context) master.gain.setTargetAtTime(mute.checked ? 0 : Number(volume.value) / 100, context.currentTime, .015);
-  }
+
   function persist() {
-    update();
-    const saved = write(PREFERENCE_KEY, { ...read(PREFERENCE_KEY), sfxVolume: Number(volume.value) / 100, sfxMuted: mute.checked });
-    document.querySelector('#settings-dialog .hint').textContent = saved
-      ? 'Your preferences are saved on this device.'
-      : 'Preferences applied for this session. Device storage is unavailable.';
-  }
-  function play(name, activate = false) {
-    if (mute.checked || Number(volume.value) === 0) return;
     try {
-      if (!context) {
-        if (!activate) return;
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        if (!AudioContext) return;
-        context = new AudioContext();
-        master = context.createGain();
-        master.connect(context.destination);
-        update();
-      }
-      if (activate) unlocked = true;
-      if (!unlocked || document.hidden) return;
-      const schedule = () => {
-        if (context.state !== 'running' || document.hidden || mute.checked) return;
-        for (const [from, to, delay, duration, level] of cues[name]) {
-          const oscillator = context.createOscillator();
-          const envelope = context.createGain();
-          const start = context.currentTime + delay;
-          oscillator.type = 'sine';
-          oscillator.frequency.setValueAtTime(from, start);
-          oscillator.frequency.exponentialRampToValueAtTime(to, start + duration);
-          envelope.gain.setValueAtTime(0, start);
-          envelope.gain.linearRampToValueAtTime(level, start + .006);
-          envelope.gain.exponentialRampToValueAtTime(.0001, start + duration);
-          oscillator.connect(envelope);
-          envelope.connect(master);
-          oscillator.start(start);
-          oscillator.stop(start + duration + .01);
-          oscillator.onended = () => { oscillator.disconnect(); envelope.disconnect(); };
+      localStorage.setItem(SETTINGS_KEY, JSON.stringify({ muted, volume }));
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  function levelFor(spec) {
+    return muted ? 0 : spec.volume * volume;
+  }
+
+  function fade(el, getTarget) {
+    const ramp = (el._ramp || 0) + 1;
+    el._ramp = ramp;
+    const start = el.volume;
+    const began = performance.now();
+    const done = new Promise((resolve) => {
+      const step = (now) => {
+        if (el._ramp !== ramp) {
+          resolve(false);
+          return;
+        }
+        const t = Math.min(1, (now - began) / FADE_MS);
+        const target = getTarget();
+        el.volume = start + (target - start) * t;
+        if (t < 1) requestAnimationFrame(step);
+        else {
+          el.volume = getTarget();
+          resolve(true);
         }
       };
-      if (context.state === 'suspended' && activate) context.resume().then(schedule).catch(() => {});
-      else schedule();
-    } catch { /* Audio is optional; navigation must always remain usable. */ }
+      requestAnimationFrame(step);
+    });
+    return { ramp, done };
   }
-  document.addEventListener('pointerdown', () => { keyboard = false; }, true);
-  document.addEventListener('keydown', event => { if (event.key === 'Tab' || event.key.startsWith('Arrow')) keyboard = true; }, true);
-  function hover(button) {
-    const now = performance.now();
-    if (!button || button.disabled || now - lastHover < 90) return;
-    lastHover = now;
-    play('hover');
+
+  function startTrack(trackId) {
+    const spec = music.get(trackId);
+    if (!spec) return;
+    queuedTrack = trackId;
+    if (currentId === trackId && active === spec.el && !spec.el.paused) {
+      applyLevel();
+      return;
+    }
+
+    const outgoing = active && active !== spec.el ? active : null;
+    currentId = trackId;
+    active = spec.el;
+    spec.el.loop = true;
+
+    if (spec.el.paused) {
+      spec.el.volume = 0;
+      spec.el.play().catch(() => {});
+    }
+
+    fade(spec.el, () => levelFor(spec));
+
+    if (outgoing) {
+      const fadeOut = fade(outgoing, () => 0);
+      fadeOut.done.then((finished) => {
+        if (!finished || outgoing._ramp !== fadeOut.ramp || active === outgoing) return;
+        outgoing.pause();
+      });
+    }
   }
-  document.addEventListener('pointerover', event => {
-    if (event.pointerType === 'touch') return;
-    const button = event.target.closest('button');
-    if (button && !button.contains(event.relatedTarget)) hover(button);
+
+  function playMusic(trackId) {
+    if (!music.has(trackId)) return;
+    queuedTrack = trackId;
+    if (!unlocked) return;
+    startTrack(trackId);
+  }
+
+  function stopMusic() {
+    queuedTrack = null;
+    const outgoing = active;
+    active = null;
+    currentId = null;
+    if (!outgoing) return;
+    const fadeOut = fade(outgoing, () => 0);
+    fadeOut.done.then((finished) => {
+      if (!finished || outgoing._ramp !== fadeOut.ramp || active === outgoing) return;
+      outgoing.pause();
+    });
+  }
+
+  function playSfx(sfxId) {
+    const spec = sfx.get(sfxId);
+    if (!spec || !unlocked || muted || volume === 0) return;
+    const cue = new Audio(spec.src);
+    cue.loop = false;
+    cue.volume = spec.volume * volume;
+    cue.play().catch(() => {});
+  }
+
+  function applyLevel() {
+    if (!active || !currentId) return;
+    const spec = music.get(currentId);
+    if (!spec) return;
+    active._ramp = (active._ramp || 0) + 1;
+    active.volume = levelFor(spec);
+  }
+
+  function setMuted(value) {
+    muted = Boolean(value);
+    const saved = persist();
+    if (!muted && unlocked && queuedTrack) startTrack(queuedTrack);
+    else applyLevel();
+    notify(saved, true);
+  }
+
+  function setVolume(value) {
+    volume = clamp01(value);
+    const saved = persist();
+    applyLevel();
+    notify(saved, true);
+  }
+
+  function toggleMute() {
+    setMuted(!muted);
+    return muted;
+  }
+
+  function onGesture() {
+    if (unlocked) return;
+    unlocked = true;
+    document.removeEventListener('pointerdown', onGesture, true);
+    document.removeEventListener('click', onGesture, true);
+    document.removeEventListener('keydown', onGesture, true);
+    if (queuedTrack) startTrack(queuedTrack);
+  }
+
+  document.addEventListener('pointerdown', onGesture, true);
+  document.addEventListener('click', onGesture, true);
+  document.addEventListener('keydown', onGesture, true);
+
+  return {
+    playMusic,
+    stopMusic,
+    playSfx,
+    setMuted,
+    setVolume,
+    toggleMute,
+    subscribe(watcher) {
+      watchers.add(watcher);
+      watcher({ muted, volume, saved: true });
+      return () => watchers.delete(watcher);
+    },
+    get muted() { return muted; },
+    get volume() { return volume; },
+  };
+}
+
+export const audioManager = createManager();
+
+let interfaceReady = false;
+
+function syncSettings(state) {
+  const mute = document.querySelector('#sfx-mute');
+  const musicEnabled = document.querySelector('#music-enabled');
+  const musicVolume = document.querySelector('#music-volume');
+  const sfxVolume = document.querySelector('#sfx-volume');
+  const musicOutput = document.querySelector('#music-value');
+  const sfxOutput = document.querySelector('#sfx-value');
+  const percent = String(Math.round(state.volume * 100));
+  if (mute) mute.checked = state.muted;
+  if (musicEnabled) musicEnabled.checked = !state.muted;
+  if (musicVolume && document.activeElement !== musicVolume) musicVolume.value = percent;
+  if (sfxVolume && document.activeElement !== sfxVolume) sfxVolume.value = percent;
+  if (musicOutput) musicOutput.value = `${musicVolume?.value ?? percent}%`;
+  if (sfxOutput) sfxOutput.value = `${sfxVolume?.value ?? percent}%`;
+  const hint = document.querySelector('#settings-dialog .hint');
+  if (hint && state.fromUser) {
+    hint.textContent = state.saved
+      ? 'Your preferences are saved on this device.'
+      : 'Audio preference applied for this session. Device storage is unavailable.';
+  }
+}
+
+function paintToggle(button, state) {
+  const on = !state.muted;
+  button.setAttribute('aria-pressed', String(state.muted));
+  button.setAttribute('aria-label', on ? 'Audio on' : 'Audio off');
+  button.title = on ? 'Audio on' : 'Audio off';
+  button.classList.toggle('is-muted', state.muted);
+}
+
+export function mountAudioUi() {
+  if (interfaceReady) return;
+  interfaceReady = true;
+
+  const button = document.querySelector('#audio-toggle');
+  if (button) {
+    audioManager.subscribe((state) => paintToggle(button, state));
+    button.addEventListener('click', () => audioManager.toggleMute());
+  }
+
+  document.addEventListener('click', (event) => {
+    const control = event.target.closest(PRIMARY_BUTTON);
+    if (!control || control.disabled || control.id === 'audio-toggle') return;
+    audioManager.playSfx('uiClick');
   });
-  document.addEventListener('focusin', event => { if (keyboard) hover(event.target.closest('button')); });
-  document.addEventListener('click', event => {
-    if (!event.isTrusted) return;
-    const button = event.target.closest('button');
-    if (!button || button.disabled || button.id === 'sfx-preview') return;
-    const back = button.classList.contains('close') || button.id === 'mission-back' || button.closest('form[method="dialog"]') && !button.id;
-    play(button.dataset.locked === 'true' ? 'locked' : ['play', 'begin-mission'].includes(button.id) ? 'launch' : back ? 'back' : 'click', true);
-  }, true);
-  document.querySelectorAll('dialog').forEach(dialog => dialog.addEventListener('cancel', event => {
-    if (event.isTrusted) play('back', true);
-  }));
-  volume.addEventListener('input', persist);
-  volume.addEventListener('change', () => play('click', true));
-  mute.addEventListener('change', persist);
-  preview.addEventListener('click', () => play('launch', true));
-  update();
+
+  const mute = document.querySelector('#sfx-mute');
+  const musicEnabled = document.querySelector('#music-enabled');
+  const musicVolume = document.querySelector('#music-volume');
+  const sfxVolume = document.querySelector('#sfx-volume');
+  mute?.addEventListener('change', () => audioManager.setMuted(mute.checked));
+  musicEnabled?.addEventListener('change', () => audioManager.setMuted(!musicEnabled.checked));
+  const onVolume = (input) => audioManager.setVolume(Number(input.value) / 100);
+  musicVolume?.addEventListener('input', () => onVolume(musicVolume));
+  sfxVolume?.addEventListener('input', () => onVolume(sfxVolume));
+
+  audioManager.subscribe((state) => syncSettings(state));
 }
