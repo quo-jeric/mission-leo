@@ -1,12 +1,7 @@
-const preferenceKey = 'leo_menu_settings_v1';
-const saveKey = 'leo_game_save_v1';
+import { openMissionSelection } from './missions.js';
+import { read, write, SAVE_KEY as saveKey, PREFERENCE_KEY as preferenceKey } from './storage.js';
+
 const motion = document.querySelector('#motion');
-function read(key) {
-  try { return JSON.parse(localStorage.getItem(key) || 'null'); } catch { return null; }
-}
-function write(key, value) {
-  try { localStorage.setItem(key, JSON.stringify(value)); return true; } catch { return false; }
-}
 motion.checked = read(preferenceKey)?.motion ?? !matchMedia('(prefers-reduced-motion: reduce)').matches;
 function updateMotion() { document.body.classList.toggle('still', !motion.checked); }
 updateMotion();
@@ -31,7 +26,7 @@ document.querySelector('#play').addEventListener('click', () => {
   startingNew = false;
   agency.value = read(saveKey)?.player?.agencyName || '';
   document.querySelector('#save-status').textContent = '';
-  document.querySelector('#play-dialog').showModal();
+  openMissionSelection();
 });
 document.querySelector('#confirm-new').addEventListener('click', () => {
   startingNew = true;

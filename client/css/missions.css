@@ -1,0 +1,385 @@
+/* Mission selection: shared component styles. */
+.mission-select {
+  --mission-accent: #9fddff;
+  position: relative;
+  z-index: 3;
+  min-height: 100svh;
+  padding: 26px 5vw 32px;
+  animation: mission-reveal 1.4s ease both;
+}
+
+.mission-select[hidden] {
+  display: none;
+}
+
+.mission-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  font: 11px 'Courier New', monospace;
+  letter-spacing: .12em;
+  color: #c5d9ec;
+}
+
+.mission-header p span {
+  color: #6e8ca7;
+  margin-left: 12px;
+}
+
+.text-button {
+  color: #c5d9ec;
+  background: #0b192aaa;
+  border: 1px solid #a6cdea30;
+  border-radius: 8px;
+  padding: 12px 16px;
+}
+
+.text-button:hover {
+  background: #1a304b;
+}
+
+/* The empty globe slot anchors the shared Three.js Earth. */
+.mission-stage {
+  position: relative;
+  min-height: 520px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 35px 0;
+}
+
+.mission-globe {
+  position: absolute;
+  left: 0;
+  top: 20px;
+  bottom: 90px;
+  width: 60%;
+  pointer-events: none;
+}
+
+.mission-brief {
+  width: 38%;
+  max-width: 470px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  scrollbar-width: none;
+  background: linear-gradient(120deg, #0b1c2cdd, #071321e8);
+  border: 1px solid #9ac4e52b;
+  border-radius: 18px;
+  backdrop-filter: blur(18px);
+  box-shadow: 0 20px 70px #0004;
+}
+
+.mission-brief::-webkit-scrollbar {
+  display: none;
+}
+
+.mission-brief > * {
+  flex-shrink: 0;
+}
+
+.mission-brief h2 {
+  font-size: clamp(30px, 3.4vw, 52px);
+  line-height: 1.05;
+  letter-spacing: -.04em;
+  margin: 18px 0;
+  color: #eef7ff;
+}
+
+.mission-brief > p:not(.eyebrow) {
+  color: #b7cada;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.mission-brief .eyebrow {
+  color: var(--mission-accent);
+  font: 10px monospace;
+  letter-spacing: .15em;
+}
+
+.mission-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin: 22px 0;
+}
+
+.mission-metrics span {
+  font: 11px monospace;
+  color: var(--mission-accent);
+  border: 1px solid #b6ddff26;
+  border-radius: 5px;
+  padding: 9px;
+  background: #a4dfff08;
+}
+
+.mission-brief ul {
+  padding-left: 17px;
+  color: #c7d7e5;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.mission-brief li {
+  margin-bottom: 8px;
+}
+
+.mission-brief .action {
+  background: var(--mission-accent);
+  min-height: 48px;
+  transition: background-color .7s ease, color .7s ease;
+}
+
+.mission-brief #begin-mission {
+  margin-top: auto;
+}
+
+.mission-brief #unlock-requirement {
+  min-height: 48px;
+  margin-bottom: 0;
+}
+
+.action:disabled {
+  cursor: default;
+  filter: none;
+  background: #243347;
+  color: #9aaec0;
+}
+
+.globe-caption {
+  position: absolute;
+  left: 4%;
+  bottom: 45px;
+  font: 10px monospace;
+  letter-spacing: .15em;
+  color: var(--mission-accent);
+}
+
+.globe-caption p {
+  font-size: 8px;
+  color: #7794ae;
+}
+
+.live-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--mission-accent);
+  box-shadow: 0 0 14px var(--mission-accent);
+  margin-right: 8px;
+  transition: background-color .7s ease, box-shadow .7s ease;
+}
+
+/* Scenario navigation cards and status icons. */
+.scenario-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.scenario-card {
+  position: relative;
+  text-align: left;
+  padding: 24px 20px 20px 64px;
+  color: #d4e3ef;
+  border: 1px solid #8fb5d52b;
+  border-radius: 12px;
+  background: #0a182be0;
+  transition: background .25s, border-color .25s, transform .25s;
+}
+
+.scenario-card:hover {
+  background: #142a40;
+  transform: translateY(-3px);
+}
+
+.scenario-card[aria-pressed=true] {
+  border-color: var(--mission-accent);
+  background: linear-gradient(120deg, #20374cdd, #101e30ed);
+  box-shadow: inset 0 2px var(--mission-accent), 0 12px 40px #0003;
+}
+
+.scenario-number {
+  position: absolute;
+  left: 20px;
+  top: 22px;
+  color: #7595ae;
+  font: 20px monospace;
+}
+
+.scenario-card strong {
+  display: block;
+  font-size: 16px;
+  margin-bottom: 9px;
+}
+
+.scenario-tier,
+.scenario-state {
+  font: 9px monospace;
+  letter-spacing: .1em;
+  display: block;
+  color: #87a3bd;
+}
+
+.scenario-state {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 18px;
+  margin-top: 18px;
+  color: #b6d8ed;
+}
+
+.scenario-lock {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  color: #91a8bd;
+  flex: none;
+}
+
+.scenario-lock[hidden] {
+  display: none;
+}
+
+.scenario-lock svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+}
+
+.scenario-card[data-locked=true] .scenario-state {
+  color: #91a8bd;
+}
+
+.scenario-card[data-locked=true][aria-pressed=true] .scenario-lock {
+  color: var(--mission-accent);
+}
+
+/* Menu-to-mission visibility and illustrated WebGL fallback. */
+.menu {
+  transition: opacity .35s;
+}
+
+.selecting-mission .menu {
+  display: none;
+}
+
+.selecting-mission .menu,
+.selecting-mission .credits-button,
+.selecting-mission .scene-caption,
+.selecting-mission .version {
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.selecting-mission .orbital-ring {
+  opacity: 0;
+}
+
+.selecting-mission .earth {
+  width: 46vw;
+  height: 46vw;
+  left: 5vw;
+  top: 14%;
+  transition: none;
+}
+
+.selecting-mission .satellite,
+.selecting-mission .moon,
+.selecting-mission .sun {
+  opacity: 0;
+}
+
+.mission-metrics span,
+.mission-brief .eyebrow,
+.globe-caption,
+.scenario-lock {
+  transition: color .7s ease;
+}
+
+@keyframes mission-reveal {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* A single desktop design, proportionally fitted by fitMissionScreen(). */
+@media (min-width: 851px) {
+  .mission-select:not([hidden]) {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 1920px;
+    height: 1080px;
+    min-height: 1080px;
+    margin: 0 0 0 -960px;
+    display: flex;
+    flex-direction: column;
+    padding: 36px 96px 44px;
+    gap: 24px;
+    transform: scale(var(--mission-scale, 1));
+    transform-origin: top center;
+    animation: none;
+  }
+
+  .mission-header {
+    flex: none;
+    min-height: 44px;
+  }
+
+  .mission-stage {
+    flex: 1;
+    min-height: 0;
+    padding: 0;
+  }
+
+  .mission-brief {
+    width: 520px;
+    max-width: 520px;
+    height: 620px;
+    padding: 32px;
+  }
+
+  .mission-brief h2 { font-size: 52px; }
+  .mission-globe { width: 62%; top: 0; bottom: 62px; }
+  .globe-caption { left: 5%; top: auto; bottom: 10px; }
+  .scenario-cards { flex: none; gap: 20px; }
+  .scenario-card { min-height: 132px; padding: 26px 20px 24px 64px; }
+}
+
+/* Mobile uses a vertically stacked Earth, briefing, and scenario list. */
+@media (max-width: 850px) {
+  .mission-select { padding: 18px 5vw 30px; }
+  .mission-header { font-size: 9px; gap: 10px; }
+  .mission-header p span { display: none; }
+  .mission-header > span { white-space: nowrap; }
+  .text-button { padding: 10px; font-size: 10px; }
+  .mission-stage { padding-top: 290px; min-height: 0; }
+  .mission-brief { width: 100%; max-width: none; height: 760px; }
+  .mission-globe { top: 12px; bottom: auto; left: 0; width: 100%; height: 250px; }
+  .globe-caption { top: 255px; bottom: auto; left: 0; }
+  .scenario-cards { gap: 9px; }
+  .scenario-card { padding: 18px 12px; }
+  .scenario-number { position: static; display: block; margin-bottom: 12px; }
+  .scenario-card strong { font-size: 13px; }
+  .scenario-tier, .scenario-state { font-size: 8px; }
+  .selecting-mission .earth { width: 260px; height: 260px; left: calc(50% - 130px); top: 90px; }
+}
+
+/* Motion preferences also apply to interface accents. */
+.still .mission-select { animation: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .mission-select { animation: none; }
+  .scenario-card, .menu, .mission-brief .action,
+  .mission-metrics span, .mission-brief .eyebrow,
+  .globe-caption, .scenario-lock, .live-dot { transition: none; }
+}
