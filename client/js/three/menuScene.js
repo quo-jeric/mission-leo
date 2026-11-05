@@ -1,5 +1,6 @@
 import * as THREE from '../../vendor/three/three.module.js';
 import { createMoon, createSatellite } from './menuModels.js';
+import { read, PREFERENCE_KEY, SAVE_KEY } from '../storage.js';
 
 // All textures are local, generated once, and require no remote services.
 function earthMaps() {
@@ -52,7 +53,11 @@ export function createMenuScene() {
   const host = document.querySelector('.space');
   let renderer;
   try { renderer = new THREE.WebGLRenderer({alpha:true,antialias:true,powerPreference:'low-power'}); } catch { return; }
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
+  const applyQuality = value => {
+    const cap = { low: .75, medium: 1, high: 1.5 }[value] ?? 1.5;
+    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, cap));
+  };
+  applyQuality(read(PREFERENCE_KEY)?.graphicsQuality ?? read(SAVE_KEY)?.settings?.graphicsQuality);
   renderer.setClearColor(0x000000,0);
   renderer.domElement.className = 'planet-scene';
   renderer.domElement.setAttribute('aria-hidden','true');
@@ -202,11 +207,14 @@ export function createMenuScene() {
   const observer=new MutationObserver(resume);observer.observe(document.body,{attributes:true,attributeFilter:['class']});
   document.addEventListener('visibilitychange',resume);reducedMotion.addEventListener('change',resume);
   addEventListener('resize',resize);
+  const qualityChanged = event => { applyQuality(event.detail); resize(); resume(); };
+  addEventListener('graphics-quality', qualityChanged);
   const layoutObserver=new ResizeObserver(()=>{resize();resume();});layoutObserver.observe(host);
   renderer.domElement.addEventListener('webglcontextlost',event=>{event.preventDefault();host.classList.remove('has-3d');if(frame)cancelAnimationFrame(frame);});
   renderer.domElement.addEventListener('webglcontextrestored',()=>{resize();host.classList.add('has-3d');resume();});
   resize();host.classList.add('has-3d');resume();
   addEventListener('pagehide',()=>{
+    removeEventListener('graphics-quality', qualityChanged);
     if(frame)cancelAnimationFrame(frame);observer.disconnect();layoutObserver.disconnect();removeEventListener('resize',resize);document.removeEventListener('visibilitychange',resume);reducedMotion.removeEventListener('change',resume);
     const geometries=new Set(),materials=new Set(),textures=new Set();
     scene.traverse(object=>{

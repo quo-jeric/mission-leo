@@ -1,4 +1,5 @@
 import { openMissionSelection } from './missions.js';
+import { scenarios } from './data/scenarios.js';
 import { read, write, SAVE_KEY as saveKey, PREFERENCE_KEY as preferenceKey } from './storage.js';
 
 const motion = document.querySelector('#motion');
@@ -7,20 +8,56 @@ function updateMotion() { document.body.classList.toggle('still', !motion.checke
 updateMotion();
 motion.addEventListener('change', () => {
   updateMotion();
-  const saved = write(preferenceKey, { motion: motion.checked });
+  const saved = write(preferenceKey, { ...read(preferenceKey), motion: motion.checked });
   document.querySelector('#settings-dialog .hint').textContent = saved ? 'Your preference is saved on this device.' : 'Preference applied for this session. Device storage is unavailable.';
+});
+// Optional audio must never interrupt menu navigation or graphics startup.
+import('./audio.js').then(({ setupMenuAudio }) => setupMenuAudio()).catch(error => {
+  console.warn('Menu audio unavailable; continuing without sound.', error);
 });
 for (const name of ['settings', 'how-to-play', 'credits', 'new-game']) {
   document.querySelector(`#${name}`).addEventListener('click', () => document.querySelector(`#${name}-dialog`).showModal());
 }
 const agency = document.querySelector('#agency');
+document.querySelector('#agency-profile').addEventListener('click', () => {
+  const save = read(saveKey);
+  const player = save?.player;
+  document.querySelector('#profile-name').textContent = player?.agencyName || 'No agency created yet';
+  const metrics = [
+    ['Credits', new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(player?.credits ?? 0)],
+    ['Reputation', player?.reputation ?? 0],
+    ['Launches', player?.stats?.launches ?? 0],
+    ['Completed contracts', player?.stats?.contractsCompleted ?? 0],
+    ['Satellites deorbited', player?.stats?.satellitesDeorbited ?? 0],
+    ['Saved blueprints', Array.isArray(save?.blueprints) ? save.blueprints.length : 0],
+  ];
+  document.querySelector('#profile-stats').replaceChildren(...metrics.flatMap(([label, value]) => {
+    const term = document.createElement('dt');
+    const description = document.createElement('dd');
+    term.textContent = label;
+    description.textContent = String(value);
+    return [term, description];
+  }));
+  document.querySelector('#profile-hint').textContent = player?.agencyName
+    ? 'Progress saved on this device.'
+    : 'Play to explore missions. Your agency statistics will appear here once an agency is saved.';
+  document.querySelector('#agency-profile-dialog').showModal();
+});
 let startingNew = false;
 function refreshSaveMenu() {
-  const hasAgency = Boolean(read(saveKey)?.player?.agencyName);
+  const save = read(saveKey);
+  const hasAgency = Boolean(save?.player?.agencyName);
   document.querySelector('#play-label').textContent = hasAgency ? 'CONTINUE' : 'PLAY';
   document.querySelector('#new-game').hidden = !hasAgency;
+  const summary = document.querySelector('#continue-summary');
+  summary.hidden = !hasAgency;
+  const mission = scenarios.find(item => item.id === save?.selectedMission);
+  const complete = scenarios.filter(item => save?.missionProgress?.[item.id]?.completed === true).length;
+  summary.textContent = hasAgency ? `${save.player.agencyName} · ${mission?.title || 'Choose your first mission'} · ${complete}/${scenarios.length} complete` : '';
 }
 refreshSaveMenu();
+window.addEventListener('mission-saved', refreshSaveMenu);
+window.addEventListener('storage', refreshSaveMenu);
 agency.value = read(saveKey)?.player?.agencyName || '';
 document.querySelector('#play').addEventListener('click', () => {
   startingNew = false;
@@ -64,7 +101,24 @@ function drawStars() {
 drawStars();
 addEventListener('resize', drawStars);
 
-// Keep the illustrated background when WebGL is unavailable.
-import('./three/menuScene.js').then(({ createMenuScene }) => createMenuScene()).catch(error => {
-  console.warn('3D menu unavailable; using illustrated background.', error);
+const quality = document.querySelector('#graphics-quality');
+const savedQuality = read(preferenceKey)?.graphicsQuality ?? read(saveKey)?.settings?.graphicsQuality;
+quality.value = ['low', 'medium', 'high'].includes(savedQuality) ? savedQuality : 'high';
+quality.addEventListener('change', () => {
+  const saved = write(preferenceKey, { ...read(preferenceKey), graphicsQuality: quality.value });
+  window.dispatchEvent(new CustomEvent('graphics-quality', { detail: quality.value }));
+  document.querySelector('#settings-dialog .hint').textContent = saved ? 'Graphics quality updated and saved.' : 'Graphics quality applied for this session.';
+});
+const fullscreen = document.querySelector('#fullscreen');
+fullscreen.hidden = !document.fullscreenEnabled;
+document.addEventListener('fullscreenchange', () => { fullscreen.textContent = document.fullscreenElement ? 'Exit fullscreen' : 'Enter fullscreen'; });
+fullscreen.addEventListener('click', async () => {
+  try {
+    if (document.fullscreenElement) await document.exitFullscreen();
+    else await document.documentElement.requestFullscreen();
+  } catch { document.querySelector('#settings-dialog .hint').textContent = 'Fullscreen is unavailable in this browser window.'; }
+});
+document.querySelector('#replay-guide').addEventListener('click', () => {
+  document.querySelector('#settings-dialog').close();
+  document.querySelector('#guide-dialog').showModal();
 });

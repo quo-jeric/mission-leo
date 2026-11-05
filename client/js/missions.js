@@ -1,5 +1,5 @@
 import { scenarios } from './data/scenarios.js';
-import { read, write, SAVE_KEY } from './storage.js';
+import { read, write, SAVE_KEY, PREFERENCE_KEY } from './storage.js';
 
 const screen = document.querySelector('#mission-select');
 const cards = document.querySelector('#scenario-cards');
@@ -144,6 +144,9 @@ export function openMissionSelection() {
   const saved = scenarios.findIndex(scenario => scenario.id === readSave().selectedMission);
   select(saved >= 0 ? saved : 0);
   document.querySelector('#mission-back').focus();
+  if (!read(PREFERENCE_KEY)?.guideSeen) {
+    document.querySelector('#guide-dialog').showModal();
+  }
 }
 
 function closeSelection() {
@@ -161,6 +164,7 @@ function beginMission() {
   const save = readSave();
   save.selectedMission = scenario.id;
   const saved = write(SAVE_KEY, save);
+  window.dispatchEvent(new Event('mission-saved'));
 
   document.querySelector('#requirements-title').textContent = scenario.title;
   const paragraphs = [scenario.detail, ...scenario.objectives];
@@ -173,6 +177,10 @@ function beginMission() {
 
 // Initialize cards and wire screen-level interactions once.
 cards.replaceChildren(...scenarios.map(createScenarioCard));
+document.querySelector('#guide-dialog').addEventListener('close', () => {
+  write(PREFERENCE_KEY, { ...read(PREFERENCE_KEY), guideSeen: true });
+  if (!screen.hidden) document.querySelector('#mission-back').focus();
+});
 fitMissionScreen();
 window.addEventListener('resize', fitMissionScreen);
 document.querySelector('#mission-back').addEventListener('click', closeSelection);

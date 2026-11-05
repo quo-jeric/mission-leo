@@ -1,3 +1,18 @@
 /* Entry point: shared/menu styles first, mission components second. */
 @import url('./menu.css');
 @import url('./missions.css');
+@import url('./buttons.css');
+@import url('./menu-polish.css');
+@import url('./settings.css');
+
+/* Preserve layout measurements while avoiding a flash of illustrated objects. */
+.scene-loading .earth,
+.scene-loading .sun,
+.scene-loading .moon,
+.scene-loading .satellite {
+  visibility: hidden;
+}
+
+.space:not(.has-3d) .planet-scene {
+  visibility: hidden;
+}
