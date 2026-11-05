@@ -1,0 +1,93 @@
+{
+  "stations": [
+    {
+      "id": "gs_svalbard",
+      "name": "Svalbard Satellite Station (SvalSat)",
+      "country": "Norway",
+      "latDeg": 78.23,
+      "lonDeg": 15.41,
+      "altM": 450,
+      "minElevationDeg": 5.0,
+      "supportedBands": ["UHF", "S_Band", "X_Band", "Laser_Optical"],
+      "description": "High-latitude Arctic station offering visibility on all 14 daily orbits for polar and SSO satellites."
+    },
+    {
+      "id": "gs_goldstone",
+      "name": "Goldstone Deep Space Complex",
+      "country": "United States",
+      "latDeg": 35.43,
+      "lonDeg": -116.89,
+      "altM": 1030,
+      "minElevationDeg": 10.0,
+      "supportedBands": ["S_Band", "X_Band"],
+      "description": "Mojave desert primary tracking station with massive aperture dishes and low atmospheric interference."
+    },
+    {
+      "id": "gs_madrid",
+      "name": "Madrid Deep Space Complex",
+      "country": "Spain",
+      "latDeg": 40.43,
+      "lonDeg": -4.25,
+      "altM": 780,
+      "minElevationDeg": 10.0,
+      "supportedBands": ["S_Band", "X_Band"],
+      "description": "European hub for deep space and mid-inclination LEO telemetry."
+    },
+    {
+      "id": "gs_canberra",
+      "name": "Canberra Deep Space Complex",
+      "country": "Australia",
+      "latDeg": -35.40,
+      "lonDeg": 148.98,
+      "altM": 650,
+      "minElevationDeg": 10.0,
+      "supportedBands": ["S_Band", "X_Band"],
+      "description": "Southern Hemisphere anchor in the Tidbinbilla Valley."
+    },
+    {
+      "id": "gs_kourou",
+      "name": "Kourou Ground Station (Diane)",
+      "country": "French Guiana",
+      "latDeg": 5.25,
+      "lonDeg": -52.81,
+      "altM": 15,
+      "minElevationDeg": 8.0,
+      "supportedBands": ["UHF", "S_Band", "X_Band"],
+      "description": "Equatorial tracking station adjacent to Guiana Space Centre."
+    },
+    {
+      "id": "gs_singapore",
+      "name": "Singapore CRISP Ground Station",
+      "country": "Singapore",
+      "latDeg": 1.30,
+      "lonDeg": 103.77,
+      "altM": 30,
+      "minElevationDeg": 10.0,
+      "supportedBands": ["S_Band", "X_Band"],
+      "description": "Strategic equatorial station covering Southeast Asia and Malacca shipping corridors."
+    },
+    {
+      "id": "gs_troll",
+      "name": "TrollSat Ground Station",
+      "country": "Antarctica",
+      "latDeg": -72.01,
+      "lonDeg": 2.53,
+      "altM": 1270,
+      "minElevationDeg": 5.0,
+      "supportedBands": ["S_Band", "X_Band"],
+      "description": "Antarctic ice plateau station, complementing SvalSat for near-continuous dual-pole polar tracking."
+    },
+    {
+      "id": "gs_fairbanks",
+      "name": "Fairbanks Satellite Facility",
+      "country": "United States",
+      "latDeg": 64.86,
+      "lonDeg": -147.85,
+      "altM": 190,
+      "minElevationDeg": 7.0,
+      "supportedBands": ["UHF", "S_Band", "X_Band"],
+      "description": "Alaskan sub-polar station for rapid earth observation downlinks."
+    }
+  ]
+}
+
