@@ -112,6 +112,11 @@ function createScenarioCard(scenario, index) {
   button.className = 'scenario-card';
   button.type = 'button';
 
+  const selectedMark = document.createElement('span');
+  selectedMark.className = 'scenario-selected';
+  selectedMark.setAttribute('aria-hidden', 'true');
+  selectedMark.textContent = '✓';
+
   const number = document.createElement('span');
   number.className = 'scenario-number';
   number.textContent = `0${index + 1}`;
@@ -129,7 +134,7 @@ function createScenarioCard(scenario, index) {
   stateLabel.className = 'scenario-state-label';
   state.append(createLockIcon(), stateLabel);
 
-  button.append(number, title, tier, state);
+  button.append(selectedMark, number, title, tier, state);
   button.addEventListener('click', () => select(index));
   button.addEventListener('keydown', event => handleCardNavigation(event, index));
   return button;
