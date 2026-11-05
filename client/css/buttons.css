@@ -1,0 +1,143 @@
+/* Main-menu controls: aerospace glass, cyan navigation, solar-gold launch. */
+#settings-dialog #sfx-volume {
+  display: block;
+  width: 100%;
+  padding: 0;
+  margin: 0 0 20px;
+  accent-color: #00f0ff;
+}
+
+#sfx-value { color: #9be8f7; font-variant-numeric: tabular-nums; }
+
+.menu nav {
+  gap: 10px;
+}
+
+.menu nav button {
+  isolation: isolate;
+  overflow: hidden;
+  gap: 14px;
+  padding: 9px 18px;
+  min-height: 52px;
+  border: 1px solid rgba(126, 188, 221, .25);
+  border-radius: 6px 14px 6px 14px;
+  background: linear-gradient(110deg, rgba(21, 43, 65, .92), rgba(8, 18, 35, .9));
+  color: #e3eff8;
+  box-shadow: inset 0 1px rgba(213, 242, 255, .07), 0 6px 18px #01061033;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: .055em;
+  text-align: left;
+  transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease, background .18s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.menu nav button::before {
+  top: 22%;
+  left: 0;
+  height: 56%;
+  width: 2px;
+  background: #00f0ff;
+  box-shadow: 0 0 12px #00f0ff80;
+}
+
+.menu .button-icon {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 30px;
+  width: 30px;
+  height: 30px;
+  border: 1px solid #93dfff26;
+  border-radius: 7px;
+  background: #69d9ff0b;
+  color: #9be8f7;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.menu .button-arrow {
+  color: #9be8f7;
+  font-size: 18px;
+  opacity: .65;
+  transition: transform .18s ease, opacity .18s ease;
+}
+
+.menu nav #play {
+  min-height: 66px;
+  border-color: #ffe3a6;
+  background: linear-gradient(115deg, #ffe6af, #ffd166 65%, #eeb54c);
+  color: #252314;
+  box-shadow: inset 0 1px #ffffff80, 0 5px 24px #ffd16620;
+  font-weight: 800;
+  letter-spacing: .15em;
+}
+
+.menu #play .button-icon {
+  border-color: #44320b26;
+  background: #47390c0d;
+  color: #352c13;
+}
+
+.menu #play .button-arrow {
+  color: #352c13;
+}
+
+.menu nav button:focus-visible {
+  outline: 2px solid #00f0ff;
+  outline-offset: 4px;
+  border-color: #9be8f7;
+}
+
+@media (hover: hover) {
+  .menu nav button:hover {
+    transform: translateX(4px);
+    border-color: #65dbe7a6;
+    background: linear-gradient(110deg, #173b50f2, #0c2035f2);
+    box-shadow: inset 0 1px #d5f2ff14, 0 6px 24px #00f0ff0d;
+  }
+
+  .menu nav #play:hover {
+    background: linear-gradient(115deg, #fff0ce, #ffdc86 65%, #ffc65a);
+    border-color: #fff2d4;
+    box-shadow: inset 0 1px #ffffff99, 0 7px 28px #ffd16633;
+  }
+
+  .menu nav button:hover .button-arrow {
+    transform: translate(2px, -2px);
+    opacity: 1;
+  }
+}
+
+.menu nav button:active {
+  transform: translateX(2px) scale(.99);
+}
+
+.menu nav button[hidden] {
+  display: none;
+}
+
+@media (max-width: 650px) {
+  .menu nav button { min-height: 48px; padding: 8px 14px; font-size: 13px; }
+  .menu nav #play { min-height: 58px; }
+  .menu .button-icon { flex-basis: 28px; width: 28px; height: 28px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu nav button, .menu nav button::before, .menu .button-arrow { transition: none; }
+  .menu nav button:hover, .menu nav button:active, .menu nav button:hover .button-arrow { transform: none; }
+}
+
+body.still .menu nav button,
+body.still .menu nav button::before,
+body.still .menu .button-arrow { transition: none; }
+
+@media (forced-colors: active) {
+  .menu nav button, .menu nav #play, .menu .button-icon {
+    border-color: ButtonText;
+    background: ButtonFace;
+    color: ButtonText;
+    box-shadow: none;
+  }
+  .menu .button-arrow, .menu #play .button-arrow, .menu #play .button-icon { color: ButtonText; }
+  .menu nav button:focus-visible { outline-color: Highlight; }
+}

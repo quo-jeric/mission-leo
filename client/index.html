@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#080c24">
+    <title>Mission: LEO — Satellite</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <script>document.documentElement.classList.add('scene-loading');</script>
+    <script type="module" src="/js/scene.js"></script>
+    <script type="module" src="/js/main.js"></script>
+  </head>
+  <body>
+    <main class="space" aria-label="Mission LEO game menu">
+      <canvas id="stars" aria-hidden="true"></canvas>
+      <div class="galaxy" aria-hidden="true"></div>
+      <div class="orbital-ring" aria-hidden="true"></div>
+      <div class="sun" aria-hidden="true"></div>
+      <div class="moon" aria-hidden="true">
+        <i></i>
+        <i></i>
+        <i></i>
+        <i></i>
+      </div>
+      <div class="earth" aria-hidden="true">
+        <svg viewBox="0 0 500 600"><defs><filter id="terrain"><feTurbulence baseFrequency=".024" numOctaves="5" seed="8"></feTurbulence><feColorMatrix values="0 0 0 0 .28 0 0 0 0 .5 0 0 0 0 .19 1 0 0 0 -.46"></feColorMatrix><feComposite in2="SourceGraphic" operator="in"></feComposite></filter><filter id="clouds"><feTurbulence baseFrequency=".012 .025" numOctaves="4" seed="4"></feTurbulence><feColorMatrix values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 1 0 0 0 -.55"></feColorMatrix></filter></defs><ellipse cx="250" cy="300" rx="250" ry="300" fill="#28668a"></ellipse><rect width="500" height="600" filter="url(#terrain)"></rect><rect width="500" height="600" filter="url(#clouds)" opacity=".65"></rect></svg>
+      </div>
+      <section class="menu" id="menu">
+        <p id="scene-status" class="scene-status" role="status">Preparing orbital scene…</p>
+        <p class="menu-kicker"><span></span> SATELLITE DESIGN &amp; ORBITAL SIMULATION</p>
+        <h1 aria-label="Mission LEO Satellite"><span class="mission">MISSION</span><span class="title-line"><span class="leo">LE<span class="logo-o">O<svg class="logo-orbit" viewBox="0 0 160 140" aria-hidden="true"><ellipse cx="80" cy="70" rx="77" ry="27" transform="rotate(-34 80 70)"></ellipse><g transform="translate(139 33) rotate(-34)"><path d="M-15-4H-6V4H-15ZM6-4H15V4H6Z"></path><rect x="-4" y="-6" width="8" height="12" rx="1"></rect></g></svg></span></span><span class="satellite-word">SATELLITE</span></span></h1>
+        <p class="menu-description">Build your satellite. Command your orbit.</p>
+        <nav aria-label="Main menu">
+          <button id="play"><span class="button-icon" aria-hidden="true">▷</span><span id="play-label">PLAY</span><span class="button-arrow" aria-hidden="true">↗</span></button>
+          <button id="new-game" hidden=""><span class="button-icon" aria-hidden="true">+</span><span>New Game</span><span class="button-arrow" aria-hidden="true">↗</span></button>
+          <button id="how-to-play"><span class="button-icon" aria-hidden="true">?</span><span>How to Play</span><span class="button-arrow" aria-hidden="true">↗</span></button>
+          <button id="agency-profile"><span class="button-icon" aria-hidden="true">◎</span><span>Agency Profile</span><span class="button-arrow" aria-hidden="true">↗</span></button>
+          <button id="settings"><span class="button-icon" aria-hidden="true">⚙</span><span>Settings</span><span class="button-arrow" aria-hidden="true">+</span></button>
+        </nav>
+        <p id="continue-summary" class="continue-summary" hidden></p>
+        <p class="menu-caption">DESIGN <span>·</span> LAUNCH <span>·</span> OPERATE</p>
+      </section>
+      <svg class="satellite" viewBox="0 0 650 340" role="img" aria-label="Blue satellite with two solar panel wings">
+      <defs>
+        <linearGradient id="panel" x2="0" y2="1"><stop stop-color="#91c4fb"></stop><stop offset="1" stop-color="#437bc4"></stop></linearGradient>
+        <linearGradient id="body" x2="1" y2=".7"><stop stop-color="#a4dbff"></stop><stop offset=".45" stop-color="#71b5f3"></stop><stop offset="1" stop-color="#3575c5"></stop></linearGradient>
+        <linearGradient id="metal"><stop stop-color="#8997a9"></stop><stop offset=".5" stop-color="#fff"></stop><stop offset="1" stop-color="#b6c0cb"></stop></linearGradient>
+        <radialGradient id="lens"><stop stop-color="#343e44"></stop><stop offset=".8" stop-color="#19232b"></stop><stop offset="1" stop-color="#080d13"></stop></radialGradient>
+        <pattern id="cells" width="54" height="62" patternUnits="userSpaceOnUse"><rect x="4" y="4" width="46" height="54" rx="3" fill="#174b83" stroke="#97d5ff" stroke-width="1.5"></rect><path d="M6 22H48M6 40H48M27 6V56" stroke="#80bbf1" stroke-width=".7" opacity=".65"></path><path d="M7 7H46" stroke="#d3f0ff" stroke-width="1"></path></pattern>
+        <filter id="shadow"><feDropShadow dx="4" dy="9" stdDeviation="6" flood-opacity=".4"></feDropShadow></filter>
+      </defs>
+      <g transform="translate(15 18) rotate(13 310 150)" filter="url(#shadow)">
+        <path d="M248 150H375" stroke="url(#metal)" stroke-width="17"></path>
+        <g transform="translate(0 66) skewY(5)"><rect width="243" height="137" rx="6" fill="url(#panel)" stroke="#284c85" stroke-width="5"></rect><rect x="10" y="6" width="220" height="124" fill="url(#cells)"></rect></g>
+        <g transform="translate(375 92) skewY(5)"><rect width="243" height="137" rx="6" fill="url(#panel)" stroke="#284c85" stroke-width="5"></rect><rect x="10" y="6" width="220" height="124" fill="url(#cells)"></rect></g>
+        <path d="M278 36 Q319 20 357 36L347 69H288Z" fill="url(#metal)"></path>
+        <rect x="268" y="63" width="99" height="173" rx="10" fill="url(#body)"></rect>
+        <path d="M276 71H359M276 225H359" stroke="#e2f4ff" stroke-width="2" opacity=".7"></path>
+        <circle cx="278" cy="80" r="2" fill="#e0efff"></circle><circle cx="357" cy="80" r="2" fill="#e0efff"></circle>
+        <path d="M268 97H367V120H268ZM268 191H367V213H268Z" fill="#346cc1" opacity=".7"></path>
+        <ellipse cx="300" cy="150" rx="29" ry="33" fill="url(#metal)"></ellipse><ellipse cx="300" cy="150" rx="22" ry="26" fill="url(#lens)"></ellipse>
+        <ellipse cx="294" cy="141" rx="10" ry="12" fill="#8dd8f9" opacity=".16"></ellipse><circle cx="347" cy="175" r="3" fill="#b6ffd5"></circle>
+        <path d="M286 235H349L365 268Q317 280 265 267Z" fill="url(#body)"></path>
+        <path d="M314 275V305" stroke="#9bafba" stroke-width="7"></path><circle cx="314" cy="311" r="17" fill="url(#body)"></circle>
+      </g>
+    </svg>
+      <section id="mission-select" class="mission-select" hidden="" aria-labelledby="mission-heading">
+        <header class="mission-header">
+          <button id="mission-back" class="text-button">← Main menu</button>
+          <p id="mission-heading">MISSION SELECT <span>/ EARTH OBSERVATION</span></p>
+          <span id="mission-progress">0 / 3 COMPLETE</span>
+        </header>
+        <div class="mission-stage">
+          <div class="mission-globe" aria-hidden="true"></div>
+          <div class="globe-caption">
+            <span class="live-dot"></span>
+            <span id="preview-caption">TARGET ACCESS PREVIEW</span>
+            <p>ILLUSTRATIVE ORBIT · NOT TO SCALE</p>
+          </div>
+          <article class="mission-brief" aria-live="polite"><p class="eyebrow" id="mission-tier"></p><h2 id="mission-title" tabindex="-1"></h2><p id="mission-summary"></p><div class="mission-metrics" id="mission-metrics"></div><p class="eyebrow">MISSION OBJECTIVES</p><ul id="mission-objectives"></ul><button id="begin-mission" class="action">Begin Mission →</button><p id="unlock-requirement" class="hint"></p></article>
+        </div>
+        <div id="scenario-cards" class="scenario-cards" role="group" aria-label="Select a scenario"></div>
+      </section>
+      <dialog id="requirements-dialog" aria-labelledby="requirements-title">
+        <button class="close" id="requirements-close" aria-label="Close requirements">×</button>
+        <p class="eyebrow">MISSION REQUIREMENTS</p>
+        <h2 id="requirements-title"></h2>
+        <div id="requirements-body"></div>
+        <p class="hint">Satellite assembly and simulation are in development. Your selected mission is saved for your next visit.</p>
+        <button id="requirements-done" class="action">Back to mission selection</button>
+      </dialog>
+      <dialog id="agency-profile-dialog" aria-labelledby="profile-title">
+        <form method="dialog">
+          <button class="close" aria-label="Close agency profile">×</button>
+          <p class="eyebrow">AGENCY OVERVIEW</p>
+          <h2 id="profile-title">Agency Profile</h2>
+          <p id="profile-name"></p>
+          <dl id="profile-stats" class="credits-list"></dl>
+          <p id="profile-hint" class="hint"></p>
+          <button class="action">Back to menu</button>
+        </form>
+      </dialog>
+      <dialog id="settings-dialog" aria-labelledby="settings-title">
+        <form method="dialog">
+          <button class="close" aria-label="Close settings">×</button>
+          <header class="settings-heading">
+            <p class="eyebrow">MISSION CONTROL / PREFERENCES</p>
+            <h2 id="settings-title">Make space yours.</h2>
+            <p>Fine-tune your flight environment.</p>
+          </header>
+          <div class="settings-grid">
+            <fieldset class="settings-section">
+              <legend><span aria-hidden="true">01</span> Audio</legend>
+              <label for="sfx-mute"><span>Mute sound effects<small>Interface tones &amp; mission cues</small></span><input id="sfx-mute" type="checkbox" role="switch"></label>
+              <div class="settings-slider">
+                <label for="sfx-volume">Effects volume <output id="sfx-value" for="sfx-volume">45%</output></label>
+                <input id="sfx-volume" type="range" min="0" max="100" step="1" value="45" aria-label="Sound effects volume">
+              </div>
+              <button id="sfx-preview" class="action secondary" type="button">▷ Test sound</button>
+              <label class="settings-divider" for="music-enabled"><span>Ambient music<small>A quiet soundtrack for your mission</small></span><input id="music-enabled" type="checkbox" role="switch"></label>
+              <div class="settings-slider">
+                <label for="music-volume">Music volume <output id="music-value" for="music-volume">25%</output></label>
+                <input id="music-volume" type="range" min="0" max="100" value="25" aria-label="Music volume">
+              </div>
+            </fieldset>
+            <fieldset class="settings-section">
+              <legend><span aria-hidden="true">02</span> Display</legend>
+              <label for="motion"><span>Animated background<small>Celestial motion &amp; transitions</small></span><input id="motion" type="checkbox" role="switch" checked=""></label>
+              <label class="quality-row" for="graphics-quality"><span>Graphics quality<small>Balance clarity and performance</small></span><select id="graphics-quality"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select></label>
+              <button id="fullscreen" class="action secondary" type="button">Enter fullscreen</button>
+              <div class="settings-help settings-divider">
+                <p>Need a flight refresher?</p>
+                <button id="replay-guide" class="action secondary" type="button">Replay quick guide ↗</button>
+              </div>
+            </fieldset>
+          </div>
+          <footer class="settings-footer">
+            <p class="hint" role="status">Your preferences are saved on this device.</p>
+            <button class="action">Done <span aria-hidden="true">✓</span></button>
+          </footer>
+        </form>
+      </dialog>
+      <dialog id="guide-dialog" aria-labelledby="guide-title">
+        <form method="dialog">
+          <button class="close" aria-label="Close quick guide">×</button>
+          <p class="eyebrow">FIRST FLIGHT / QUICK GUIDE</p>
+          <h2 id="guide-title">Welcome, mission director.</h2>
+          <ol class="mission-steps">
+            <li><strong>Select a mission</strong><span>Start with Urban Mapping. Read the objectives and review its mass, power, and orbit limits.</span></li>
+            <li><strong>Plan your satellite</strong><span>Balance payload, solar generation, battery capacity, and cost. More equipment also means more mass and power demand.</span></li>
+            <li><strong>Review requirements</strong><span>Begin Mission saves your selection and opens the brief. Assembly, launch, and operations are still in development.</span></li>
+          </ol>
+          <p class="hint">Replay this guide anytime in Settings. Arrow keys navigate mission cards; Escape returns to the menu.</p>
+          <button class="action">Explore missions</button>
+        </form>
+      </dialog>
+      <dialog id="play-dialog" aria-labelledby="play-title">
+        <form method="dialog">
+          <button class="close" aria-label="Close mission setup">×</button>
+          <p class="eyebrow">YOUR NEXT ADVENTURE</p>
+          <h2 id="play-title">Mission preparation</h2>
+          <p>Design a satellite. Find your orbit.</p>
+          <label for="agency">Space agency name</label>
+          <input id="agency" maxlength="48" placeholder="AstroDynamics Labs" autocomplete="organization">
+          <p class="hint">The assembly hangar and orbital simulation are in development. Save your agency to prepare for your first mission.</p>
+          <button id="save-agency" class="action" value="save">Save agency</button>
+          <p id="save-status" role="status"></p>
+        </form>
+      </dialog>
+      <dialog id="how-to-play-dialog" aria-labelledby="help-title">
+        <form method="dialog">
+          <button class="close" aria-label="Close instructions">×</button>
+          <p class="eyebrow">FLIGHT MANUAL / 01</p>
+          <h2 id="help-title">Your mission starts here.</h2>
+          <p>Start with <strong>Play</strong> to explore three missions. Urban Mapping is available first. Complete each mission to unlock the next.</p>
+          <ol class="mission-steps">
+            <li>
+              <strong>Design</strong>
+              <span>Choose a chassis and balance payload, power, mass, and cost.</span>
+            </li>
+            <li>
+              <strong>Launch</strong>
+              <span>Select a launch service and target Low Earth Orbit.</span>
+            </li>
+            <li>
+              <strong>Operate</strong>
+              <span>Manage energy, downlink data, and complete mission contracts.</span>
+            </li>
+          </ol>
+          <p class="hint">Satellite assembly and simulation are in development. This preview includes mission selection and requirements. Use Settings to pause background animation.</p>
+          <button class="action">Got it</button>
+        </form>
+      </dialog>
+      <dialog id="credits-dialog" aria-labelledby="credits-title">
+        <form method="dialog">
+          <button class="close" aria-label="Close credits">×</button>
+          <p class="eyebrow">BEHIND THE MISSION</p>
+          <h2 id="credits-title">Mission: LEO</h2>
+          <p>A satellite design and Low Earth Orbit simulation game.</p>
+          <dl class="credits-list">
+            <dt>3D engine</dt>
+            <dd>Three.js · MIT License</dd>
+            <dt>Menu visuals</dt>
+            <dd>Procedural 3D models, textures, and shaders</dd>
+            <dt>Built with</dt>
+            <dd>JavaScript, HTML, CSS, and Express</dd>
+          </dl>
+          <p class="hint">Pre-flight preview · Gameplay in development.</p>
+          <button class="action">Back to menu</button>
+        </form>
+      </dialog>
+      <dialog id="new-game-dialog" aria-labelledby="new-title">
+        <form method="dialog">
+          <button class="close" aria-label="Cancel new game">×</button>
+          <p class="eyebrow">A NEW BEGINNING</p>
+          <h2 id="new-title">Start a new agency?</h2>
+          <p>Your current agency and saved progress will be replaced when you save the new agency.</p>
+          <div class="dialog-actions">
+            <button class="action secondary" value="cancel">Keep current agency</button>
+            <button class="action" id="confirm-new" type="button">Create new agency</button>
+          </div>
+        </form>
+      </dialog>
+      <button id="credits" class="credits-button">Credits <span aria-hidden="true">↗</span></button>
+      <p class="scene-caption" aria-hidden="true"><span></span> LOW EARTH ORBIT <b>200 — 2,000 KM</b></p>
+      <p class="version">MISSION: LEO <span>•</span> PRE-FLIGHT</p>
+    </main>
+  </body>
+</html>
