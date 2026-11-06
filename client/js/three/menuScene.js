@@ -161,6 +161,8 @@ export function createMenuScene() {
   }
   function draw(now){
     frame=0;
+    // The assembly owns the visible WebGL viewport until the player returns.
+    if(document.body.classList.contains('assembling')){last=0;return;}
     const delta=last?Math.min((now-last)/1000,.05):0;last=now;
     const animated=!document.body.classList.contains('still')&&!reducedMotion.matches;
     const active=missionIndex>=0;

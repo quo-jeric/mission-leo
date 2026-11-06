@@ -86,9 +86,10 @@ function createManager() {
           resolve(false);
           return;
         }
-        const t = Math.min(1, (now - began) / FADE_MS);
+        // A callback in the current frame can predate a fade started mid-frame.
+        const t = clamp01((now - began) / FADE_MS);
         const target = getTarget();
-        el.volume = start + (target - start) * t;
+        el.volume = clamp01(start + (target - start) * t);
         if (t < 1) requestAnimationFrame(step);
         else {
           el.volume = getTarget();

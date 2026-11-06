@@ -443,3 +443,48 @@ space-mission-design-game/
 - [ ] Sound effects (thruster hisses, telemetry beeps, UI clicks).
 - [ ] Deorbit burn fire VFX and satellite destruction animations.
 - [ ] Performance benchmarking and final UX polish.
+
+### 8.3 Guided Assembly Preview (2026-11-06)
+
+The mission brief opens a guided assembly preview before the full 3D hangar milestone.
+- Keep a large 3D satellite viewer on the left and one active subsystem's component choices on the right. Place expandable mass, power and budget estimates in a compact bottom bar; retain mission performance in design review and payload descriptions.
+- Provide contextual Continue actions through Chassis, Payload, Power and Systems; the final action opens design review. Keep saving secondary in the header and reset inside View options with confirmation.
+- Read beginner components from the existing catalog API. Allow one component per subsystem, filter by chassis family, and remove incompatible selections when changing chassis.
+- Save preview blueprints in the existing blueprints array, preserving other save fields. Hardware cost is an estimate and does not deduct player credits.
+- Show nominal catalog imaging performance and ideal sunlight power estimates. Clearly label unimplemented slot, thermal, eclipse, pointing and downlink checks. The review must not unlock launch or imply complete flight validation.
+- Use a responsive layout with stacked panels on small screens. A Three.js workbench renders installed components and isolated part previews. Physical socket placement remains Phase 2 work.
+
+#### Assembly studio refinements
+- Group six core selections into four stages: Chassis, Payload, Power (solar/battery), and Systems (communications/computer plus optional thermal/propulsion). Show current stage and selection completion without implying flight readiness.
+- Component cards compare configured mass, key catalog performance, and projected hardware cost. Chassis replacement projections exclude incompatible parts that will be removed; explain that removal before selection and report it afterward.
+- Resume the first missing core selection, preserve keyboard focus and metric disclosures through updates, and reflect installed parts in preview shortcuts. Restrict Urban Mapping's payload picker to optical instruments.
+- Use muted charcoal surfaces with gold primary guidance, sage selection indicators, and warm warning text. Mobile layouts show a compact 3D preview above the component panel and avoid nested component scrolling.
+
+#### Interactive 3D workbench
+- Use the existing vendored Three.js modules and local procedural geometry, without network model dependencies. Build component-specific PBR models from catalog dimensions: chassis rails, solar cells, optical lenses, battery cells, antennas, circuit boards, thermal panels, attitude actuators and thrusters.
+- Render installed selections together. Each component card offers an isolated “Preview in 3D”; previewing must not change the blueprint, cost or selection progress. Install from the card or the preview toolbar and return to the assembly.
+- Support pointer/touch rotation, pinch/wheel/button zoom, arrow-key rotation, keyboard zoom, camera reset, internal-component transparency, wireframe and exploded assembly views. Clicking installed geometry selects its subsystem.
+- Render on demand, suspend the hidden menu scene during assembly, share one workbench renderer across part previews, and dispose replaced geometry/materials and the renderer on page exit. Resize for desktop/mobile and retain non-3D component selection if WebGL is unavailable.
+- Mounting locations are illustrative and do not implement collision, slot occupancy or physical fit validation. The catalog's progression/compatibility filters still determine which parts the player can select.
+
+#### Satellite silhouette and inspection defaults
+- Default to a closed, opaque spacecraft; cutaway and exploded views are deliberate inspection options. Keep structural rails opaque during cutaway.
+- Align the chassis upright and visually contain internal modules. Camera apertures may protrude through the front face; antennas and nozzles attach to their relevant faces.
+- Depict a deployed catalog solar array as a connected, symmetric pair of half-width wings, preserving its total represented panel area and all catalog engineering totals. Keep body-mounted arrays attached to the hull.
+- Fit the camera to projected model bounds so the assembly fills the workbench without cropping. These visual accommodations do not claim validated physical slot fit.
+
+#### Attachment continuity
+- Align each deployable wing's hinge with its inner edge and show visible support arms that overlap the hull and panel geometry.
+- Position exterior mounts against actual rendered geometry where nominal dimensions do not describe the base. Body solar, communications, thermal and propulsion components require continuous support brackets.
+- Label exploded inspection explicitly and provide a direct “Reattach parts” action. Exploded separation must not be mistaken for the default installed arrangement.
+
+#### Stable workbench viewport
+- Allocate explicit grid areas for the viewer and its controls. Decorative rings must stay within panel bounds and must not create scrollable content.
+- The 3D stage itself must not scroll, including when component preview or inspection tools are used. Keep the canvas fitted to its allocated viewer area and desktop scrolling inside the component library.
+- Show inspection settings in a bounded popover that preserves viewer height and supports outside-click/Escape dismissal without intercepting modal-dialog dismissal.
+
+#### Camera continuity and interaction feedback
+- Preserve assembly rotation and normalized zoom across category changes, component updates and viewport resizing. Remember isolated previews separately and restore the assembly view when returning. Reset View is the explicit reset action; newly sized models may refit without discarding the user's rotation/zoom preference.
+- Avoid rebuilding unchanged model geometry for navigation-only updates. Keep animation demand-driven and restore material state when an effect completes or is interrupted.
+- Installation/removal must produce a short accessible confirmation. Installed parts receive a brief fade/highlight; selected cards stay first and have clear badges with quieter removal controls.
+- Show an Assembly / Part preview / Exploded view mode indicator. Use short 150–200 ms UI transitions without layout shifts. Reduced-motion mode must retain textual feedback while suppressing animation and canceling effects already running.
