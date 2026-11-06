@@ -5,6 +5,7 @@
 @import url('./menu-polish.css');
 @import url('./settings.css');
 @import url('./dialogs.css');
+@import url('./hangar.css');
 
 :root {
   --bg-deep: #050811;

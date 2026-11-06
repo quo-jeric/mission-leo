@@ -1,6 +1,7 @@
 import { scenarios } from './data/scenarios.js';
 import { read, write, SAVE_KEY, PREFERENCE_KEY } from './storage.js';
 import { audioManager } from './audio.js';
+import { openHangar } from './hangar.js';
 
 const screen = document.querySelector('#mission-select');
 const cards = document.querySelector('#scenario-cards');
@@ -197,7 +198,10 @@ screen.addEventListener('keydown', event => {
   if (event.key === 'Escape') closeSelection();
 });
 for (const id of ['requirements-close', 'requirements-done']) {
-  document.querySelector(`#${id}`).addEventListener('click', () => requirementsDialog.close());
+  document.querySelector(`#${id}`).addEventListener('click', () => {
+    requirementsDialog.close();
+    if (id === 'requirements-done') openHangar(scenarios[selected]);
+  });
 }
 window.addEventListener('storage', event => {
   if (event.key === SAVE_KEY && !screen.hidden) select(selected);
