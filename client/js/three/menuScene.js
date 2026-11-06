@@ -3,7 +3,7 @@ import { createMoon, createSatellite } from './menuModels.js';
 import { read, PREFERENCE_KEY, SAVE_KEY } from '../storage.js';
 
 // All textures are local, generated once, and require no remote services.
-function earthMaps() {
+export function earthMaps() {
   const canvas = document.createElement('canvas');
   canvas.width = 2048; canvas.height = 1024;
   const ctx = canvas.getContext('2d');

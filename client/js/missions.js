@@ -2,6 +2,7 @@ import { scenarios } from './data/scenarios.js';
 import { read, write, SAVE_KEY, PREFERENCE_KEY } from './storage.js';
 import { audioManager } from './audio.js';
 import { openHangar } from './hangar.js';
+import { missionUnlocked } from './progression.js';
 
 const screen = document.querySelector('#mission-select');
 const cards = document.querySelector('#scenario-cards');
@@ -19,7 +20,7 @@ function completed() {
 }
 
 function available(index) {
-  return index === 0 || completed().slice(0, index).every(Boolean);
+  return missionUnlocked(readSave(),scenarios[index]?.id);
 }
 
 // Keep the desktop composition consistent with the 1920 × 1080 design.
@@ -142,19 +143,25 @@ function createScenarioCard(scenario, index) {
   return button;
 }
 
-export function openMissionSelection() {
+export function openMissionSelection(missionId) {
   fitMissionScreen();
   screen.hidden = false;
   menu.inert = true;
   document.body.classList.add('selecting-mission');
 
-  const saved = scenarios.findIndex(scenario => scenario.id === readSave().selectedMission);
+  const saved = scenarios.findIndex(scenario => scenario.id === (missionId||readSave().selectedMission));
   select(saved >= 0 ? saved : 0);
   document.querySelector('#mission-back').focus();
   audioManager.playMusic('missionSelect');
-  if (!read(PREFERENCE_KEY)?.guideSeen) {
+  if (!missionId && !read(PREFERENCE_KEY)?.guideSeen) {
     document.querySelector('#guide-dialog').showModal();
   }
+}
+export function openMissionBrief(missionId){
+  if(!missionUnlocked(readSave(),missionId))return false;
+  openMissionSelection(missionId);
+  beginMission();
+  return true;
 }
 
 function closeSelection() {
@@ -177,6 +184,9 @@ function beginMission() {
 
   document.querySelector('#requirements-title').textContent = scenario.title;
   const paragraphs = [scenario.detail, ...scenario.objectives];
+  const operational=['urban','agriculture'].includes(scenario.id);
+  document.querySelector('#requirements-dialog .hint').textContent=scenario.id==='agriculture'?'Build your satellite, then Review design to launch or resume a 120-day season. Schedule regions and downlink before deadlines; reach the weighted delivery goal to unlock the next level.':operational?'Build your satellite, validate its mission plan, then launch. Complete the image downlink to unlock the next level.':'Mission planning and the workshop preview are available. Operational gameplay for this level is not implemented yet.';
+  document.querySelector('#requirements-done').textContent=operational?'Design satellite →':'Open workshop preview →';
   if (!saved) {
     paragraphs.push('Device storage is unavailable. Mission selection is available for this session.');
   }
@@ -205,4 +215,7 @@ for (const id of ['requirements-close', 'requirements-done']) {
 }
 window.addEventListener('storage', event => {
   if (event.key === SAVE_KEY && !screen.hidden) select(selected);
+});
+window.addEventListener('mission-saved', () => {
+  if (!screen.hidden) select(selected);
 });

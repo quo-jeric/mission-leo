@@ -133,13 +133,13 @@ body.assembling { overflow: hidden; }
 @media (max-width: 1050px) { .hangar-header-actions { gap: 14px; } #hangar-agency { display: none; } .hangar-workspace { grid-template-columns: minmax(0, 1fr) 310px; gap: 14px; } .hangar-stage { padding: 16px; } .hangar-camera-tools { flex-wrap: wrap; } .hangar-camera-tools > span { flex-basis: 100%; text-align: center; margin: 0 0 3px; } #hangar-metrics { gap: 16px; } }
 @media (max-width: 720px) {
   #hangar { display: block; overflow: auto; padding: 0 12px 14px; }
-  .hangar-header { min-height: 78px; gap: 10px; }
+  .hangar-header { min-height: 78px; gap: 10px; flex-wrap: wrap; padding: 12px 0; }
   .hangar-header-left { gap: 12px; }
   .hangar-header-divider { display: none; }
   #hangar h1 { font-size: 17px; }
   .hangar-header .eyebrow { font-size: 8px; }
-  .hangar-header-actions { gap: 8px; }
-  #hangar-review { display: none; }
+  .hangar-header-actions { gap: 8px; margin-left: auto; }
+  #hangar-review { display: inline-block; font-size: 10px !important; }
   #hangar-save { font-size: 10px !important; padding: 7px 8px !important; }
   #hangar-steps { gap: 5px; padding-top: 12px; }
   #hangar #hangar-steps button { grid-template-columns: 1fr; justify-items: center; text-align: center; padding: 9px 3px; gap: 4px; }

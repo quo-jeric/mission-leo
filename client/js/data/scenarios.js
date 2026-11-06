@@ -9,7 +9,7 @@ export const scenarios = [
     summary: 'Your first view from orbit. Configure an optical satellite, observe a city, and bring the image home.',
     metrics: ['400–600 km','50 kg max','60 W max'],
     objectives: ['Image a 10 × 10 km city at 3 m GSD or better.','Downlink the image through the given S-band station.','Keep mass and power within limits.'],
-    detail: 'A guided mission with a generous budget, a predefined camera, and no random events. Choose focal length, solar panels, battery, altitude, and inclination.'
+    detail: 'Plan with agency funds plus $400,000 of mission support allowance. Use a fixed 500 km, 97.4° tutorial rideshare, or budget for a dedicated launch and custom orbit. Choose your camera optics and support systems, then review engineering and station access. Planning does not spend or grant credits.'
   },
   {
     id: 'agriculture',
@@ -20,7 +20,7 @@ export const scenarios = [
     summary: 'Help a growing season thrive. Design your mission and balance competing requests from farming regions.',
     metrics: ['500–700 km','80 kg max','40 W average'],
     objectives: ['Schedule observations across 5–8 farming regions.','Serve the required share of priority-weighted targets within their windows.','Deliver imagery within budget and power limits.'],
-    detail: 'Plan a 120-day growing season. Choose RGB or multispectral imaging, S-band or X-band communications, a ground station, and your orbit. The target share is configurable; the scenario proposes 70% as an example.'
+    detail: 'Command a 120-day growing season across six farming regions. Choose RGB or multispectral imaging, S-band or X-band communications, a ground station, and a 500–700 km orbit. Select up to three observation priorities per daily schedule and fully deliver requests within their 20-day windows. Default goal: 70% of priority weight. Up to $800,000 mission support is applied once at launch; planning does not spend funds.'
   },
   {
     id: 'disaster',

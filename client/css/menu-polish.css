@@ -14,6 +14,45 @@
   line-height: 1.6;
   overflow-wrap: anywhere;
 }
+/* Desktop composition targets 1920 × 1080 and fits shorter browser viewports. */
+@media (min-width: 651px) {
+  .space { min-height: 100svh; }
+  .menu { width: min(580px, 44vw); padding-top: clamp(28px, 5.5svh, 72px); }
+  .menu .menu-kicker { margin-bottom: 16px; font-size: 10px; }
+  .menu .mission { font-size: clamp(29px, 4svh, 44px); letter-spacing: .32em; }
+  .menu .leo { font-size: clamp(86px, 13svh, 140px); }
+  .menu .satellite-word { font-size: clamp(22px, 3svh, 32px); padding-bottom: 8px; }
+  .menu .title-line { gap: clamp(14px, 1.2vw, 23px); }
+  .menu .menu-description { max-width: 420px; font-size: clamp(14px, 1.5svh, 16px); line-height: 1.6; margin: 14px 0 0; }
+  .menu nav { width: clamp(300px, 21vw, 360px); min-width: 0; margin: 20px 0 0; gap: 8px; }
+  .menu nav button { min-height: clamp(48px, 5svh, 54px); padding: 7px 16px; font-size: 14px; }
+  .menu nav #play { min-height: clamp(58px, 6svh, 66px); margin-bottom: 0; }
+  .menu .button-icon { width: 26px; height: 26px; flex-basis: 26px; font-size: 18px; }
+  .menu .continue-summary { max-width: 360px; margin: 10px 0 0; font-size: 11px; line-height: 1.5; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+  .menu .continue-summary[hidden] { display: none; }
+  .menu .menu-caption { width: clamp(300px, 21vw, 360px); min-width: 0; margin: 12px 0 0; font-size: 9px; }
+  .space > .satellite { width: min(45vw, 800px); right: 6%; top: 27%; }
+}
+.menu-fullscreen { position: fixed; top: 18px; right: 72px; z-index: 8; }
+.menu-fullscreen[hidden], body.selecting-mission .menu-fullscreen { display: none; }
+#menu-fullscreen { display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 1px solid #00f0ff; border-radius: 10px; background: #0b2034b3; color: #00f0ff; font: 26px 'Segoe UI', Arial, sans-serif; backdrop-filter: blur(12px); }
+#menu-fullscreen:hover { background: #16384ac9; border-color: #9bd3ed; }
+#menu-fullscreen-note { position: absolute; top: 51px; right: 0; width: 230px; padding: 8px 10px; border: 1px solid #385967; border-radius: 7px; background: #0b2034; color: #d4e9f2; font-size: 12px; line-height: 1.5; opacity: 0; pointer-events: none; }
+.menu-fullscreen:hover #menu-fullscreen-note, .menu-fullscreen:focus-within #menu-fullscreen-note, .menu-fullscreen[data-error] #menu-fullscreen-note { opacity: 1; }
+@media (min-width: 651px) and (min-height: 701px) and (max-height: 780px) {
+  .menu { padding-top: 32px; }
+  .menu .menu-kicker { margin-bottom: 12px; }
+  .menu nav { margin-top: 16px; }
+  .menu .menu-caption { margin-top: 10px; }
+}
+@media (min-width: 651px) and (max-height: 700px) {
+  .menu { padding-top: 26px; }
+  .menu .menu-kicker { margin-bottom: 12px; }
+  .menu .menu-description { margin-top: 10px; }
+  .menu nav { margin-top: 16px; gap: 6px; }
+  .menu nav button { min-height: 44px; }
+  .menu nav #play { min-height: 48px; }
+}
 #settings-dialog { max-height: calc(100svh - 40px); overflow-y: auto; }
 #settings-dialog input[type='range'] { width: 100%; padding: 0; accent-color: #00f0ff; }
 #settings-dialog select {

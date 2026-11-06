@@ -40,6 +40,7 @@
         <p id="continue-summary" class="continue-summary" hidden></p>
         <p class="menu-caption">DESIGN <span>·</span> LAUNCH <span>·</span> OPERATE</p>
       </section>
+      <div class="menu-fullscreen" hidden><button id="menu-fullscreen" aria-pressed="false" aria-label="Enter fullscreen" title="Enter fullscreen" aria-describedby="menu-fullscreen-note"><span aria-hidden="true">⛶</span></button><span id="menu-fullscreen-note" role="status">For a better experience</span></div>
       <svg class="satellite" viewBox="0 0 650 340" role="img" aria-label="Blue satellite with two solar panel wings">
       <defs>
         <linearGradient id="panel" x2="0" y2="1"><stop stop-color="#91c4fb"></stop><stop offset="1" stop-color="#437bc4"></stop></linearGradient>
@@ -148,7 +149,7 @@
           <ol class="mission-steps">
             <li><strong>Select a mission</strong><span>Start with Urban Mapping. Read the objectives and review its mass, power, and orbit limits.</span></li>
             <li><strong>Plan your satellite</strong><span>Balance payload, solar generation, battery capacity, and cost. More equipment also means more mass and power demand.</span></li>
-            <li><strong>Build a first draft</strong><span>Begin Mission opens the brief, then a guided assembly preview. Choose components, review estimates, and save a blueprint. Launch and operations are still in development.</span></li>
+            <li><strong>Build and fly</strong><span>Begin Mission opens the brief and workshop. Choose components, review the design, and launch. Urban Mapping teaches capture and downlink; Agricultural Monitoring adds seasonal scheduling.</span></li>
           </ol>
           <p class="hint">Replay this guide anytime in Settings. Arrow keys navigate mission cards; Escape returns to the menu.</p>
           <button class="action">Explore missions</button>
@@ -162,10 +163,17 @@
           <p>Design a satellite. Find your orbit.</p>
           <label for="agency">Space agency name</label>
           <input id="agency" maxlength="48" placeholder="AstroDynamics Labs" autocomplete="organization">
-          <p class="hint">The assembly hangar and orbital simulation are in development. Save your agency to prepare for your first mission.</p>
+          <p class="hint">Your agency, blueprints and mission progress are saved on this device. Play creates a default agency automatically.</p>
           <button id="save-agency" class="action" value="save">Save agency</button>
           <p id="save-status" role="status"></p>
         </form>
+      </dialog>
+      <dialog id="fullscreen-prompt" aria-labelledby="fullscreen-prompt-title" aria-describedby="fullscreen-prompt-description">
+        <p class="eyebrow">YOUR PLAY EXPERIENCE</p>
+        <h2 id="fullscreen-prompt-title">A little more space.</h2>
+        <p id="fullscreen-prompt-description">For a better experience, play in fullscreen.</p>
+        <p class="hint">Fullscreen is optional. If unavailable, the game continues normally. You can change it anytime in Settings.</p>
+        <div class="dialog-actions"><button id="fullscreen-prompt-enter" class="action">Enter fullscreen</button><button id="fullscreen-prompt-skip" class="action secondary" autofocus>Continue normally</button></div>
       </dialog>
       <dialog id="how-to-play-dialog" aria-labelledby="help-title">
         <form method="dialog">

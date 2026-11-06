@@ -1,6 +1,8 @@
 import { openMissionSelection } from './missions.js';
 import { scenarios } from './data/scenarios.js';
-import { read, write, SAVE_KEY as saveKey, PREFERENCE_KEY as preferenceKey } from './storage.js';
+import { read, write, ensureGameSave, createGameSave, SAVE_KEY as saveKey, PREFERENCE_KEY as preferenceKey } from './storage.js';
+
+ensureGameSave();
 
 const motion = document.querySelector('#motion');
 motion.checked = read(preferenceKey)?.motion ?? !matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -22,7 +24,7 @@ for (const name of ['settings', 'how-to-play', 'credits', 'new-game']) {
   document.querySelector(`#${name}`).addEventListener('click', () => document.querySelector(`#${name}-dialog`).showModal());
 }
 const agency = document.querySelector('#agency');
-document.querySelector('#agency-profile').addEventListener('click', () => {
+function renderAgencyProfile() {
   const save = read(saveKey);
   const player = save?.player;
   document.querySelector('#profile-name').textContent = player?.agencyName || 'No agency created yet';
@@ -43,10 +45,17 @@ document.querySelector('#agency-profile').addEventListener('click', () => {
     card.append(term, description);
     return card;
   }));
-  document.querySelector('#profile-hint').textContent = player?.agencyName
-    ? 'Progress saved on this device.'
+  document.querySelector('#profile-hint').textContent = save?.profileRecovery?.creditHistoryMissing
+    ? 'Recovered your saved mission progress. Credit history was missing, so the $250,000 starting allowance is shown; past charges cannot be recovered. Launches count only saved flight records.'
+    : player?.agencyName ? 'Progress saved on this device. Reputation and deorbit counts change only when those features record an event.'
     : 'Play to explore missions. Your agency statistics will appear here once an agency is saved.';
+}
+document.querySelector('#agency-profile').addEventListener('click', () => {
+  renderAgencyProfile();
   document.querySelector('#agency-profile-dialog').showModal();
+});
+for (const event of ['mission-saved', 'storage']) window.addEventListener(event, () => {
+  if (document.querySelector('#agency-profile-dialog').open) renderAgencyProfile();
 });
 let startingNew = false;
 function refreshSaveMenu() {
@@ -64,11 +73,35 @@ refreshSaveMenu();
 window.addEventListener('mission-saved', refreshSaveMenu);
 window.addEventListener('storage', refreshSaveMenu);
 agency.value = read(saveKey)?.player?.agencyName || '';
+const fullscreenPrompt = document.querySelector('#fullscreen-prompt');
+let fullscreenPromptSeen = Boolean(read(preferenceKey)?.fullscreenPromptSeen);
+let enteringFullscreen = false;
+async function continueFromFullscreenPrompt(enter) {
+  if (enteringFullscreen) return;
+  enteringFullscreen = true;
+  fullscreenPromptSeen = true;
+  write(preferenceKey, { ...read(preferenceKey), fullscreenPromptSeen: true });
+  fullscreenPrompt.close();
+  try {
+    if (enter && !document.fullscreenElement) await document.documentElement.requestFullscreen();
+  } catch { /* Fullscreen is optional; a rejected request must not block play. */ }
+  finally { enteringFullscreen = false; openMissionSelection(); }
+}
+document.querySelector('#fullscreen-prompt-enter').onclick = () => continueFromFullscreenPrompt(true);
+document.querySelector('#fullscreen-prompt-skip').onclick = () => continueFromFullscreenPrompt(false);
+fullscreenPrompt.addEventListener('cancel', event => { event.preventDefault(); continueFromFullscreenPrompt(false); });
+fullscreenPrompt.addEventListener('keydown', event => {
+  if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); continueFromFullscreenPrompt(false); }
+});
 document.querySelector('#play').addEventListener('click', () => {
+  if (enteringFullscreen) return;
+  ensureGameSave({ create: true });
+  refreshSaveMenu();
   startingNew = false;
   agency.value = read(saveKey)?.player?.agencyName || '';
   document.querySelector('#save-status').textContent = '';
-  openMissionSelection();
+  if (!fullscreenPromptSeen && !read(preferenceKey)?.fullscreenPromptSeen && document.fullscreenEnabled && !document.fullscreenElement) fullscreenPrompt.showModal();
+  else openMissionSelection();
 });
 document.querySelector('#confirm-new').addEventListener('click', () => {
   startingNew = true;
@@ -79,12 +112,12 @@ document.querySelector('#confirm-new').addEventListener('click', () => {
 });
 document.querySelector('#save-agency').addEventListener('click', event => {
   event.preventDefault();
-  const save = (!startingNew && read(saveKey)) || { player: { credits: 250000, reputation: 0, unlockedTech: [], stats: { launches: 0, contractsCompleted: 0, satellitesDeorbited: 0 } }, blueprints: [], activeMissions: [], settings: { musicVolume: .7, sfxVolume: .9, graphicsQuality: 'high', showOrbits: true, showGroundTracks: true } };
+  const save = (!startingNew && read(saveKey)) || createGameSave();
   save.player = { ...save.player, agencyName: agency.value.trim() || 'AstroDynamics Labs' };
   agency.value = save.player.agencyName;
   const saved = write(saveKey, save);
   if (saved) { startingNew = false; refreshSaveMenu(); }
-  document.querySelector('#save-status').textContent = saved ? 'Agency saved. Ready for future missions.' : 'Unable to save: device storage is unavailable.';
+  document.querySelector('#save-status').textContent = saved ? 'Agency saved on this device.' : 'Unable to save: device storage is unavailable.';
 });
 const canvas = document.querySelector('#stars');
 const context = canvas.getContext('2d');
@@ -115,14 +148,34 @@ quality.addEventListener('change', () => {
   document.querySelector('#settings-dialog .hint').textContent = saved ? 'Graphics quality updated and saved.' : 'Graphics quality applied for this session.';
 });
 const fullscreen = document.querySelector('#fullscreen');
+const menuFullscreen = document.querySelector('#menu-fullscreen');
 fullscreen.hidden = !document.fullscreenEnabled;
-document.addEventListener('fullscreenchange', () => { fullscreen.textContent = document.fullscreenElement ? 'Exit fullscreen' : 'Enter fullscreen'; });
-fullscreen.addEventListener('click', async () => {
+document.querySelector('.menu-fullscreen').hidden = !document.fullscreenEnabled;
+function syncFullscreen() {
+  const active = Boolean(document.fullscreenElement);
+  const label = active ? 'Exit fullscreen' : 'Enter fullscreen';
+  fullscreen.textContent = label;
+  menuFullscreen.setAttribute('aria-label', label);
+  menuFullscreen.title = label;
+  document.querySelector('.menu-fullscreen').removeAttribute('data-error');
+  for (const button of [fullscreen, menuFullscreen]) button.setAttribute('aria-pressed', String(active));
+  document.querySelector('#menu-fullscreen-note').textContent = active ? 'Exit fullscreen · or press Esc' : 'Enter fullscreen for a better experience';
+}
+document.addEventListener('fullscreenchange', syncFullscreen);
+syncFullscreen();
+async function toggleFullscreen() {
   try {
     if (document.fullscreenElement) await document.exitFullscreen();
     else await document.documentElement.requestFullscreen();
-  } catch { document.querySelector('#settings-dialog .hint').textContent = 'Fullscreen is unavailable in this browser window.'; }
-});
+    syncFullscreen();
+  } catch {
+    document.querySelector('#settings-dialog .hint').textContent = 'Fullscreen is unavailable in this browser window.';
+    document.querySelector('#menu-fullscreen-note').textContent = 'Fullscreen unavailable in this window. You can keep playing.';
+    document.querySelector('.menu-fullscreen').setAttribute('data-error', '');
+  }
+}
+fullscreen.addEventListener('click', toggleFullscreen);
+menuFullscreen.addEventListener('click', toggleFullscreen);
 document.querySelector('#replay-guide').addEventListener('click', () => {
   document.querySelector('#settings-dialog').close();
   document.querySelector('#guide-dialog').showModal();
