@@ -1,6 +1,7 @@
 import * as THREE from '../../vendor/three/three.module.js';
 import { createMoon, createSatellite } from './menuModels.js';
 import { read, PREFERENCE_KEY, SAVE_KEY } from '../storage.js';
+import { loadEarthSurface, drawEarthAtlas } from '../earth-surface.js';
 
 // All textures are local, generated once, and require no remote services.
 export function earthMaps() {
@@ -8,36 +9,11 @@ export function earthMaps() {
   canvas.width = 2048; canvas.height = 1024;
   const ctx = canvas.getContext('2d');
   ctx.fillStyle = '#123b66'; ctx.fillRect(0, 0, 2048, 1024);
-  const land = [
-    [[-168,68],[-145,71],[-128,60],[-126,49],[-117,32],[-105,23],[-98,16],[-87,21],[-81,25],[-80,33],[-66,45],[-58,52],[-78,62],[-96,72],[-120,75]],
-    [[-82,12],[-70,11],[-61,5],[-50,0],[-35,-7],[-41,-22],[-52,-34],[-66,-55],[-74,-48],[-76,-26],[-81,-6]],
-    [[-53,60],[-42,61],[-22,78],[-42,84],[-60,77]],
-    [[-17,35],[2,37],[12,33],[33,31],[44,12],[51,11],[43,-12],[35,-24],[20,-35],[12,-28],[8,-5],[-5,5],[-17,16]],
-    [[-10,36],[-10,44],[0,49],[5,55],[18,60],[22,70],[38,69],[40,56],[29,43],[20,38],[12,44],[8,42],[0,38]],
-    [[30,70],[60,73],[94,77],[125,72],[151,61],[179,66],[170,53],[145,46],[135,35],[120,23],[108,19],[105,6],[98,10],[91,23],[79,8],[72,23],[60,25],[48,30],[36,41]],
-    [[113,-22],[123,-13],[136,-12],[145,-17],[154,-28],[149,-38],[132,-34],[116,-35]],
-    [[47,-13],[50,-16],[47,-26],[44,-23]],
-    [[130,32],[142,46],[146,43],[140,34]],
-    [[95,5],[106,-6],[119,-9],[130,-5],[119,1],[110,7]],
-    [[-180,-71],[-130,-73],[-85,-71],[-60,-64],[-20,-73],[35,-69],[80,-67],[130,-70],[180,-71],[180,-90],[-180,-90]]
-  ];
-  const project = ([lon, lat]) => [(lon + 180) / 360 * 2048, (90 - lat) / 180 * 1024];
-  ctx.fillStyle = '#68816a';
-  for (const polygon of land) {
-    ctx.beginPath(); polygon.forEach((point, i) => { const [x,y] = project(point); i ? ctx.lineTo(x,y) : ctx.moveTo(x,y); }); ctx.closePath(); ctx.fill();
-  }
-  // Desert belts and polar ice soften the atlas into a shaded globe texture.
-  ctx.globalCompositeOperation = 'source-atop';
-  ctx.fillStyle = '#b3a77b';
-  ctx.beginPath(); [[-15,29],[30,29],[40,15],[12,17],[-10,20]].forEach((point,i) => { const [x,y] = project(point); i ? ctx.lineTo(x,y) : ctx.moveTo(x,y); }); ctx.closePath(); ctx.fill();
-  ctx.fillStyle = '#dce9eb'; ctx.fillRect(0,0,2048,37); ctx.fillRect(0,964,2048,60);
   let seed = 21;
   const random = () => ((seed = seed * 16807 % 2147483647) / 2147483647);
-  for (let i=0; i<48000; i++) {
-    ctx.fillStyle = random() > .5 ? '#ffffff0b' : '#0000000b';
-    ctx.fillRect(random()*2048, random()*1024, 1+random()*4, 1+random()*3);
-  }
   const texture = new THREE.CanvasTexture(canvas); texture.colorSpace = THREE.SRGBColorSpace;
+  let disposed=false;texture.addEventListener('dispose',()=>{disposed=true;});
+  loadEarthSurface().then(()=>{if(!disposed){drawEarthAtlas(canvas);texture.needsUpdate=true;texture.userData.onSurfaceReady?.();}}).catch(error=>console.warn('Earth coastline map unavailable',error));
   const cloudsCanvas = document.createElement('canvas'); cloudsCanvas.width = 1024; cloudsCanvas.height = 512;
   const cloudCtx = cloudsCanvas.getContext('2d');
   for(let i=0;i<900;i++) {
@@ -214,6 +190,7 @@ export function createMenuScene() {
   const layoutObserver=new ResizeObserver(()=>{resize();resume();});layoutObserver.observe(host);
   renderer.domElement.addEventListener('webglcontextlost',event=>{event.preventDefault();host.classList.remove('has-3d');if(frame)cancelAnimationFrame(frame);});
   renderer.domElement.addEventListener('webglcontextrestored',()=>{resize();host.classList.add('has-3d');resume();});
+  texture.userData.onSurfaceReady=resume;
   resize();host.classList.add('has-3d');resume();
   addEventListener('pagehide',()=>{
     removeEventListener('graphics-quality', qualityChanged);

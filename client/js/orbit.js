@@ -3,20 +3,25 @@ import { evaluateMission, missionInputKey } from './engineering.js';
 import { urbanMission } from './data/mission-config.js';
 import { createFlight } from './orbit-engine.js';
 import { createTargetCamera } from './target-camera.js';
+import { createCaptureArrival } from './capture-arrival.js';
 import { completeMission, nextMission } from './progression.js';
 
-let panel, flight, view, instrument, timer, plan, catalog, lastSave=0, busy=false, practice=false, lastResult='', mapSelection='target';
+let panel, flight, view, instrument, arrival, timer, plan, catalog, lastSave=0, busy=false, practice=false, lastResult='', mapSelection='target';
+let lastStage=null;
 const $=id=>panel.querySelector(`#orbit-${id}`);
 const utc=t=>new Date(t*1000).toISOString().replace('T',' ').slice(0,19)+' UTC';
 const completionPrompts=new Set();
 function build() {
-  panel=document.createElement('section');panel.id='orbital-operations';panel.hidden=true;panel.setAttribute('aria-labelledby','orbit-title');
+  panel=document.createElement('section');panel.id='orbital-operations';panel.className='mission-control';panel.hidden=true;panel.setAttribute('aria-labelledby','orbit-title');
   panel.innerHTML=`<header><div><p class="eyebrow">MISSION CONTROL / URBAN MAPPING</p><h1 id="orbit-title" tabindex="-1">Your satellite is in orbit.</h1></div><button id="orbit-back">Save & return to workshop</button></header>
   <div class="orbit-layout"><section class="orbit-world"><div class="orbit-world-heading"><span>EARTH / LIVE ORBIT</span><span id="orbit-light"></span></div><div id="orbit-canvas"><p id="orbit-graphics">Preparing 3D Earth…</p></div><div class="orbit-world-tools"><span>Drag to rotate · scroll to zoom · satellite enlarged</span><button id="orbit-reset">Reset view</button></div></section>
   <aside><p class="eyebrow">FLIGHT TELEMETRY</p><p id="orbit-clock"></p><div id="orbit-metrics"></div><h2>Mission objectives</h2><ol><li id="orbit-objective-image">Capture the sunlit Singapore target at ≤3 m GSD.</li><li id="orbit-objective-data">Deliver the complete image via Singapore S-band.</li></ol><p id="orbit-access"></p><button id="orbit-capture">Capture target image</button><button id="orbit-downlink">Enable downlink</button><p id="orbit-contact"></p><p id="orbit-status" role="status"></p></aside></div>
   <footer><div class="orbit-time"><button id="orbit-pause">Play</button><label>Speed <select id="orbit-speed"><option value="1">1×</option><option value="10">10×</option><option value="100" selected>100×</option><option value="1000">1000×</option></select></label><button id="orbit-next">Advance to next opportunity →</button></div><p id="orbit-next-label"></p></footer>
   <details class="orbit-model"><summary>Simulation model & limits</summary><p>Seven-day J2 trajectory sampled every 10 s; battery and downlink integrated in steps of at most 1 s. Ideal radio throughput within sampled station windows. Optical capture is a 2 s exposure-energy approximation: sun elevation ≥10°, off-nadir ≤30°, conservative GSD penalty and instantaneous ADCS pointing. No clouds, slew duration or temperature integration. Workshop thermal checks remain capacity screens. Timeline jumps integrate resources; they do not skip battery usage. Pausing or leaving stops simulated time.</p></details>`;
   document.body.append(panel);
+  const progress=document.createElement('div');progress.id='orbit-mission-flow';progress.className='mission-flow';
+  progress.innerHTML='<ol aria-label="Mission steps"><li>Travel</li><li>Aim</li><li>Capture</li><li>Downlink</li><li>Complete</li></ol><p id="orbit-step-hint" role="status"></p>';
+  panel.querySelector('header > div').append(progress);
   const delivery=document.createElement('section');delivery.id='orbit-delivery';
   delivery.innerHTML='<h2>Send image to Earth</h2><p id="orbit-delivery-state" role="status"></p><label id="orbit-delivery-progress-label" for="orbit-delivery-progress">Image delivery</label><progress id="orbit-delivery-progress" max="100" value="0"></progress><p id="orbit-delivery-detail"></p>';
   $('downlink').before(delivery);delivery.append($('downlink'),$('contact'));
@@ -33,20 +38,21 @@ function build() {
     if(mapSelection==='target'&&flight.state.status==='IN_ORBIT'&&flight.access().available)$('camera-target').click();
   };
   const waiting=document.createElement('div');waiting.id='orbit-camera-waiting';waiting.hidden=true;
-  waiting.innerHTML='<h2 id="orbit-camera-wait-title"></h2><p id="orbit-camera-wait-help"></p><button id="orbit-camera-wait-action">Go to imaging window →</button>';
+  waiting.innerHTML='<section class="orbit-arrival-card" aria-labelledby="orbit-camera-wait-title"><h2 id="orbit-camera-wait-title"></h2><p id="orbit-camera-wait-countdown"></p><p id="orbit-camera-wait-distance"></p><p id="orbit-camera-wait-help"></p><p id="orbit-camera-wait-playback" role="status"></p><button id="orbit-camera-wait-action">Go to imaging window →</button></section>';
   $('canvas').append(waiting);
   $('camera-wait-action').onclick=()=>{
+    if(flight.state.status!=='IN_ORBIT'||(!flight.access().available&&!flight.opportunity('target'))){$('replay').click();$('camera-target').click();return;}
     if(!flight.access().available)$('next').click();
     if(flight.access().available&&!flight.state.captured){const a=flight.aiming();flight.setAim(a.aimXDeg+.3,a.aimYDeg+.2);checkpoint();}
     $('camera-target').click();render();
   };
-  const aim=document.createElement('section');aim.className='orbit-aim';aim.innerHTML=`<h2>Camera aiming</h2><p>Move the crosshair onto the gold target. This controls the camera instrument, separately from the 3D viewing camera.</p><div id="orbit-aim-scope" tabindex="0" role="group" aria-label="Camera aiming map. Click or use arrow keys to aim; each arrow moves 0.2 degrees."><span class="aim-axis aim-axis-x"></span><span class="aim-axis aim-axis-y"></span><span id="orbit-aim-target" aria-hidden="true">◇</span><span id="orbit-aim-cross" aria-hidden="true">+</span><span class="aim-map-label">EAST / NORTH · ±30°</span></div><label>East / west (°)<input id="orbit-aim-x" type="range" min="-30" max="30" step="0.1" value="0"></label><label>North / south (°)<input id="orbit-aim-y" type="range" min="-30" max="30" step="0.1" value="0"></label><label class="aim-assist"><input id="orbit-aim-auto" type="checkbox"> Auto-point assist</label><p id="orbit-aim-readout" role="status"></p>`;
-  panel.querySelector('aside').insertBefore(aim,$('capture'));
-  const aimChanged=()=>{flight.setAim(Number($('aim-x').value),Number($('aim-y').value));checkpoint();render();};
-  $('aim-x').oninput=$('aim-y').oninput=aimChanged;
+  const cameraControls=document.createElement('div');cameraControls.id='orbit-camera-controls';cameraControls.hidden=true;
+  cameraControls.innerHTML='<label><input id="orbit-aim-auto" type="checkbox"> Auto-point assist</label>';
+  cameraControls.prepend($('capture'));
+  panel.querySelector('.orbit-world-tools').before(cameraControls);
+  // Keep one authoritative readiness message beside the camera's shutter action.
+  $('access').remove();
   $('aim-auto').onchange=()=>{if($('aim-auto').checked)flight.state.aimMode='auto';else{const a=flight.aiming();flight.setAim(a.xDeg,a.yDeg);}checkpoint();render();};
-  $('aim-scope').onpointerdown=event=>{const box=$('aim-scope').getBoundingClientRect();flight.setAim(((event.clientX-box.left)/box.width-.5)*60,(.5-(event.clientY-box.top)/box.height)*60);checkpoint();render();};
-  $('aim-scope').onkeydown=event=>{const deltas={ArrowLeft:[-.2,0],ArrowRight:[.2,0],ArrowUp:[0,.2],ArrowDown:[0,-.2]};if(!deltas[event.key])return;event.preventDefault();const a=flight.aiming(),[x,y]=deltas[event.key];flight.setAim(a.xDeg+x,a.yDeg+y);checkpoint();render();};
   const playbackStatus=document.createElement('p');playbackStatus.id='orbit-playback-status';playbackStatus.setAttribute('role','status');
   const replay=document.createElement('button');replay.id='orbit-replay';replay.textContent='Mission replay · free';replay.hidden=true;
   panel.querySelector('.orbit-time').append(replay);
@@ -86,22 +92,32 @@ function build() {
   const modes=document.createElement('div');modes.className='orbit-camera-modes';modes.setAttribute('role','group');modes.setAttribute('aria-label','Orbit camera view');
   for(const [mode,label] of [['follow','Follow satellite'],['overview','Earth overview'],['target','Target camera']]){
     const button=document.createElement('button');button.id=`orbit-camera-${mode}`;button.textContent=label;button.setAttribute('aria-pressed',String(mode==='follow'));
-    button.onclick=()=>{instrument?.active(mode==='target');panel.querySelector('.orbit-world-tools > span').textContent=mode==='target'?'Click terrain or use arrow keys to aim · white square = sensor footprint':mode==='overview'?'Click the gold target or cyan station ring · drag to rotate':'Drag to rotate · scroll to zoom · satellite enlarged';if(mode!=='target')view?.setMode(mode);for(const option of modes.children)option.setAttribute('aria-pressed',String(option===button));panel.querySelector('.orbit-world-heading > span').textContent=mode==='target'?'INSTRUMENT / TARGET CAMERA':mode==='follow'?'FOLLOW / LAUNCHED BUILD':'EARTH / LIVE ORBIT';renderTargetHint();renderPlanner();};
+    button.onclick=()=>{instrument?.active(mode==='target');panel.querySelector('.orbit-world-tools > span').textContent=mode==='target'?'Drag terrain, click or use arrow keys to aim · white square = sensor footprint':mode==='overview'?'Click the gold target or cyan station ring · drag to rotate':'Drag to rotate · scroll to zoom · satellite enlarged';if(mode!=='target')view?.setMode(mode);for(const option of modes.children)option.setAttribute('aria-pressed',String(option===button));panel.querySelector('.orbit-world-heading > span').textContent=mode==='target'?'INSTRUMENT / TARGET CAMERA':mode==='follow'?'FOLLOW / LAUNCHED BUILD':'EARTH / LIVE ORBIT';render();};
     modes.append(button);
   }
   panel.querySelector('.orbit-world-heading').insertBefore(modes,$('light'));
+  // Same visual hierarchy and action placement as the multi-region missions.
+  for(const [selector,className] of [['.orbit-layout','mission-layout'],['.orbit-world','mission-world'],['.orbit-world-heading','mission-world-heading'],['#orbit-canvas','mission-canvas'],['#orbit-camera-controls','mission-target-controls'],['.orbit-time','mission-time-controls'],['aside','mission-sidebar']])panel.querySelector(selector).classList.add(className);
+  cameraControls.hidden=false;
+  const targetLabel=document.createElement('label');targetLabel.className='mission-target-picker';targetLabel.innerHTML='Observation target<select aria-label="Observation target" disabled><option>Singapore test area</option></select>';cameraControls.prepend(targetLabel);
+  cameraControls.append($('downlink'),stationJump);
+  const guidance=document.createElement('div');guidance.className='mission-guidance';guidance.innerHTML='<strong id="orbit-stage-label">Travel</strong>';guidance.append($('step-hint'));cameraControls.before(guidance);
+  const footer=panel.querySelector('footer');footer.classList.add('mission-dock');
+  footer.querySelector('.orbit-time').append($('reset'),$('clock'));panel.querySelector('.orbit-world').append(footer);
+  const notes=document.createElement('div');notes.className='mission-flight-note';notes.append($('next-label'),$('playback-status'));footer.after(notes);
+  panel.querySelector('.orbit-world-tools').classList.add('mission-view-help');
   const installed=document.createElement('details');installed.className='orbit-installed';installed.innerHTML='<summary>Launched components</summary><ul id="orbit-installed"></ul>';
   panel.querySelector('aside').append(installed);
-  $('back').onclick=()=>{pause();if(!checkpoint())return;panel.hidden=true;document.body.classList.remove('orbiting');document.querySelector('.space').inert=false;document.querySelector('#hangar').inert=false;view?.dispose();view=null;instrument?.dispose();instrument=null;document.querySelector('#hangar-review').focus();};
+  $('back').onclick=()=>{pause();if(!checkpoint())return;panel.hidden=true;document.body.classList.remove('orbiting');document.querySelector('.space').inert=false;document.querySelector('#hangar').inert=false;view?.dispose();view=null;instrument?.dispose();instrument=null;arrival?.dispose();arrival=null;document.querySelector('#hangar-review').focus();};
   $('pause').onclick=()=>{if(timer)pause();else startPlayback();render();};
-  $('capture').onclick=()=>{const captured=flight.capture();if(captured)$('status').textContent=`Image captured · quality ${flight.state.captureScore}/100${flight.state.captureAimMode==='auto'?' (assisted)':''}. Select Send image to Earth for the next station pass.`;checkpoint();render();if(captured)instrument?.flash();};
+  $('capture').onclick=()=>{if($('camera-target').getAttribute('aria-pressed')!=='true'){$('camera-target').click();render();return;}const captured=flight.capture();if(captured&&instrument?.captureSource()){flight.state.captureFrame.version=3;flight.state.captureFrame.imageryId=instrument.captureSource();}if(captured)$('status').textContent=`Image captured · quality ${flight.state.captureScore}/100${flight.state.captureAimMode==='auto'?' (assisted)':''}. Select Send image to Earth for the next station pass.`;checkpoint();render();if(captured)instrument?.flash();};
   $('downlink').onclick=()=>{if(flight.state.status!=='IN_ORBIT'||!flight.state.captured)return;if(flight.state.downlink&&timer){flight.state.downlink=false;pause();}else{flight.state.downlink=true;flight.state.deliveryStarted=true;startPlayback();}checkpoint();render();};
   $('next').onclick=()=>{pause();const next=flight.nextEvent();if(next!==null){flight.advance(next-flight.state.time);checkpoint();render();}};
-  $('reset').onclick=()=>view?.reset();
+  $('reset').onclick=()=>{if($('camera-target').getAttribute('aria-pressed')==='true')instrument?.resetZoom();else view?.reset();};
   document.addEventListener('visibilitychange',()=>{if(document.hidden&&!panel.hidden){pause();checkpoint();render();}});
-  window.addEventListener('pagehide',()=>{if(!panel.hidden){pause();checkpoint();view?.dispose();view=null;instrument?.dispose();instrument=null;}});
+  window.addEventListener('pagehide',()=>{if(!panel.hidden){pause();checkpoint();view?.dispose();view=null;instrument?.dispose();instrument=null;arrival?.dispose();arrival=null;}});
 }
-function pause(){clearInterval(timer);timer=null;if(panel)$('pause').textContent='Play';}
+function pause(){clearInterval(timer);timer=null;arrival?.pause();if(panel)$('pause').textContent='Play';}
 function startPlayback(){
   if(timer||flight.state.status!=='IN_ORBIT')return;
   let previous=performance.now();
@@ -137,18 +153,15 @@ function render(){
   $('light').textContent=p.isEclipse?'ECLIPSE':'SUNLIGHT';
   const rows=[['Altitude',`${(p.geodetic.altM/1000).toFixed(1)} km`],['Speed',`${(p.speedMPerSec/1000).toFixed(2)} km/s`],['Battery',`${s.batteryWh.toFixed(1)} / ${flight.capacity} Wh`],['Image delivered',`${s.deliveredMB.toFixed(1)} / ${s.captured?plan.metrics.imageMB:0} MB`]];
   $('metrics').replaceChildren(...rows.map(([label,value])=>{const row=document.createElement('div');const name=document.createElement('span');name.textContent=label;const val=document.createElement('strong');val.textContent=value;row.append(name,val);return row;}));
-  $('access').textContent=s.captured?`✓ Image stored · ${s.captureGsdM.toFixed(2)} m GSD`:access.available?`Target in view · ${access.gsdM.toFixed(2)} m GSD · ready to capture`:`Target ${Math.round(access.distanceKm)} km away · waiting for a sunlit imaging window`;
   $('contact').textContent=contact?'● Singapore contact active': 'Singapore station out of range';
   const aiming=flight.aiming(),aimLocked=s.status!=='IN_ORBIT'||s.captured;
-  $('aim-x').value=aiming.xDeg;$('aim-y').value=aiming.yDeg;$('aim-auto').checked=s.aimMode==='auto';
-  for(const id of ['aim-x','aim-y','aim-auto'])$(id).disabled=aimLocked;
-  $('aim-scope').setAttribute('aria-disabled',String(aimLocked));
-  for(const [id,x,y] of [['aim-target',aiming.aimXDeg,aiming.aimYDeg],['aim-cross',aiming.xDeg,aiming.yDeg]]){$(id).style.left=`${50+Math.max(-30,Math.min(30,x))/60*100}%`;$(id).style.top=`${50-Math.max(-30,Math.min(30,y))/60*100}%`;}
-  $('aim-scope').dataset.aligned=String(aiming.aligned);$('aim-target').hidden=!access.available;
-  $('aim-readout').textContent=s.captured?`Image secured · ${s.captureScore??'—'}/100 · ${s.captureAimMode==='auto'?'assisted':'manual'}`:!access.available?'Target outside a valid sunlit capture window. Advance to an imaging opportunity.':`${aiming.aligned?'Aligned — capture now':'Adjust crosshair'} · ${Math.ceil(aiming.remainingSec)} s window · error ${aiming.errorDeg.toFixed(2)}° / tolerance ${aiming.toleranceDeg.toFixed(2)}° · aim E ${aiming.xDeg.toFixed(1)}°, N ${aiming.yDeg.toFixed(1)}° · target E ${aiming.aimXDeg.toFixed(1)}°, N ${aiming.aimYDeg.toFixed(1)}°`;
+  $('aim-auto').checked=s.aimMode==='auto';$('aim-auto').disabled=aimLocked;
   const captureReadiness=flight.captureReadiness();
-  $('capture').disabled=!captureReadiness.ready;
-  $('capture').textContent=s.captured?'Image captured':captureReadiness.ready?'Capture image · ready':'Capture target image';
+  arrival?.update({active:s.status==='IN_ORBIT',captured:s.captured,ready:captureReadiness.ready,available:access.available,reason:captureReadiness.reason,
+    nextTime:flight.opportunity('target')?.time??null,now:s.time,remainingSec:aiming.remainingSec,distanceKm:access.distanceKm,playing:Boolean(timer)});
+  const inTargetCamera=$('camera-target').getAttribute('aria-pressed')==='true';
+  $('capture').disabled=s.status!=='IN_ORBIT'||s.captured||(inTargetCamera&&!captureReadiness.ready);
+  $('capture').textContent=s.captured?'Image captured':!inTargetCamera?'Open target camera':captureReadiness.ready?'Capture image · ready':'Capture target image';
   $('downlink').disabled=s.status!=='IN_ORBIT'||!s.captured;
   $('downlink').textContent=s.status==='COMPLETE'?'Image delivered':s.downlink&&timer?'Pause transfer':s.downlink||s.deliveryStarted||s.deliveredMB>0?'Resume transfer':'Send image to Earth';
   $('objective-image').dataset.done=String(s.captured);$('objective-data').dataset.done=String(s.status==='COMPLETE');
@@ -172,6 +185,30 @@ function render(){
   renderResult();
   renderPlanner();
   renderDelivery();
+  renderMissionFlow();
+}
+function guideToDownlink(){
+  if(view)$('camera-overview').click();
+  mapSelection='station';renderPlanner();
+  const aside=panel.querySelector('aside');
+  aside.scrollTop += $('delivery').getBoundingClientRect().top-aside.getBoundingClientRect().top-16;
+}
+function renderMissionFlow(){
+  const s=flight.state,a=flight.aiming();
+  const stage=s.status==='COMPLETE'?4:s.captured?3:!a.available?0:a.aligned?2:1;
+  $('stage-label').textContent=['Travel','Aim','Capture','Downlink','Complete'][stage];
+  const stopped=s.status!=='IN_ORBIT'&&s.status!=='COMPLETE';
+  const hints=['Advance to a sunlit imaging window.','Center the gold target in the sensor frame.','Ready — capture your image.','Send the image to Earth during station contact.','Image delivered — choose Next Mission or Replay.'];
+  const hint=stopped?'Flight stopped — retry for free from the results panel.':hints[stage];
+  if($('step-hint').textContent!==hint)$('step-hint').textContent=hint;
+  for(const [index,item] of [...$('mission-flow').querySelectorAll('li')].entries()){
+    if(index===stage&&!stopped)item.setAttribute('aria-current','step');else item.removeAttribute('aria-current');
+    item.dataset.done=String(index<stage);
+  }
+  panel.dataset.missionStage=String(stage);
+  const previous=lastStage;lastStage=stage;
+  if(!stopped&&previous===0&&(stage===1||stage===2))$('camera-target').click();
+  if(!stopped&&previous!==null&&previous<3&&stage===3){guideToDownlink();$('downlink').focus({preventScroll:true});}
 }
 function renderDelivery(){
   const s=flight.state,d=flight.deliveryStatus();
@@ -180,7 +217,8 @@ function renderDelivery(){
   const seconds=value=>{const n=Math.max(0,Math.ceil(value));return n>=3600?`${Math.floor(n/3600)} h ${Math.floor(n/60)%60} min`:n>=60?`${Math.floor(n/60)} min ${n%60} s`:`${n} s`;};
   $('delivery-state').textContent=s.status==='COMPLETE'?'✓ Full image received by Singapore':!s.captured?'Capture an image first.':s.status!=='IN_ORBIT'?'Transfer stopped with the flight.':s.downlink&&timer?(d.contact?'Transmitting to Singapore…':'Waiting for Singapore station contact…'):s.downlink||s.deliveryStarted||s.deliveredMB>0?'Transfer paused — your progress is saved.':d.contact?'Station in range — ready to send.':'Image ready — waiting for the next station pass.';
   $('delivery-detail').textContent=!s.captured?'Your captured image will appear here.':d.contact?`${d.rateMbps} Mbps · ${seconds(d.contactEnd-s.time)} contact remaining · ${seconds(d.contactSecondsNeeded)} of contact needed to finish.`:d.nextContactTime!==null?`Next station pass in ${seconds(d.nextContactTime-s.time)} of simulated time. No data is sent out of range.`:'No more station passes in this timeline. Replay to try again.';
-  $('delivery-jump').hidden=!s.captured||d.contact||s.status!=='IN_ORBIT'||d.nextContactTime===null;
+  $('delivery-jump').hidden=false;
+  $('delivery-jump').disabled=!s.captured||d.contact||s.status!=='IN_ORBIT'||d.nextContactTime===null;
 }
 function selectMapDestination(kind){
   mapSelection=kind;
@@ -200,15 +238,25 @@ function renderPlanner(){
   $('map-advance').textContent=mapSelection==='target'?(s.captured?'Image captured':next?.active?'Open target camera →':'Advance to imaging pass →'):next?.active?'Station contact active':'Advance to station pass →';
 }
 function renderTargetHint(){
+  $('camera-controls').hidden=false;
+  $('aim-auto').parentElement.hidden=flight.state.captured;
   const a=flight.aiming(),s=flight.state;
   const offFrame=a.errorDeg>Math.atan(plan.metrics.swathKm/(2*(flight.current().geodetic.altM/1000)))*180/Math.PI;
   const show=$('camera-target').getAttribute('aria-pressed')==='true'&&!s.captured&&(!a.available||offFrame);
   $('camera-waiting').hidden=!show;
   if(!show)return;
-  $('camera-wait-title').textContent=a.available?'Target is outside your camera frame':'Traveling to the target';
-  $('camera-wait-help').textContent=a.available?'Bring the city into view, then fine-tune the crosshair to capture.':'The satellite is not in a sunlit imaging position yet. Advance to the next opportunity to begin aiming.';
-  $('camera-wait-action').textContent=a.available?'Bring target into view':'Go to imaging window →';
-  $('camera-wait-action').disabled=s.status!=='IN_ORBIT'||(!a.available&&flight.nextEvent()===null);
+  const next=flight.opportunity('target'),stopped=s.status!=='IN_ORBIT',missing=!a.available&&!next;
+  $('camera-waiting').dataset.recovery=String(stopped||missing);
+  const seconds=value=>{const n=Math.max(0,Math.ceil(value));return n>=3600?`${Math.floor(n/3600)} h ${Math.floor(n/60)%60} min`:n>=60?`${Math.floor(n/60)} min ${n%60} s`:`${n} s`;};
+  const remaining=next?Math.max(0,next.time-s.time):null;
+  $('camera-wait-title').textContent=stopped?(s.status==='POWER_LOSS'?'Flight stopped — battery reserve':'Flight timeline ended'):missing?'No imaging windows remaining':a.available?'Ready to aim':remaining<=300?'Approaching target':'Traveling to the target';
+  $('camera-wait-countdown').textContent=stopped||missing?'':a.available?`Imaging window open · ${seconds(a.remainingSec)} remaining`:`Imaging window in ${seconds(remaining)} · simulated time`;
+  $('camera-wait-countdown').hidden=stopped||missing;
+  $('camera-wait-distance').textContent=`Ground distance to target: ${Math.round(a.distanceKm).toLocaleString()} km`;
+  $('camera-wait-help').textContent=stopped?'This flight cannot advance. Retry the same launched build for free.':missing?'There are no valid sunlit imaging windows left in this seven-day prediction. Retry to start a fresh timeline.':a.available?'Bring the city into view, then fine-tune the crosshair to capture.':'A valid window requires sunlight, target access and acceptable image resolution. Use Play or advance to the predicted window.';
+  $('camera-wait-playback').textContent=stopped||missing?'':timer?`Running at ${$('speed').value}× · countdown follows simulated time`:'Paused — press Play to continue';
+  $('camera-wait-action').textContent=stopped||missing?'Retry mission for free':a.available?'Bring target into view':'Skip to imaging window →';
+  $('camera-wait-action').disabled=false;
 }
 function renderResult(){
   const s=flight.state,terminal=s.status!=='IN_ORBIT';
@@ -258,6 +306,7 @@ export async function openOrbitalMission(selectedPlan, partsCatalog){
     let trajectory,link;
     try{[trajectory,link]=await Promise.all([post('propagate',{elements:plan.physics.elements,duration:604800,step:10,includeSun:true,enableJ2:true}),post('link-budget',{orbit:plan.physics.elements,duration:604800,step:10,stationIds:[urbanMission.station.id],comms:{frequencyBand:'S_Band',downlinkMbps:catalog.find(p=>p.id===plan.components.comms).downlinkSpeedMbps,minElevationDeg:Math.max(urbanMission.station.minElevationDeg,catalog.find(p=>p.id===plan.components.comms).minStationElevationDeg||0)}})]);}finally{clearTimeout(timeout);}
     if(!Array.isArray(trajectory.points)||trajectory.points.length<2||!Array.isArray(link.passes))throw Error('Incomplete orbital prediction. Retry launch.');
+    lastStage=null;
     flight=createFlight(plan,catalog,trajectory,link.passes,existing?.state);
     if(!existing){
       const save=read(SAVE_KEY)||{};
@@ -281,11 +330,13 @@ export async function openOrbitalMission(selectedPlan, partsCatalog){
     view?.dispose();view=null;
     instrument?.dispose();
     instrument=createTargetCamera($('canvas'),(x,y)=>{flight.setAim(x,y);checkpoint();render();});
+    arrival?.dispose();arrival=createCaptureArrival($('canvas'));
     panel.querySelector('aside').insertBefore(instrument.reveal,$('delivery'));
     $('graphics').hidden=false;
     try {const {createOrbitScene}=await import('./three/orbitScene.js');view=createOrbitScene($('canvas'),plan,catalog,trajectory.points,{onPick:selectMapDestination});$('graphics').hidden=true;for(const mode of ['follow','overview'])$(`camera-${mode}`).disabled=false;}catch{$('graphics').textContent='3D graphics unavailable. Telemetry and mission controls remain usable.';}
     if(flight.state.status==='COMPLETE')checkpoint();
     render();
     if(flight.access().available||!view)$('camera-target').click();else $('camera-follow').click();
+    if(flight.state.captured&&flight.state.status==='IN_ORBIT')guideToDownlink();
   }finally{busy=false;}
 }

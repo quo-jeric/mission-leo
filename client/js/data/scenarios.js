@@ -20,7 +20,7 @@ export const scenarios = [
     summary: 'Help a growing season thrive. Design your mission and balance competing requests from farming regions.',
     metrics: ['500–700 km','80 kg max','40 W average'],
     objectives: ['Schedule observations across 5–8 farming regions.','Serve the required share of priority-weighted targets within their windows.','Deliver imagery within budget and power limits.'],
-    detail: 'Command a 120-day growing season across six farming regions. Choose RGB or multispectral imaging, S-band or X-band communications, a ground station, and a 500–700 km orbit. Select up to three observation priorities per daily schedule and fully deliver requests within their 20-day windows. Default goal: 70% of priority weight. Up to $800,000 mission support is applied once at launch; planning does not spend funds.'
+    detail: 'Fly your built satellite over a 120-day growing season across six farming regions. Use Follow satellite, Earth overview and Target camera to select, aim and capture each region, then send imagery during ground-station contact. Choose RGB/multispectral imaging, S/X-band radio and a 500–700 km orbit. Fully deliver requests within their 20-day windows. Default goal: 70% of priority weight. Up to $800,000 support applies once at launch; planning spends no funds.'
   },
   {
     id: 'disaster',
@@ -31,6 +31,6 @@ export const scenarios = [
     summary: 'Every pass matters. Respond to disasters while protecting your spacecraft and delivering urgent imagery.',
     metrics: ['90 simulated days','Urgent deadlines','Live resource limits'],
     objectives: ['Deliver urgent imagery before request deadlines.','Manage battery, storage, and short downlink windows.','Recover from unexpected events and keep the spacecraft alive.'],
-    detail: 'Prioritize overlapping requests, point off-nadir, and manage the image queue. Seeded events include station outages, battery degradation, wheel faults, cloud cover, and payload resets. Performance is evaluated across seeded runs.'
+    detail: 'Fly your built satellite through 90 days of urgent disaster response. Select requests on the Earth view, aim and capture in Target camera, then downlink before overlapping 48–96 hour deadlines. Manage the image queue and recover from seeded station outages, battery degradation, wheel faults, cloud cover and payload resets. Clouds change every six simulated hours; compare the last five seeded attempts. Default goal: 60% priority-weighted on-time delivery. Up to $1,000,000 support applies once at launch; free retries reuse the launched hardware.'
   }
 ];

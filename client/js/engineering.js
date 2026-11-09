@@ -1,4 +1,4 @@
-import { launchServices, launchSites, urbanMission, agricultureMission, farmingRegions } from './data/mission-config.js';
+import { launchServices, launchSites, urbanMission, agricultureMission, farmingRegions, disasterMission, disasterRegions } from './data/mission-config.js';
 
 // Same WGS-84 radius and mu as the backend. This is conservative preflight
 // screening; time-resolved thermal/attitude/observation simulation comes later.
@@ -9,14 +9,14 @@ const finite = value => typeof value === 'number' && Number.isFinite(value);
 const round = (value, digits = 2) => finite(value) ? Number(value.toFixed(digits)) : null;
 
 export function missionInputKey(design) {
-  const mission = design.missionId === "agriculture" ? agricultureMission : urbanMission;
+  const mission = design.missionId === "disaster" ? disasterMission : design.missionId === "agriculture" ? agricultureMission : urbanMission;
   return JSON.stringify({ missionId: design.missionId, version: mission.version, credits: design.credits, planningSupportUSD: design.planningSupportUSD ?? mission.planningSupportUSD,
     components: Object.fromEntries(Object.entries(design.components || {}).sort(([a], [b]) => a.localeCompare(b))),
     settings: Object.fromEntries(Object.entries({ ...mission.defaults, ...design.settings }).sort(([a], [b]) => a.localeCompare(b))) });
 }
 
 export function evaluateMission(design, catalog) {
-  const mission = design.missionId === "agriculture" ? agricultureMission : urbanMission;
+  const mission = design.missionId === "disaster" ? disasterMission : design.missionId === "agriculture" ? agricultureMission : urbanMission;
   const settings = { ...mission.defaults, ...design.settings };
   const selected = design.components || {};
   const checks = [];
@@ -25,8 +25,8 @@ export function evaluateMission(design, catalog) {
   const items = Object.values(parts).filter(Boolean);
   const { bus, payload, eps_solar: solar, eps_battery: battery, comms, cdh, propulsion: adcs, tcs } = parts;
   const validIds = Object.entries(selected).every(([category, id]) => categories.includes(category) && typeof id === 'string' && parts[category]?.id === id);
-  check('mission', 'Mission configuration', design.missionId === mission.id, 'Supported missions: Urban Mapping and Agricultural Monitoring.');
-  check('catalog', 'Catalog selections', validIds && items.every(part => part.tier <= (mission.id === "agriculture" ? 2 : 1)), 'Select known mission-tier components; unknown IDs and category mismatches are rejected.');
+  check('mission', 'Mission configuration', design.missionId === mission.id, 'Supported missions: Urban Mapping, Agricultural Monitoring and Disaster Monitoring.');
+  check('catalog', 'Catalog selections', validIds && items.every(part => part.tier <= (mission.id !== "urban" ? 2 : 1)), 'Select known mission-tier components; unknown IDs and category mismatches are rejected.');
   for (const [category, label] of [['bus', 'Chassis'], ['payload', 'Optical payload'], ['eps_solar', 'Solar array'], ['eps_battery', 'Battery'], ['comms', 'Radio'], ['cdh', 'Flight computer']]) {
     check(`required-${category}`, label, parts[category] && (category !== 'payload' || payload.payloadType === 'optical') && (category !== 'cdh' || cdh.cdhType === 'obc'), category === 'cdh' ? 'An OBC is required; a standalone recorder does not replace the flight computer.' : `Install ${label.toLowerCase()}.`, category);
   }
@@ -56,8 +56,9 @@ export function evaluateMission(design, catalog) {
   check('launch', 'Launch insertion', injectionValid && siteValid, service?.fixedOrbit ? 'Tutorial rideshare: fixed 500 km, 97.4°, Vandenberg. Custom orbits require a dedicated service.' : 'Direct insertion requires |site latitude| ≤ inclination ≤ 180° − |site latitude|.');
   const groundLatitude = finite(settings.inclinationDeg) ? Math.min(settings.inclinationDeg, 180 - settings.inclinationDeg) : -1;
   check('coverage', 'Target latitude access', orbitValid && groundLatitude >= Math.abs(mission.target.latDeg), 'Ground-track latitude must reach the target. Exact target access and imaging times are evaluated in the orbital phase.');
-  if (mission.id === 'agriculture') {
-    check('regions', 'Farming-region latitude access', farmingRegions.every(r => groundLatitude >= Math.abs(r.latDeg)), 'The orbit must reach all six region latitudes.');
+  if (mission.id !== 'urban') {
+    if(mission.id==='disaster')check('disaster-seed','Scenario seed',Number.isInteger(settings.seed)&&settings.seed>=1&&settings.seed<=999999,'Choose a seed from 1 to 999999 for reproducible requests and faults.');
+    check('regions', 'Farming-region latitude access', (mission.id === "disaster" ? disasterRegions : farmingRegions).every(r => groundLatitude >= Math.abs(r.latDeg)), 'The orbit must reach all six region latitudes.');
     check('season-goal', 'Season delivery goal', finite(settings.requiredShare) && settings.requiredShare >= .5 && settings.requiredShare <= 1, 'Choose a finite weighted delivery target from 50% to 100%.');
     check('season-station', 'Season station', ['gs_singapore', 'gs_svalbard', 'gs_goldstone', 'gs_canberra'].includes(settings.stationId), 'Choose one of the listed S/X-band stations.');
     check('season-payload', 'RGB / multispectral camera', ['red', 'green', 'blue'].every(band => payload?.spectralBands?.includes(band)), 'This mission requires RGB bands, with optional additional multispectral bands.', 'payload');
@@ -85,7 +86,7 @@ export function evaluateMission(design, catalog) {
   const imageMB = gsdM !== null && gsdM > 0 ? Math.ceil(10000 / gsdM) ** 2 * Math.max(payload?.spectralBands?.length || 3, 3) / 1e6 / Math.max(cdh?.compressionRatio || 1, 1) : null;
   check('storage', 'Image storage', imageMB !== null && cdh?.cdhType === 'obc' && cdh.storageCapacityMB >= imageMB,
     `One 10 × 10 km RGB image: ${round(imageMB)} MB; onboard capacity ${cdh?.storageCapacityMB ?? 0} MB.`, 'cdh');
-  check('radio', 'Ground-station radio', (mission.id === "agriculture" ? ["S_Band", "X_Band"].includes(comms?.frequencyBand) : comms?.frequencyBand === mission.station.band) && comms.downlinkSpeedMbps > 0,
+  check('radio', 'Ground-station radio', (mission.id !== "urban" ? ["S_Band", "X_Band"].includes(comms?.frequencyBand) : comms?.frequencyBand === mission.station.band) && comms.downlinkSpeedMbps > 0,
     'Use a compatible mission radio. Actual contact windows are checked against the backend separately.', 'comms');
 
   const operating = part => (part.operationalPowerW || 0) + (part.category === 'payload' ? optics?.powerDeltaW || 0 : 0);

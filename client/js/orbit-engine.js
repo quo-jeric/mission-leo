@@ -28,7 +28,7 @@ export function targetAccess(point, plan) {
   const aimXDeg=Math.atan2(R*Math.cos(tlat)*Math.sin(tlon-lon),depth)/rad;
   const aimYDeg=Math.atan2(R*(Math.sin(tlat)*Math.cos(lat)-Math.cos(tlat)*Math.sin(lat)*Math.cos(tlon-lon)),depth)/rad;
   return { aimXDeg, aimYDeg, distanceKm: R*angle, lookDeg: look/rad, gsdM: gsd, sunElevationDeg: sunElevation,
-    available: !point.isEclipse && incidenceCos > 0 && look/rad <= 30 && gsd <= (plan.maxGsdM ?? 3) && sunElevation >= 10 };
+    available: !point.isEclipse && incidenceCos > 0 && look/rad <= (plan.maxLookDeg ?? 30) && gsd <= (plan.maxGsdM ?? 3) && sunElevation >= 10 };
 }
 export function pointAt(points, time) {
   const step = points[1].time - points[0].time;
@@ -57,14 +57,15 @@ export function createFlight(plan, catalog, trajectory, passes, saved) {
     const x=state.aimMode==='auto'?access.aimXDeg:state.aimXDeg;
     const y=state.aimMode==='auto'?access.aimYDeg:state.aimYDeg;
     const errorDeg=Math.hypot(x-access.aimXDeg,y-access.aimYDeg);
-    const toleranceDeg=Math.max(.05,Math.atan(Math.max(0,plan.metrics.swathKm-urbanMission.target.widthKm)/2/(pointAt(points,state.time).geodetic.altM/1000))/rad);
+    const toleranceDeg=Math.max(.05,Math.atan(Math.max(0,plan.metrics.swathKm-(plan.target?.widthKm ?? urbanMission.target.widthKm))/2/(pointAt(points,state.time).geodetic.altM/1000))/rad);
     const window=windows.find(window=>state.time>=window.start&&state.time<window.end);
     return {...access,xDeg:x,yDeg:y,errorDeg,toleranceDeg,remainingSec:window?Math.max(0,Math.min(end,window.end)-state.time):0,aligned:access.available&&errorDeg<=toleranceDeg};
   }
   function setAim(x,y){
     if(state.status!=='IN_ORBIT'||state.captured||!Number.isFinite(x)||!Number.isFinite(y))return false;
-    x=clamp(x,-30,30);y=clamp(y,-30,30);
-    if(Math.hypot(x,y)>30){const scale=30/Math.hypot(x,y);x*=scale;y*=scale;}
+    const limit=plan.maxLookDeg ?? 30;
+    x=clamp(x,-limit,limit);y=clamp(y,-limit,limit);
+    if(Math.hypot(x,y)>limit){const scale=limit/Math.hypot(x,y);x*=scale;y*=scale;}
     state.aimMode='manual';state.aimXDeg=x;state.aimYDeg=y;return true;
   }
   function advance(seconds) {
@@ -109,6 +110,7 @@ export function createFlight(plan, catalog, trajectory, passes, saved) {
     state.captureAimMode=state.aimMode;state.captureAimErrorDeg=access.errorDeg;
     state.captureScore=Math.round(100*clamp(.6*(1-access.errorDeg/access.toleranceDeg)+.4*Math.min(1,plan.metrics.gsdM/access.gsdM),0,1));
     state.captureFrame=cameraFrame(access,pointAt(points,state.time).geodetic.altM/1000,plan.metrics.swathKm);
+    state.captureFrame.version=2;
     return true;
   }
   function nextEvent() {

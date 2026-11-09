@@ -15,7 +15,7 @@ export function createGameSave() {
 export function normalizeGameSave(value) {
   const save = object(value), defaults = createGameSave(), player = object(save.player), stats = object(player.stats);
   const completed = ['urban', 'agriculture', 'disaster'].filter(id => save.missionProgress?.[id]?.completed === true).length;
-  const launches = ['orbitalFlight', 'agricultureFlight'].filter(key => Boolean(save[key]?.plan)).length;
+  const launches = ['orbitalFlight', 'agricultureFlight', 'disasterFlight'].filter(key => Boolean(save[key]?.plan)).length;
   const missingCredits = !Number.isFinite(player.credits) || player.credits < 0;
   return { ...defaults, ...save,
     ...(missingCredits && (completed || launches || save.blueprints?.length) ? { profileRecovery: { ...object(save.profileRecovery), creditHistoryMissing: true } } : {}),

@@ -1,8 +1,8 @@
 import { read, write, SAVE_KEY } from './storage.js';
 import { evaluateMission, missionInputKey } from './engineering.js';
-import { urbanMission, agricultureMission } from './data/mission-config.js';
+import { urbanMission, agricultureMission, disasterMission } from './data/mission-config.js';
 import { openPreflight } from './preflight.js';
-import { openAgriculture } from './agriculture.js';
+import { openAgriculture, openDisaster } from './agriculture.js';
 
 const groups = [
   ['bus', 'Chassis', 'Choose the structure that holds your satellite.'],
@@ -63,9 +63,9 @@ let missionSettings = {};
 const drafts = new Map();
 const chosen = () => Object.values(parts).map(id => catalog.find(part => part.id === id)).filter(Boolean);
 const agencyCredits = () => read(SAVE_KEY)?.player?.credits ?? 250000;
-const missionConfig = () => mission?.id === 'agriculture' ? agricultureMission : urbanMission;
+const missionConfig = () => mission?.id === 'disaster' ? disasterMission : mission?.id === 'agriculture' ? agricultureMission : urbanMission;
 const remainingSupport = () => read(SAVE_KEY)?.missionSupportUsed?.[missionConfig().id] ? 0 : missionConfig().planningSupportUSD;
-const budget = () => agencyCredits() + (['urban', 'agriculture'].includes(mission?.id) ? remainingSupport() : 0);
+const budget = () => agencyCredits() + (['urban', 'agriculture', 'disaster'].includes(mission?.id) ? remainingSupport() : 0);
 function getDesign() {
   const camera = catalog.find(part => part.id === parts.payload);
   return { missionId: mission?.id, components: { ...parts }, credits: agencyCredits(), planningSupportUSD: remainingSupport(), settings: { ...missionConfig().defaults, focalLengthM: camera?.defaultFocalLengthM || 1, ...missionSettings } };
@@ -75,7 +75,7 @@ const configuredMass = part => part.massKg + (part.fuelMassKg || 0) + (opticsFor
 const configuredPower = part => (part.operationalPowerW || 0) + (opticsFor(part)?.powerDeltaW || 0);
 
 function snapshot() {
-  if (['urban', 'agriculture'].includes(mission?.id)) {
+  if (['urban', 'agriculture', 'disaster'].includes(mission?.id)) {
     const report = evaluateMission(getDesign(), catalog), m = report.metrics;
     const passed = id => report.checks.find(item => item.id === id)?.passed;
     return [
@@ -254,7 +254,7 @@ function renderOptions() {
   }
   const bus = catalog.find(part => part.id === parts.bus);
   const chassis = bus?.chassisCompatibility?.[0];
-  const options = catalog.filter(part => part.category === active && part.tier <= (mission.id === 'agriculture' ? 2 : 1) && (active === 'bus' || !chassis || part.chassisCompatibility?.includes(chassis)) && (active !== 'payload' || !['urban', 'agriculture'].includes(mission.id) || part.payloadType === 'optical'));
+  const options = catalog.filter(part => part.category === active && part.tier <= (mission.id !== 'urban' ? 2 : 1) && (active === 'bus' || !chassis || part.chassisCompatibility?.includes(chassis)) && (active !== 'payload' || !['urban', 'agriculture', 'disaster'].includes(mission.id) || part.payloadType === 'optical'));
   options.sort((a, b) => Number(b.id === parts[active]) - Number(a.id === parts[active]));
   $('option-count').textContent = `${options.length} options`;
   if (!options.length) list.textContent = 'No beginner components available for this chassis. Try a different chassis.';
@@ -362,7 +362,7 @@ export function openHangar(scenario) {
   previewPart = null;
   $('save-status').textContent = dirty ? 'Unsaved session assembly restored.' : saved ? 'Saved blueprint loaded.' : 'Changes stay in this session until saved.';
   $('mission').textContent = scenario.title;
-  screen.querySelector('.hangar-panel-label > span').textContent = scenario.id === 'agriculture' ? 'INTERMEDIATE / TIERS 01–02' : 'BEGINNER / TIER 01';
+  screen.querySelector('.hangar-panel-label > span').textContent = scenario.id !== 'urban' ? 'MISSION PARTS / TIERS 01–02' : 'BEGINNER / TIER 01';
   $('target').textContent = scenario.objectives[0];
   $('agency').textContent = save?.player?.agencyName || 'Independent agency';
   document.querySelector('#mission-select').inert = true;
@@ -395,10 +395,11 @@ function persistBlueprint(plan) {
 }
 $('save').onclick = () => persistBlueprint();
 $('review').onclick = () => {
-  if (mission.id === 'agriculture') {
-    openAgriculture({ catalog, getDesign,
+  if (['agriculture','disaster'].includes(mission.id)) {
+    const open = mission.id === 'disaster' ? openDisaster : openAgriculture;
+    open({ catalog, getDesign,
       onSettingsChange: settings => { missionSettings = { ...settings }; dirty = true; render(); },
-      onStarter: () => { parts = { ...agricultureMission.starter }; missionSettings = { ...agricultureMission.defaults }; previewPart = null; dirty = true; render(); },
+      onStarter: () => { parts = { ...missionConfig().starter }; missionSettings = { ...missionConfig().defaults }; previewPart = null; dirty = true; render(); },
     });
     return;
   }

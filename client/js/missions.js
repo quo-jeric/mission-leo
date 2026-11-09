@@ -184,9 +184,10 @@ function beginMission() {
 
   document.querySelector('#requirements-title').textContent = scenario.title;
   const paragraphs = [scenario.detail, ...scenario.objectives];
-  const operational=['urban','agriculture'].includes(scenario.id);
+  const operational=['urban','agriculture','disaster'].includes(scenario.id);
   document.querySelector('#requirements-dialog .hint').textContent=scenario.id==='agriculture'?'Build your satellite, then Review design to launch or resume a 120-day season. Schedule regions and downlink before deadlines; reach the weighted delivery goal to unlock the next level.':operational?'Build your satellite, validate its mission plan, then launch. Complete the image downlink to unlock the next level.':'Mission planning and the workshop preview are available. Operational gameplay for this level is not implemented yet.';
   document.querySelector('#requirements-done').textContent=operational?'Design satellite →':'Open workshop preview →';
+  if(scenario.id==='disaster')document.querySelector('#requirements-dialog .hint').textContent='Build your satellite, then Review design to launch or resume 90-day disaster response. Select urgent requests, manage the queue and recover faults between six-hour commands. Deliver the required weighted share before deadlines to complete the campaign.';
   if (!saved) {
     paragraphs.push('Device storage is unavailable. Mission selection is available for this session.');
   }

@@ -44,3 +44,16 @@ export const farmingRegions = [
   { id: 'punjab', name: 'Punjab', latDeg: 30.9, lonDeg: 75.8, weight: 1 },
   { id: 'murray', name: 'Murray–Darling', latDeg: -34.2, lonDeg: 142.2, weight: 1 },
 ];
+export const disasterMission = {
+  ...agricultureMission, id:'disaster',days:90,turnSec:21600,planningSupportUSD:1000000,
+  defaults:{...agricultureMission.defaults,focalLengthM:1,requiredShare:.6,seed:12},
+  starter:{...urbanMission.starter},
+};
+export const disasterRegions = [
+  {id:'singapore',name:'Singapore',latDeg:1.3,lonDeg:103.77},
+  {id:'manila',name:'Manila',latDeg:14.6,lonDeg:121},
+  {id:'bangkok',name:'Bangkok',latDeg:13.75,lonDeg:100.5},
+  {id:'jakarta',name:'Jakarta',latDeg:-6.2,lonDeg:106.8},
+  {id:'hanoi',name:'Hanoi',latDeg:21,lonDeg:105.8},
+  {id:'surabaya',name:'Surabaya',latDeg:-7.25,lonDeg:112.75},
+];

@@ -18,3 +18,66 @@
 #season-message{min-height:24px;color:#ddc68d}#season-log{padding-left:20px;font-size:12px;color:#a6bdc4;max-height:260px;overflow:auto}#season-log li{margin:12px 0}#season-progress{width:100%;accent-color:#a5d8b5;height:12px}#season-checks{color:#dccc9e;padding-left:20px}.season-limits{color:#95b0b9;font-size:12px;margin:24px 0}#season-retry-dialog{background:#11272f;color:#deeaec;border:1px solid #38575e;border-radius:16px;max-width:min(500px,90vw);padding:24px}#season-retry-dialog::backdrop{background:#000a}
 @media(max-width:850px){.season-layout{grid-template-columns:1fr}.season-fields,.season-telemetry{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:480px){.season-fields{grid-template-columns:1fr}.season-actions>button{flex:1 1 100%}#agriculture-operations header>button{width:100%}.season-telemetry{gap:8px}.season-telemetry strong{font-size:17px}}
+#agriculture-operations[data-mission=disaster] .eyebrow { color:#edbc91; }
+#agriculture-operations[data-mission=disaster] .season-region { grid-template-columns:minmax(0,1fr) auto; }
+#agriculture-operations[data-mission=disaster] .season-region label { grid-column:1/-1; justify-content:flex-start; gap:10px; margin:0 0 6px; font-size:14px; }
+#agriculture-operations[data-mission=disaster] .season-region label input { flex:none; }
+#agriculture-operations[data-mission=disaster] .season-region button { font-size:11px; padding:6px 9px; }
+#season-alerts { padding:14px; border:1px solid #947553; border-radius:9px; background:#b5883310; color:#e0c7a4; font-size:12px; }
+#season-disaster-tools label { margin:10px 0; justify-content:flex-start; }
+#season-disaster-tools .season-actions { margin:10px 0; }
+#season-run-history { overflow-wrap:anywhere; font-size:12px; color:#b7cbd0; }
+
+/* Shared live-orbit gameplay: the world remains the main workspace. */
+#agriculture-operations .season-layout{grid-template-columns:minmax(0,1fr) minmax(300px,350px);gap:20px;align-items:start}
+#agriculture-operations .season-layout>aside{max-height:calc(100dvh - 245px);overflow:auto;padding:20px;scrollbar-width:thin}
+#agriculture-operations .season-schedule{padding:0;border:0;border-radius:0;background:none}
+#agriculture-operations .season-schedule>.season-actions{display:none}
+#agriculture-operations .season-region{grid-template-columns:1fr;padding:12px 0;cursor:default}
+#agriculture-operations .season-region input{display:none}
+#agriculture-operations .season-telemetry{margin:12px 0;gap:10px}
+#agriculture-operations .season-telemetry>div{padding:10px 14px}
+#agriculture-operations .season-telemetry strong{font-size:16px}
+#agriculture-operations .season-layout>aside h2{font-size:18px}
+.season-orbit-world{border:1px solid #2a454c;border-radius:16px;overflow:hidden;background:#0b2029;min-width:0}
+.season-orbit-heading,.season-orbit-target,.season-orbit-dock{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:12px 16px}
+.season-orbit-world label{margin:0;gap:8px;justify-content:flex-start;font-size:12px}
+.season-orbit-heading{justify-content:space-between;border-bottom:1px solid #2a454c}
+.season-orbit-heading [aria-pressed=true]{border-color:#d9be7c;color:#efcf88;background:#253a3d}
+.season-orbit-heading>span:last-child{font-size:11px;color:#a4bec5}
+.season-orbit-canvas{position:relative;height:clamp(360px,51dvh,640px);overflow:hidden;isolation:isolate}
+.season-orbit-canvas canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
+.season-orbit-canvas canvas.target-camera-canvas{z-index:2;cursor:crosshair}
+.season-orbit-canvas [data-id=graphics]{position:absolute;top:12px;left:16px;z-index:4;max-width:90%;color:#d9cda9;pointer-events:none}
+.season-orbit-canvas .target-camera-feedback{z-index:3;pointer-events:none}
+.season-orbit-guidance{display:flex;align-items:baseline;gap:14px;padding:12px 16px;background:#0b1c25;border-top:1px solid #2a454c;font-size:12px;color:#a9c1ca}
+.season-orbit-guidance strong{color:#e6ce97;font-size:15px;flex:none}
+.season-orbit-target{border-bottom:1px solid #2a454c}
+.season-orbit-target>label:first-child{display:grid;gap:4px;font-size:11px;flex:1 1 200px;min-width:0;color:#9cb8c2}
+.season-orbit-target select{width:100%}
+.season-orbit-target [data-id=capture]{border-color:#d9be7c;color:#efcf88}
+.season-orbit-dock label{display:flex;align-items:center;gap:8px}
+.season-orbit-dock [data-id=clock]{margin-left:auto;font-size:11px;color:#9db8c1}
+.season-orbit-note{font-size:11px;color:#9bb7c0;margin:0;padding:4px 16px 14px}
+.season-orbit-world .orbit-image-reveal{margin:0 16px 16px;max-width:340px}
+@media(min-width:1600px){.season-orbit-canvas{height:clamp(470px,55dvh,680px)}}
+@media(max-width:1000px){#agriculture-operations .season-layout{grid-template-columns:1fr}#agriculture-operations .season-layout>aside{max-height:none}.season-orbit-canvas{height:50dvh;min-height:320px}}
+@media(max-width:480px){.season-orbit-heading>div{display:flex;width:100%;gap:4px}.season-orbit-heading button{flex:1;padding:8px 6px!important;font-size:11px!important}.season-orbit-heading>.eyebrow{display:none}.season-orbit-target>label:first-child{flex-basis:100%}.season-orbit-target button,.season-orbit-dock button{flex:1 1 45%}.season-orbit-dock [data-id=clock]{margin:0;width:100%}.season-orbit-guidance{align-items:start}.season-orbit-canvas{height:380px;min-height:300px}}
+@media(min-width:1001px) and (min-height:800px){
+  #agriculture-operations[data-phase=flight]{display:flex;flex-direction:column;overflow:hidden;padding-top:18px;padding-bottom:12px}
+  #agriculture-operations[data-phase=flight]>header{flex:none}
+  #agriculture-operations[data-phase=flight]>header p{margin:0}
+  #agriculture-operations[data-phase=flight] h1{font-size:25px;margin:2px 0 8px}
+  #agriculture-operations[data-phase=flight]>nav{padding:5px 0;flex:none}
+  #agriculture-operations[data-phase=flight]>#season-message{margin:4px 0;min-height:0;flex:none;font-size:12px}
+  #agriculture-operations[data-phase=flight]>#season-message:empty{display:none}
+  #agriculture-operations[data-phase=flight]>#season-flight{display:flex;flex-direction:column;flex:1;min-height:0}
+  #agriculture-operations[data-phase=flight] .season-layout{flex:1;min-height:0;align-items:stretch}
+  #agriculture-operations[data-phase=flight] .season-layout>aside{max-height:none;min-height:0;height:100%;overflow:auto}
+  #agriculture-operations[data-phase=flight] .season-orbit-world{display:flex;flex-direction:column;min-height:0}
+  #agriculture-operations[data-phase=flight] .season-orbit-canvas{flex:1;min-height:260px;height:auto}
+  #agriculture-operations[data-phase=flight] .season-orbit-heading,#agriculture-operations[data-phase=flight] .season-orbit-target,#agriculture-operations[data-phase=flight] .season-orbit-dock{padding:8px 12px;gap:8px;flex:none}
+  #agriculture-operations[data-phase=flight] .season-orbit-world button,#agriculture-operations[data-phase=flight] .season-orbit-world select{font-size:12px;padding:8px 10px}
+  #agriculture-operations[data-phase=flight] .season-orbit-guidance{flex:none;padding:8px 12px}
+  #agriculture-operations[data-phase=flight]>.season-limits{flex:none;margin:8px 0 0;max-height:150px;overflow:auto}
+}
