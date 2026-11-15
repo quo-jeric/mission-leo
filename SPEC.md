@@ -1,6 +1,11 @@
 # 🛰️ 3D Low Earth Orbit Satellite Design & Simulation Game
 ## Global Specification & Architecture Document (`SPEC.md`)
 
+### Satellite Workshop (Hangar) layout redesign (2026-11-14)
+- Left-side control column: Reduced-size `#hangar-steps` assembly stages navigation placed at the top of a dedicated left sidebar (`.hangar-sidebar`), directly paired with the Component Library (`.hangar-parts`) below it. The step tracker uses compact 4-segment buttons with clean numeric badges, while the component library occupies the full remaining vertical height with independent scrolling on `#hangar-part-list`.
+- Dominant 3D Workbench: The 3D workbench (`.hangar-stage`) moves to the right side of `.hangar-workspace`, occupying the dominant portion (~72–75% screen width on widescreen displays). Three.js procedural rendering and interactive camera controls (drag-to-rotate, zoom, reset, cutaway, exploded view, wireframe) adapt dynamically via host ResizeObserver.
+- Standalone footer removal and dock integration: The standalone page-level `<footer class="hangar-footer">` is completely removed. All design metrics (`#hangar-metrics`: Mass, Power, Budget) along with assembly persistence status (`#hangar-save-status`) and next-stage progression buttons (`#hangar-next-button`) are integrated directly into `.hangar-stage` as a docked aerospace HUD panel (`.hangar-stage-dock`). Mission targets and disclaimer notes are cleanly embedded into `.hangar-stage-bottom`.
+
 ### Consistent mission controls and target-camera zoom (2026-11-09)
 - Target camera also supports grab-to-aim with a left-mouse drag, pen drag or one-finger swipe. A six-pixel movement threshold distinguishes dragging from click/tap aim. Drag mapping follows the current zoom and terrain moves with the pointer; the existing mission aiming limits remain authoritative. Two-finger pinch suppresses aim commands until all participating fingers lift. Pointer cancellation, tab changes, captured images and stopped flights cannot continue an old drag. Keyboard and click/tap aim remain available.
 - Selecting another seasonal observation target immediately switches to Earth overview and centers that region's marker. Selection alone never moves the physical spacecraft or advances time; Target camera continues to show the actual local ground until the chosen region's valid imaging window is reached.
