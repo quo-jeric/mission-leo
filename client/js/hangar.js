@@ -1,4 +1,8 @@
 import { read, write, SAVE_KEY } from './storage.js';
+import { evaluateMission, missionInputKey } from './engineering.js';
+import { urbanMission, agricultureMission, disasterMission } from './data/mission-config.js';
+import { openPreflight } from './preflight.js';
+import { openAgriculture, openDisaster } from './agriculture.js';
 
 const groups = [
   ['bus', 'Chassis', 'Choose the structure that holds your satellite.'],
@@ -26,11 +30,9 @@ screen.innerHTML = `
   <nav id="hangar-steps" aria-label="Assembly stages"></nav>
   <div class="hangar-step-intro"><p><span id="hangar-step"></span> <span id="hangar-next" role="status"></span></p><span id="hangar-progress-label"></span></div>
   <div class="hangar-workspace">
-    <section class="hangar-stage" aria-label="3D satellite assembly"><div class="hangar-stage-heading"><span class="eyebrow"><i class="hangar-live-dot" aria-hidden="true"></i> 3D WORKBENCH</span><span id="hangar-installed"></span></div><div class="hangar-preview-banner" id="hangar-preview-banner" hidden><span id="hangar-preview-status" role="status"></span><button id="hangar-preview-close">← Assembly</button></div><div class="hangar-orbit-rings" aria-hidden="true"></div><div id="hangar-illustration"><p id="hangar-3d-status" role="status">Preparing 3D workbench…</p></div><div class="hangar-camera-tools" role="group" aria-label="3D camera controls"><span>Drag to rotate · scroll or pinch to zoom</span><button id="hangar-zoom-in" aria-label="Zoom in">+</button><button id="hangar-zoom-out" aria-label="Zoom out">−</button><button id="hangar-camera-reset">Reset view</button></div><div class="hangar-stage-caption"><span class="eyebrow" id="hangar-preview-kicker">YOUR ORBIT STARTS HERE</span><h2 id="hangar-assembly-name">An idea taking shape.</h2><p id="hangar-assembly-description">Choose a chassis to begin your build.</p></div><div id="hangar-mounts" role="group" aria-label="Assembly shortcuts"></div><div class="hangar-stage-bottom"><span>Procedural models · illustrative mounting</span><details class="hangar-view-options"><summary>View options</summary><div class="hangar-view-popover"><label><input id="hangar-cutaway" type="checkbox"> See internal components</label><label><input id="hangar-explode" type="checkbox"> Exploded assembly</label><label><input id="hangar-ghost" type="checkbox"> Wireframe view</label><button id="hangar-reset">Reset blueprint…</button></div></details></div></section>
     <aside class="hangar-parts" aria-label="Component library"><div class="hangar-panel-label"><p class="eyebrow">COMPONENT LIBRARY</p><span>BEGINNER / TIER 01</span></div><div id="hangar-categories" role="group" aria-label="Subsystems in this stage"></div><div class="hangar-options"><div class="hangar-option-heading"><h2 id="hangar-part-title" tabindex="-1"></h2><span id="hangar-option-count"></span></div><p id="hangar-part-help"></p><div id="hangar-part-list"></div></div><details class="hangar-installed-summary"><summary>Installed components <span id="hangar-summary-count"></span></summary><div id="hangar-installed-list"></div></details></aside>
+    <section class="hangar-stage" aria-label="3D satellite assembly"><div class="hangar-stage-heading"><span class="eyebrow"><i class="hangar-live-dot" aria-hidden="true"></i> 3D WORKBENCH</span><span id="hangar-installed"></span></div><div class="hangar-preview-banner" id="hangar-preview-banner" hidden><span id="hangar-preview-status" role="status"></span><button id="hangar-preview-close">← Assembly</button></div><div class="hangar-orbit-rings" aria-hidden="true"></div><div id="hangar-illustration"><p id="hangar-3d-status" role="status">Preparing 3D workbench…</p></div><div class="hangar-camera-tools" role="group" aria-label="3D camera controls"><span>Drag to rotate · scroll or pinch to zoom</span><button id="hangar-zoom-in" aria-label="Zoom in">+</button><button id="hangar-zoom-out" aria-label="Zoom out">−</button><button id="hangar-camera-reset">Reset view</button></div><div class="hangar-stage-caption"><span class="eyebrow" id="hangar-preview-kicker">YOUR ORBIT STARTS HERE</span><h2 id="hangar-assembly-name">An idea taking shape.</h2><p id="hangar-assembly-description">Choose a chassis to begin your build.</p></div><div id="hangar-mounts" role="group" aria-label="Assembly shortcuts"></div><div class="hangar-stage-dock"><div id="hangar-metrics" aria-label="Design estimates"></div><div class="hangar-stage-dock-actions"><span id="hangar-save-status" role="status">Save to keep this blueprint.</span><button id="hangar-next-button" class="action">Continue →</button></div></div><div class="hangar-stage-bottom"><div class="hangar-footnote-inline"><span id="hangar-target"></span><details class="hangar-disclaimer"><summary>About these estimates</summary><p>Urban Mapping review screens slots, orbital energy, battery reserve, optics and thermal capacity, with backend station checks. Timed observation and temperature simulation remain in development. This does not certify flight readiness.</p></details></div><details class="hangar-view-options"><summary>View options</summary><div class="hangar-view-popover"><label><input id="hangar-cutaway" type="checkbox"> See internal components</label><label><input id="hangar-explode" type="checkbox"> Exploded assembly</label><label><input id="hangar-ghost" type="checkbox"> Wireframe view</label><button id="hangar-reset">Reset blueprint…</button></div></details></div></section>
   </div>
-  <footer class="hangar-footer"><div id="hangar-metrics" aria-label="Design estimates"></div><div class="hangar-footer-action"><span id="hangar-save-status" role="status">Save to keep this blueprint.</span><button id="hangar-next-button" class="action">Continue →</button></div></footer>
-  <div class="hangar-footnote"><p id="hangar-target"></p><details class="hangar-disclaimer"><summary>About these estimates</summary><p>Preliminary estimates. Slot fit, eclipse, thermal and downlink checks are still in development. This does not certify flight readiness.</p></details></div>
   <dialog id="hangar-review-dialog" aria-labelledby="hangar-review-title"><form method="dialog"><button class="close" aria-label="Close review">×</button><p class="eyebrow">DESIGN REVIEW</p><h2 id="hangar-review-title">Before you launch.</h2><div id="hangar-review-body"></div><p class="hint">Launch and orbital simulation are in development. This review does not certify flight readiness.</p><button class="action">Continue designing</button></form></dialog>
   <dialog id="hangar-reset-dialog" aria-labelledby="hangar-reset-title"><form method="dialog"><h2 id="hangar-reset-title">Clear this assembly?</h2><p>Your saved blueprint is kept until you save again.</p><button value="cancel" class="text-button">Keep designing</button><button value="reset" class="action">Clear assembly</button></form></dialog>`;
 document.querySelector('.space').append(screen);
@@ -55,13 +57,32 @@ const money = value => new Intl.NumberFormat('en-US', { style: 'currency', curre
 let catalog = [], parts = {}, active = 'bus', mission, loading = false, loadFailed = false;
 let dirty = false;
 let viewer = null, viewerLoading = false, previewPart = null;
+let missionSettings = {};
 const drafts = new Map();
 const chosen = () => Object.values(parts).map(id => catalog.find(part => part.id === id)).filter(Boolean);
-const budget = () => read(SAVE_KEY)?.player?.credits ?? 250000;
-const configuredMass = part => part.massKg + (part.fuelMassKg || 0) + (part.focalLengthOptions?.find(option => option.focalLengthM === part.defaultFocalLengthM)?.massDeltaKg || 0);
-const configuredPower = part => (part.operationalPowerW || 0) + (part.focalLengthOptions?.find(option => option.focalLengthM === part.defaultFocalLengthM)?.powerDeltaW || 0);
+const agencyCredits = () => read(SAVE_KEY)?.player?.credits ?? 250000;
+const missionConfig = () => mission?.id === 'disaster' ? disasterMission : mission?.id === 'agriculture' ? agricultureMission : urbanMission;
+const remainingSupport = () => read(SAVE_KEY)?.missionSupportUsed?.[missionConfig().id] ? 0 : missionConfig().planningSupportUSD;
+const budget = () => agencyCredits() + (['urban', 'agriculture', 'disaster'].includes(mission?.id) ? remainingSupport() : 0);
+function getDesign() {
+  const camera = catalog.find(part => part.id === parts.payload);
+  return { missionId: mission?.id, components: { ...parts }, credits: agencyCredits(), planningSupportUSD: remainingSupport(), settings: { ...missionConfig().defaults, focalLengthM: camera?.defaultFocalLengthM || 1, ...missionSettings } };
+}
+const opticsFor = part => part.focalLengthOptions?.find(option => option.focalLengthM === (part.id === parts.payload ? getDesign().settings.focalLengthM : part.defaultFocalLengthM));
+const configuredMass = part => part.massKg + (part.fuelMassKg || 0) + (opticsFor(part)?.massDeltaKg || 0);
+const configuredPower = part => (part.operationalPowerW || 0) + (opticsFor(part)?.powerDeltaW || 0);
 
 function snapshot() {
+  if (['urban', 'agriculture', 'disaster'].includes(mission?.id)) {
+    const report = evaluateMission(getDesign(), catalog), m = report.metrics;
+    const passed = id => report.checks.find(item => item.id === id)?.passed;
+    return [
+      ['Mass', `${m.wetMassKg} kg`, passed('mass') ? 'Within limits' : 'Needs review', `Dry ${m.dryMassKg} kg; wet ${m.wetMassKg} kg. Includes configured optics and propellant. Review mission setup for chassis/launch limits.`],
+      ['Power', m.generatedWh === null || m.usedWh === null ? '—' : `${(m.generatedWh - m.usedWh).toFixed(1)} Wh/orbit`, passed('power') ? 'Energy screen passed' : 'Needs attention', `${m.generatedWh} Wh generated / ${m.usedWh} Wh used per orbit. Peak ${m.peakW} W. Assumes 20% imaging, 10% radio duty and worst-case eclipse; open mission setup for all checks.`],
+      ['Mission performance', m.gsdM === null ? 'Choose a camera' : `${m.gsdM} m GSD`, passed('optics') ? 'Optics screen passed' : 'Needs review', `${m.swathKm ?? '—'} km swath at ${report.settings.altitudeKm} km. Pointing, station and budget checks are separate.`],
+      ['Cost', money(m.totalUSD ?? 0), passed('budget') ? 'Within planning budget' : 'Over budget', `Hardware ${money(m.hardwareUSD)} + launch ${money(m.launchUSD ?? 0)}. Available ${money(m.availableUSD ?? 0)} includes ${money(remainingSupport())} remaining mission support. No credits spent by planning.`],
+    ];
+  }
   const items = chosen();
   const mass = items.reduce((sum, part) => sum + configuredMass(part), 0);
   const cost = items.reduce((sum, part) => sum + part.costUSD, 0);
@@ -146,7 +167,7 @@ function renderCategories() {
   $('categories').hidden = steps[currentStep].categories.length === 1;
   $('categories').replaceChildren(...groups.filter(([category]) => steps[currentStep].categories.includes(category)).map(([category, label]) => {
     const button = document.createElement('button');
-    button.textContent = `${parts[category] ? '✓ ' : ''}${label}${['tcs', 'propulsion'].includes(category) ? ' · Optional' : ''}`;
+    button.textContent = `${parts[category] ? '✓ ' : ''}${label}${['tcs', 'propulsion'].includes(category) ? ' · Mission checks' : ''}`;
     button.dataset.category = category;
     button.dataset.installed = String(Boolean(parts[category]));
     button.setAttribute('aria-pressed', String(category === active));
@@ -161,6 +182,7 @@ function togglePart(part) {
   previewPart = null;
   const before = chosen().filter(item => item.category !== category);
   if (parts[category] === part.id) delete parts[category]; else parts[category] = part.id;
+  if (category === 'payload' && installing) missionSettings.focalLengthM = part.defaultFocalLengthM || 1;
   const chassis = catalog.find(item => item.id === parts.bus)?.chassisCompatibility?.[0];
   for (const item of chosen()) if (item.category !== 'bus' && (!chassis || !item.chassisCompatibility?.includes(chassis))) delete parts[item.category];
   dirty = true;
@@ -230,7 +252,7 @@ function renderOptions() {
   }
   const bus = catalog.find(part => part.id === parts.bus);
   const chassis = bus?.chassisCompatibility?.[0];
-  const options = catalog.filter(part => part.category === active && part.tier === 1 && (active === 'bus' || !chassis || part.chassisCompatibility?.includes(chassis)) && (active !== 'payload' || mission.id !== 'urban' || part.payloadType === 'optical'));
+  const options = catalog.filter(part => part.category === active && part.tier <= (mission.id !== 'urban' ? 2 : 1) && (active === 'bus' || !chassis || part.chassisCompatibility?.includes(chassis)) && (active !== 'payload' || !['urban', 'agriculture', 'disaster'].includes(mission.id) || part.payloadType === 'optical'));
   options.sort((a, b) => Number(b.id === parts[active]) - Number(a.id === parts[active]));
   $('option-count').textContent = `${options.length} options`;
   if (!options.length) list.textContent = 'No beginner components available for this chassis. Try a different chassis.';
@@ -332,11 +354,13 @@ export function openHangar(scenario) {
   const saved = Array.isArray(save?.blueprints) ? save.blueprints.find(item => item.id === `guided-${scenario.id}`) : null;
   const draft = drafts.get(scenario.id);
   parts = { ...(draft?.parts || saved?.components) };
+  missionSettings = { ...(draft?.settings || saved?.missionSettings) };
   active = groups.slice(0, 6).find(([category]) => !parts[category])?.[0] || 'bus';
   dirty = draft?.dirty || false;
   previewPart = null;
   $('save-status').textContent = dirty ? 'Unsaved session assembly restored.' : saved ? 'Saved blueprint loaded.' : 'Changes stay in this session until saved.';
   $('mission').textContent = scenario.title;
+  screen.querySelector('.hangar-panel-label > span').textContent = scenario.id !== 'urban' ? 'MISSION PARTS / TIERS 01–02' : 'BEGINNER / TIER 01';
   $('target').textContent = scenario.objectives[0];
   $('agency').textContent = save?.player?.agencyName || 'Independent agency';
   document.querySelector('#mission-select').inert = true;
@@ -347,23 +371,49 @@ export function openHangar(scenario) {
 }
 $('back').onclick = () => {
   // Preserve session edits when returning from mission selection.
-  drafts.set(mission.id, { parts: { ...parts }, dirty });
+  drafts.set(mission.id, { parts: { ...parts }, settings: { ...missionSettings }, dirty });
   screen.hidden = true; document.body.classList.remove('assembling');
   viewer?.setActive(false);
   document.querySelector('#mission-select').inert = false;
   document.querySelector('#begin-mission').focus();
 };
-$('save').onclick = () => {
+function persistBlueprint(plan) {
   const save = read(SAVE_KEY) || {};
   const blueprints = Array.isArray(save.blueprints) ? save.blueprints : [];
-  const blueprint = { id: `guided-${mission.id}`, missionId: mission.id, name: `${mission.title} preview`, components: { ...parts }, preview: true };
+  const blueprint = { id: `guided-${mission.id}`, missionId: mission.id, name: `${mission.title} preview`, components: { ...parts }, missionSettings: { ...getDesign().settings }, preview: true };
   save.blueprints = [...blueprints.filter(item => item.id !== blueprint.id), blueprint];
+  const plans = Array.isArray(save.missionPlans) ? save.missionPlans : [];
+  save.missionPlans = plans.filter(item => item.missionId !== mission.id || (!plan && item.inputKey === missionInputKey(getDesign())));
+  if (plan) save.missionPlans.push(plan);
   const saved = write(SAVE_KEY, save);
-  if (saved) { dirty = false; drafts.set(mission.id, { parts: { ...parts }, dirty: false }); }
+  if (saved) { dirty = false; drafts.set(mission.id, { parts: { ...parts }, settings: { ...missionSettings }, dirty: false }); }
   $('save-status').textContent = saved ? 'Blueprint saved on this device.' : 'Unable to save. Your assembly is still available in this session.';
   window.dispatchEvent(new Event('mission-saved'));
-};
+  return saved;
+}
+$('save').onclick = () => persistBlueprint();
 $('review').onclick = () => {
+  if (['agriculture','disaster'].includes(mission.id)) {
+    const open = mission.id === 'disaster' ? openDisaster : openAgriculture;
+    open({ catalog, getDesign,
+      onSettingsChange: settings => { missionSettings = { ...settings }; dirty = true; render(); },
+      onStarter: () => { parts = { ...missionConfig().starter }; missionSettings = { ...missionConfig().defaults }; previewPart = null; dirty = true; render(); },
+    });
+    return;
+  }
+  if (mission.id === 'urban') {
+    openPreflight({ catalog, getDesign,
+      onSettingsChange: settings => { missionSettings = { ...settings }; dirty = true; $('save-status').textContent = 'Unsaved mission settings'; render(); },
+      onStarter: () => { parts = { ...urbanMission.starter }; missionSettings = { ...urbanMission.defaults }; previewPart = null; dirty = true; $('save-status').textContent = 'Unsaved starter build'; render(); showFeedback('Urban starter build applied.'); },
+      onEditCategory: category => { select(category); $('part-title').focus({ preventScroll: true }); },
+      onSavePlan: (report, proof) => {
+        const design = getDesign();
+        if (!evaluateMission(design, catalog).ready || report.inputKey !== missionInputKey(design) || !proof.passed || proof.inputKey !== report.inputKey) return { saved: false, message: 'Design changed. Run the checks again.' };
+        return { saved: persistBlueprint({ id: 'plan-urban', missionId: mission.id, status: 'PREFLIGHT_PASSED', version: urbanMission.version, inputKey: report.inputKey, components: { ...parts }, settings: { ...report.settings }, target: urbanMission.target, station: urbanMission.station, metrics: report.metrics, checks: report.checks, assumptions: report.assumptions, physics: proof, createdAt: new Date().toISOString() }) };
+      },
+    });
+    return;
+  }
   const body = $('review-body'); body.replaceChildren();
   for (const [label, value, status] of snapshot()) { const p = document.createElement('p'); p.textContent = `${label}: ${value} — ${status}`; body.append(p); }
   const missing = groups.slice(0, 6).filter(([category]) => !parts[category]).map(([, label]) => label);

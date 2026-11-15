@@ -1,0 +1,76 @@
+.preflight-dialog { width: min(860px, calc(100vw - 32px)); max-width: 860px; max-height: 90dvh; padding: 24px; color: #dce8e9; background: #12232d; border: 1px solid #455d67; border-radius: 14px; font: 13px/1.6 Arial, sans-serif; }
+.preflight-dialog { overflow: auto; }
+.preflight-dialog form { margin: 0; }
+.preflight-dialog header { display: flex; align-items: start; justify-content: space-between; gap: 20px; }
+.preflight-dialog h2 { margin: 6px 0 12px; font-size: 25px; font-weight: 400; }
+.preflight-dialog h3 { font-size: 16px; font-weight: 400; margin: 20px 0 10px; }
+.preflight-dialog .eyebrow { font-size: 9px; letter-spacing: .12em; color: #b0c4ca; margin: 0; }
+.preflight-dialog button { cursor: pointer; font: inherit; padding: 9px 13px; color: #c9dde1; background: #213943; border: 1px solid #48636c; border-radius: 6px; }
+.preflight-dialog button:disabled { opacity: .45; cursor: default; }
+.preflight-dialog button:focus-visible, .preflight-dialog input:focus-visible, .preflight-dialog select:focus-visible, .preflight-dialog summary:focus-visible { outline: 2px solid #e9c987; outline-offset: 3px; }
+.preflight-dialog .text-button { background: transparent; border: 0; color: #d8c79c; padding: 5px 0; }
+#plan-close { min-width: 32px; font-size: 25px; padding: 0; }
+.plan-context, .plan-orbit-check > p { color: #a7bec6; font-size: 12px; }
+.plan-support { padding: 12px 15px; background: #e9c98709; border: 1px solid #e9c98730; border-radius: 8px; color: #d8caa8; font-size: 12px; }
+.plan-settings { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 20px; margin: 20px 0; }
+.plan-settings label { display: grid; gap: 6px; color: #b6c9ce; font-size: 12px; }
+.plan-settings select, .plan-settings input { width: 100%; min-width: 0; padding: 10px; border: 1px solid #415b65; border-radius: 6px; color: #e4eded; background: #192f39; font: inherit; color-scheme: dark; }
+.plan-settings input[readonly] { color: #92aab4; }
+.plan-orbit-hint { align-self: center; color: #91aab5; font-size: 11px; }
+.plan-costs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; padding: 15px; background: #0c1b22; border-radius: 8px; }
+.plan-costs span { display: block; color: #8faab4; font-size: 10px; }
+.plan-costs strong { display: block; font-size: 18px; font-weight: 400; color: #ded8c5; }
+.plan-starter { display: flex; justify-content: space-between; gap: 20px; align-items: center; margin: 20px 0; }
+.plan-starter p { margin: 0; }
+.plan-starter small { display: block; color: #8da9b5; font-size: 10px; }
+.plan-starter button { flex-shrink: 0; font-size: 11px; }
+.plan-checks { list-style: none; padding: 0; margin: 10px 0; }
+.plan-checks li { padding: 12px 14px; margin: 8px 0; border-left: 2px solid #d6b085; background: #ffffff03; border-radius: 0 6px 6px 0; }
+.plan-checks li[data-passed="true"] { border-color: #90bba5; }
+.plan-checks strong { font-size: 12px; color: #e4d5b8; }
+.plan-checks li[data-passed="true"] strong { color: #b4d4bf; }
+.plan-checks p { margin: 5px 0 0; color: #a3bcc6; font-size: 11px; }
+.plan-passed, .plan-assumptions { color: #a0bbc5; font-size: 12px; margin-top: 18px; }
+.preflight-dialog summary { cursor: pointer; }
+.plan-orbit-check { border-top: 1px solid #ffffff15; border-bottom: 1px solid #ffffff15; padding-bottom: 12px; }
+#plan-orbit-status { color: #c1d5db; font-size: 12px; }
+.plan-assumptions li { margin: 8px 0; font-size: 11px; }
+.preflight-dialog footer { display: flex; align-items: center; gap: 20px; justify-content: space-between; border-top: 1px solid #ffffff16; padding-top: 18px; margin-top: 22px; }
+#plan-save-status { color: #9ab4be; font-size: 11px; margin: 0; }
+.preflight-dialog .action { color: #252c25; background: #e9c987; border-color: #e9c987; font-size: 12px; }
+@media (max-width: 600px) { .preflight-dialog { padding: 18px; } .plan-settings { grid-template-columns: 1fr; } .plan-costs { grid-template-columns: 1fr 1fr; } .plan-starter, .preflight-dialog footer { align-items: stretch; flex-direction: column; gap: 12px; } }
+/* Scope above the shared dialog defaults so the form keeps its intended width. */
+dialog.preflight-dialog:not(#settings-dialog) { width:min(860px,calc(100vw - 28px)); max-width:860px; max-height:92dvh; padding:24px 28px; border-radius:18px; background:linear-gradient(135deg,#132d38,#0d1d29 65%); border-color:#607f8b66; }
+dialog.preflight-dialog:not(#settings-dialog) header { position:sticky; top:-24px; z-index:3; margin:-4px -4px 14px; padding:14px 4px 12px; background:#102530f5; border-bottom:1px solid #6e8d982b; }
+dialog.preflight-dialog:not(#settings-dialog) h2 { margin:4px 0 0; font-size:28px; font-weight:400; letter-spacing:-.03em; }
+dialog.preflight-dialog:not(#settings-dialog) .eyebrow { margin:0 0 7px; color:#9fbdc8; }
+dialog.preflight-dialog:not(#settings-dialog) .plan-context { margin:8px 0 14px; font-size:12px; }
+dialog.preflight-dialog:not(#settings-dialog) .plan-support { margin:0 0 20px; padding:11px 14px; font-size:12px; line-height:1.6; }
+.preflight-dialog .plan-settings { gap:16px 20px; margin:0 0 20px; padding:18px; background:#ffffff03; border:1px solid #7c9ba31e; border-radius:10px; }
+.preflight-dialog .plan-settings label { margin:0; align-items:stretch; justify-content:normal; grid-template-columns:minmax(0,1fr); gap:7px; }
+.preflight-dialog .plan-settings input,.preflight-dialog .plan-settings select { display:block; width:100%; max-width:none; min-height:42px; height:42px; margin:0; padding:9px 11px; box-sizing:border-box; }
+.preflight-dialog .plan-costs { gap:12px; padding:16px; border:1px solid #78909b26; background:#081923; }
+.preflight-dialog .plan-costs > div { min-width:0; }
+.preflight-dialog .plan-costs strong { font-size:18px; margin-top:5px; font-variant-numeric:tabular-nums; }
+.preflight-dialog .plan-costs > div:nth-child(3) strong { color:#ead2a0; }
+.preflight-dialog .plan-starter { padding:14px 0; margin:10px 0; border-bottom:1px solid #78909b26; }
+.preflight-dialog footer { background:#102530; border-radius:10px; padding:14px; gap:16px; }
+.preflight-dialog #plan-launch { min-height:46px; border-color:#b69e69; color:#edd8a8; background:#cfb37512; }
+@media(min-width:900px){.preflight-dialog .plan-settings{grid-template-columns:repeat(3,minmax(0,1fr));}}
+@media(max-width:600px){dialog.preflight-dialog:not(#settings-dialog){padding:18px;}dialog.preflight-dialog:not(#settings-dialog) header{top:-18px;}dialog.preflight-dialog:not(#settings-dialog) h2{font-size:24px;}.preflight-dialog .plan-settings{padding:14px;grid-template-columns:1fr;}.preflight-dialog .plan-costs strong{font-size:16px;}}
+.plan-station-preview { display:grid; grid-template-columns:210px minmax(0,1fr); gap:18px; padding:16px; margin:14px 0; border:1px solid #63859140; border-radius:12px; background:linear-gradient(125deg,#17344066,#0a1d28); }
+.plan-station-art svg { display:block; width:100%; height:auto; }
+.plan-station-art > span { display:block; color:#8ba9b4; font-size:9px; margin-top:8px; }
+.plan-station-info h4 { font-size:19px; font-weight:400; color:#e0e9e9; margin:5px 0 7px; }
+dialog.preflight-dialog:not(#settings-dialog) .plan-station-info > p { margin:4px 0 8px; font-size:11px; line-height:1.6; }
+#plan-station-compatible[data-compatible="true"] { color:#b0d5bd; }
+#plan-station-stats { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:3px 12px; margin:14px 0 0; }
+#plan-station-stats dt { font-size:9px; color:#8faab6; grid-row:1; }
+#plan-station-stats dd { font-size:15px; color:#e3cfa8; margin:0; grid-row:2; }
+.plan-station-passes { grid-column:1/-1; border-top:1px solid #7d9ca32b; padding-top:10px; }
+dialog.preflight-dialog:not(#settings-dialog) #plan-station-pass-heading { margin:0 0 8px; font-size:11px; color:#9bb8c4; }
+#plan-station-passes { list-style:none; padding:0; margin:0; }
+#plan-station-passes li { display:flex; justify-content:space-between; gap:12px; padding:8px 0; font-size:11px; color:#cedfe4; }
+#plan-station-passes li + li { border-top:1px solid #6689941c; }
+#plan-station-passes span { color:#a9c9bb; }
+@media(max-width:600px){.plan-station-preview{grid-template-columns:1fr;gap:12px;padding:14px;}.plan-station-art{max-width:210px;margin:auto;}.plan-station-passes{grid-column:1;}#plan-station-stats dd{font-size:14px;}}

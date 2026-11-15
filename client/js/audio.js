@@ -42,6 +42,8 @@ function createManager() {
   const watchers = new Set();
   const music = new Map();
   const sfx = new Map();
+  let toneContext;
+  const toneGains=new Set();
 
   for (const [id, spec] of Object.entries(AUDIO_CONFIG.music)) {
     const el = new Audio(spec.src);
@@ -161,6 +163,7 @@ function createManager() {
   }
 
   function applyLevel() {
+    if(muted||volume===0)for(const gain of toneGains)gain.gain.setValueAtTime(0,toneContext.currentTime);
     if (!active || !currentId) return;
     const spec = music.get(currentId);
     if (!spec) return;
@@ -202,6 +205,21 @@ function createManager() {
   document.addEventListener('keydown', onGesture, true);
 
   return {
+    playCaptureBeat(ready=false) {
+      if(!unlocked||muted||volume===0||document.hidden)return;
+      const Context=globalThis.AudioContext||globalThis.webkitAudioContext;
+      if(!Context)return;
+      try{
+        toneContext ||= new Context();
+        if(toneContext.state!=='running'){void toneContext.resume().then(()=>{if(toneContext.state==='running')this.playCaptureBeat(ready);}).catch(()=>{});return;}
+        const oscillator=toneContext.createOscillator(),gain=toneContext.createGain(),now=toneContext.currentTime;
+        oscillator.type='sine';oscillator.frequency.value=ready?880:560;
+        gain.gain.setValueAtTime(0,now);gain.gain.linearRampToValueAtTime(.045*volume,now+.01);gain.gain.exponentialRampToValueAtTime(.0001,now+.09);
+        oscillator.connect(gain);gain.connect(toneContext.destination);toneGains.add(gain);
+        oscillator.onended=()=>{toneGains.delete(gain);gain.disconnect();oscillator.disconnect();};
+        oscillator.start(now);oscillator.stop(now+.1);
+      }catch{/* Visual approach guidance remains available without audio. */}
+    },
     playMusic,
     stopMusic,
     playSfx,

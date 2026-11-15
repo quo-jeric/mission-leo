@@ -6,6 +6,10 @@
 @import url('./settings.css');
 @import url('./dialogs.css');
 @import url('./hangar.css');
+@import url('./preflight.css');
+@import url('./orbit.css');
+@import url('./agriculture.css');
+@import url('./mission-control.css');
 
 :root {
   --bg-deep: #050811;
